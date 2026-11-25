@@ -1,7 +1,7 @@
 const ARSIP_STORAGE_KEY = "arsip_pk_roinfohan_v2";
 const MASTER_STORAGE_KEY = "master_unit_pk_roinfohan_v1";
 const GAS_URL_STORAGE_KEY = "arsip_pk_gas_url_v1";
-const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbyIksW2hVtI7CI6VW73tCe9weFbo7GRikodlvFnhP-IBFMZkZrP_ZEcGwEpnPErSkL1/exec";
+const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbzQHleAqUvDxGfXc0Fm39z1-fp6zts4clCpy85wEGgEiKOfmrxD0Bl-4B_oQsOipK06/exec";
 
 const DEFAULT_MASTER_UNITS = [
   {
