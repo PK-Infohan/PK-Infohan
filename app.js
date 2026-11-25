@@ -295,6 +295,7 @@ function showView(view) {
   if (view === "hasil") hasilSection.classList.remove("hidden");
   if (view === "master") {
     renderMasterTree();
+    renderRekapPejabatTable();
     masterSection.classList.remove("hidden");
   }
   if (view === "arsip") {
@@ -411,42 +412,42 @@ function applyHierarchyToPejabatFields() {
   if (level === "eselon1" && e1) {
     document.getElementById("p1Nama").value = e1.namaPejabat || "";
     document.getElementById("p1Jabatan").value = e1.jabatanPimpinan || "";
-    document.getElementById("p1JabatanSingkat").value = "";
+    document.getElementById("p1JabatanSingkat").value = e1.jabatanPimpinan || "";
     document.getElementById("p1Pangkat").value = e1.pangkatNrpNip || "";
 
     document.getElementById("p2Nama").value = e1.atasanNama || "";
     document.getElementById("p2Jabatan").value = e1.atasanJabatan || "Menteri Pertahanan Republik Indonesia";
-    document.getElementById("p2JabatanSingkat").value = "";
+    document.getElementById("p2JabatanSingkat").value = e1.atasanJabatan || "Menteri Pertahanan Republik Indonesia";
     document.getElementById("p2Pangkat").value = e1.atasanPangkat || "";
   } else if (level === "eselon2" && e2 && e1) {
     document.getElementById("p1Nama").value = e2.namaPejabat || "";
     document.getElementById("p1Jabatan").value = e2.jabatanPimpinan || "";
-    document.getElementById("p1JabatanSingkat").value = "";
+    document.getElementById("p1JabatanSingkat").value = "Kepala Biro Informasi Pertahanan";
     document.getElementById("p1Pangkat").value = e2.pangkatNrpNip || "";
 
     document.getElementById("p2Nama").value = e1.namaPejabat || "";
     document.getElementById("p2Jabatan").value = e1.jabatanPimpinan || "";
-    document.getElementById("p2JabatanSingkat").value = "";
+    document.getElementById("p2JabatanSingkat").value = e1.jabatanPimpinan || "";
     document.getElementById("p2Pangkat").value = e1.pangkatNrpNip || "";
   } else if (level === "bagian" && bag && e2) {
     document.getElementById("p1Nama").value = bag.namaKabag || "";
     document.getElementById("p1Jabatan").value = bag.jabatanKabag || "";
-    document.getElementById("p1JabatanSingkat").value = "";
+    document.getElementById("p1JabatanSingkat").value = "Kepala Bagian Hubungan Kemitraan";
     document.getElementById("p1Pangkat").value = bag.pangkatKabag || "";
 
     document.getElementById("p2Nama").value = e2.namaPejabat || "";
     document.getElementById("p2Jabatan").value = e2.jabatanPimpinan || "";
-    document.getElementById("p2JabatanSingkat").value = "";
+    document.getElementById("p2JabatanSingkat").value = "Kepala Biro Informasi Pertahanan";
     document.getElementById("p2Pangkat").value = e2.pangkatNrpNip || "";
   } else if (sub && bag) {
     document.getElementById("p1Nama").value = sub.namaPejabat || "";
     document.getElementById("p1Jabatan").value = sub.jabatanKasubbag || `Kepala ${sub.namaSubbag}`;
-    document.getElementById("p1JabatanSingkat").value = "";
+    document.getElementById("p1JabatanSingkat").value = sub.namaSubbag ? `Kepala ${sub.namaSubbag}` : "";
     document.getElementById("p1Pangkat").value = sub.pangkatNrpNip || "";
 
     document.getElementById("p2Nama").value = bag.namaKabag || "";
     document.getElementById("p2Jabatan").value = bag.jabatanKabag || "";
-    document.getElementById("p2JabatanSingkat").value = "";
+    document.getElementById("p2JabatanSingkat").value = "Kepala Bagian Hubungan Kemitraan";
     document.getElementById("p2Pangkat").value = bag.pangkatKabag || "";
   }
 }
@@ -621,7 +622,7 @@ function collectFormData() {
 function populateFormFromData(data) {
   document.getElementById("tahunAnggaran").value = data.tahun || "2027";
   document.getElementById("lampiranSisipan").value = data.lampiranSisipan || "";
-  document.getElementById("lampiranTahun").value = data.lampiranTahun || data.tahun || "2026";
+  document.getElementById("lampiranTahun").value = data.lampiranTahun || data.tahun || "2027";
   document.getElementById("unitKegiatanLabel").value = data.unitKegiatanLabel || "";
   document.getElementById("tempatTanggal").value = data.tempatTanggal || "";
   if (data.level) selectLevel.value = data.level;
@@ -646,20 +647,21 @@ function populateFormFromData(data) {
 // ==========================================
 // RENDER DOKUMEN PK 2 HALAMAN TERPISAH
 // ==========================================
-function formatJabatanTtd(jabatanStr) {
+function formatJabatanTtdRingkas(jabatanStr) {
   const raw = String(jabatanStr || "").trim();
-  const match = raw.match(/^(.*?)\s+(Biro\s+Infohan\s+Setjen\s+Kemhan.*)$/i);
-  if (match) {
-    return `${match[1]}<br />${match[2]}`;
-  }
-  return raw;
+  if (!raw) return "";
+  return raw
+    .replace(/\s+(?:Bag\.?\s*)?Hubmitra\s+Biro\s+Infohan\s+Setjen\s+Kemhan.*$/i, "")
+    .replace(/\s+Biro\s+Infohan\s+Setjen\s+Kemhan.*$/i, "")
+    .replace(/\s+Setjen\s+Kemhan.*$/i, "")
+    .trim();
 }
 
 function renderPerjanjianKinerja(data) {
   currentActiveDoc = data;
 
-  const p1TtdJabatan = formatJabatanTtd(data.pihakPertama.jabatanSingkat || data.pihakPertama.jabatan);
-  const p2TtdJabatan = formatJabatanTtd(data.pihakKedua.jabatanSingkat || data.pihakKedua.jabatan);
+  const p1TtdJabatan = formatJabatanTtdRingkas(data.pihakPertama.jabatanSingkat || data.pihakPertama.jabatan);
+  const p2TtdJabatan = formatJabatanTtdRingkas(data.pihakKedua.jabatanSingkat || data.pihakKedua.jabatan);
 
   let lampiranRowsHtml = "";
 
@@ -764,14 +766,14 @@ function renderPerjanjianKinerja(data) {
     <div class="ttd-row">
       <div class="ttd-col">
         <div class="ttd-tanggal">&nbsp;</div>
-        <div class="ttd-jabatan">Pihak Kedua,<br />${p2TtdJabatan}</div>
+        <div class="ttd-jabatan">Pihak Kedua<br />${p2TtdJabatan}</div>
         <div class="ttd-space"></div>
         <div class="ttd-nama">${data.pihakKedua.nama}</div>
         <div class="ttd-pangkat">${data.pihakKedua.pangkat}</div>
       </div>
       <div class="ttd-col">
         <div class="ttd-tanggal">${data.tempatTanggal}</div>
-        <div class="ttd-jabatan">Pihak Pertama,<br />${p1TtdJabatan}</div>
+        <div class="ttd-jabatan">Pihak Pertama<br />${p1TtdJabatan}</div>
         <div class="ttd-space"></div>
         <div class="ttd-nama">${data.pihakPertama.nama}</div>
         <div class="ttd-pangkat">${data.pihakPertama.pangkat}</div>
@@ -860,76 +862,144 @@ function renderPerjanjianKinerja(data) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-document.getElementById("btnDownloadPdf").addEventListener("click", async () => {
-  const l1 = document.getElementById("lembaran1");
-  const l2 = document.getElementById("lembaran2");
-  if (!l1 || !l2 || !currentActiveDoc) return;
+// ==========================================
+// TABEL REKAP PEJABAT (EXCEL & PDF)
+// ==========================================
+function parsePangkatDanNipNrp(rawStr) {
+  const txt = String(rawStr || "").trim();
+  if (!txt) return { pangkatKorpsGol: "-", nipNrp: "-" };
 
-  const safeSub = (currentActiveDoc.subbag || "PK_Kemhan").replace(/[^a-zA-Z0-9_-]/g, "_");
-  const filename = `PK_${safeSub}_${currentActiveDoc.tahun}.pdf`;
-
-  const marginX = 8;
-  const marginY = 8;
-
-  l1.classList.add("pdf-capturing");
-  l2.classList.add("pdf-capturing");
-
-  try {
-    const captureOpts1 = {
-      margin: 0,
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        scrollX: 0,
-        scrollY: 0,
-        width: l1.offsetWidth,
-        windowWidth: l1.offsetWidth
-      },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+  const match = txt.match(/^(.*?)\s+((?:NIP|NRP)\.?\s*[\d\s./-]+)$/i);
+  if (match) {
+    return {
+      pangkatKorpsGol: match[1].trim() || "-",
+      nipNrp: match[2].trim() || "-"
     };
-
-    const captureOpts2 = {
-      ...captureOpts1,
-      html2canvas: {
-        ...captureOpts1.html2canvas,
-        width: l2.offsetWidth,
-        windowWidth: l2.offsetWidth
-      }
-    };
-
-    const canvas1 = await html2pdf().set(captureOpts1).from(l1).toContainer().toCanvas().get("canvas");
-    const canvas2 = await html2pdf().set(captureOpts2).from(l2).toContainer().toCanvas().get("canvas");
-    const pdf = await html2pdf().set(captureOpts1).toPdf().get("pdf");
-
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const usableWidth = pageWidth - marginX * 2;
-    const maxUsableHeight = pageHeight - marginY * 2;
-
-    const addCanvasPage = (canvas, isFirstPage) => {
-      if (!isFirstPage) pdf.addPage("a4", "portrait");
-      let drawWidth = usableWidth;
-      let drawHeight = (canvas.height * drawWidth) / canvas.width;
-      if (drawHeight > maxUsableHeight) {
-        const ratio = maxUsableHeight / drawHeight;
-        drawHeight = maxUsableHeight;
-        drawWidth = drawWidth * ratio;
-      }
-      const offsetX = marginX + (usableWidth - drawWidth) / 2;
-      pdf.addImage(canvas.toDataURL("image/jpeg", 0.98), "JPEG", offsetX, marginY, drawWidth, drawHeight);
-    };
-
-    addCanvasPage(canvas1, true);
-    addCanvasPage(canvas2, false);
-    pdf.save(filename);
-  } catch (err) {
-    console.error("Gagal membuat PDF:", err);
-    alert("Gagal mengunduh PDF: " + err.message);
-  } finally {
-    l1.classList.remove("pdf-capturing");
-    l2.classList.remove("pdf-capturing");
   }
+  return { pangkatKorpsGol: txt, nipNrp: "-" };
+}
+
+function collectPejabatRekapRows() {
+  const isAdmin = currentUser?.role === "admin";
+  const rows = [];
+
+  (dbPejabat.eselon1List || []).forEach(e1 => {
+    const visibleE2s = (e1.eselon2List || []).filter(e2 => isAdmin || e2.id === currentUser?.eselon2Id);
+    if (!isAdmin && visibleE2s.length === 0) return;
+
+    if (isAdmin && (e1.namaPejabat || e1.jabatanPimpinan)) {
+      const parsedE1 = parsePangkatDanNipNrp(e1.pangkatNrpNip);
+      rows.push({
+        nama: e1.namaPejabat || "-",
+        pangkatKorpsGol: parsedE1.pangkatKorpsGol,
+        nipNrp: parsedE1.nipNrp,
+        jabatan: e1.jabatanPimpinan || "-",
+        ket: e1.namaUnit || "Eselon I"
+      });
+    }
+
+    visibleE2s.forEach(e2 => {
+      if (e2.namaPejabat || e2.jabatanPimpinan) {
+        const parsedE2 = parsePangkatDanNipNrp(e2.pangkatNrpNip);
+        rows.push({
+          nama: e2.namaPejabat || "-",
+          pangkatKorpsGol: parsedE2.pangkatKorpsGol,
+          nipNrp: parsedE2.nipNrp,
+          jabatan: e2.jabatanPimpinan || "-",
+          ket: e2.namaUnit || "Eselon II"
+        });
+      }
+
+      (e2.bagianList || []).forEach(bag => {
+        if (bag.namaKabag || bag.jabatanKabag) {
+          const parsedBag = parsePangkatDanNipNrp(bag.pangkatKabag);
+          rows.push({
+            nama: bag.namaKabag || "-",
+            pangkatKorpsGol: parsedBag.pangkatKorpsGol,
+            nipNrp: parsedBag.nipNrp,
+            jabatan: bag.jabatanKabag || "-",
+            ket: bag.namaBagian || "Eselon III"
+          });
+        }
+
+        (bag.subbagList || []).forEach(sub => {
+          if (sub.namaPejabat || sub.jabatanKasubbag || sub.namaSubbag) {
+            const parsedSub = parsePangkatDanNipNrp(sub.pangkatNrpNip);
+            rows.push({
+              nama: sub.namaPejabat || "-",
+              pangkatKorpsGol: parsedSub.pangkatKorpsGol,
+              nipNrp: parsedSub.nipNrp,
+              jabatan: sub.jabatanKasubbag || sub.namaSubbag || "-",
+              ket: sub.namaSubbag || "Eselon IV"
+            });
+          }
+        });
+      });
+    });
+  });
+
+  return rows;
+}
+
+function renderRekapPejabatTable() {
+  const tbody = document.getElementById("rekapPejabatBody");
+  if (!tbody) return;
+
+  const rows = collectPejabatRekapRows();
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#64748b;">Belum ada data pejabat.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rows.map((r, i) => `
+    <tr>
+      <td style="text-align:center;">${i + 1}</td>
+      <td>${r.nama}</td>
+      <td>${r.pangkatKorpsGol}</td>
+      <td>${r.nipNrp}</td>
+      <td>${r.jabatan}</td>
+      <td>${r.ket}</td>
+    </tr>
+  `).join("");
+}
+
+document.getElementById("btnExportPejabatExcel").addEventListener("click", () => {
+  syncDomToDbPejabat();
+  renderRekapPejabatTable();
+
+  const rows = collectPejabatRekapRows().map((r, i) => ({
+    No: i + 1,
+    Nama: r.nama,
+    "Pangkat/Korps/Gol/Ruang": r.pangkatKorpsGol,
+    "NIP/NRP": r.nipNrp,
+    Jabatan: r.jabatan,
+    Ket: r.ket
+  }));
+
+  if (!rows.length) {
+    alert("Tidak ada data pejabat untuk diunduh ke Excel.");
+    return;
+  }
+
+  if (typeof XLSX === "undefined") {
+    alert("Pustaka Excel belum termuat. Periksa koneksi internet dan muat ulang halaman.");
+    return;
+  }
+
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Data Pejabat");
+  XLSX.writeFile(wb, "Daftar_Pejabat_Kemhan.xlsx");
+});
+
+document.getElementById("btnPrintPejabatPdf").addEventListener("click", () => {
+  syncDomToDbPejabat();
+  renderRekapPejabatTable();
+  document.body.classList.add("printing-pejabat-table");
+  window.print();
+  setTimeout(() => {
+    document.body.classList.remove("printing-pejabat-table");
+  }, 500);
 });
 
 // ==========================================
@@ -972,7 +1042,7 @@ function renderMasterTree() {
             <input type="text" class="m-e1-nama" placeholder="Input nama pejabat..." value="${escAttr(e1.namaPejabat)}" />
           </div>
           <div>
-            <label>Pangkat / NRP / NIP Eselon I</label>
+            <label>Pangkat / Korps / Gol / NIP / NRP</label>
             <input type="text" class="m-e1-pangkat" placeholder="Pangkat & NRP/NIP..." value="${escAttr(e1.pangkatNrpNip)}" />
           </div>
         </div>
@@ -1002,7 +1072,7 @@ function renderMasterTree() {
               <input type="text" class="m-e2-nama" placeholder="Input nama pimpinan..." value="${escAttr(e2.namaPejabat)}" />
             </div>
             <div>
-              <label>Pangkat / NRP / NIP</label>
+              <label>Pangkat / Korps / Gol / NIP / NRP</label>
               <input type="text" class="m-e2-pangkat" placeholder="Pangkat & NRP/NIP..." value="${escAttr(e2.pangkatNrpNip)}" />
             </div>
           </div>
@@ -1038,7 +1108,7 @@ function renderMasterTree() {
                 <input type="text" class="m-bag-nama-pejabat" placeholder="Input nama pejabat..." value="${escAttr(bag.namaKabag)}" />
               </div>
               <div>
-                <label>Pangkat / NRP / NIP Kabag</label>
+                <label>Pangkat / Korps / Gol / NIP / NRP</label>
                 <input type="text" class="m-bag-pangkat" placeholder="Pangkat & NRP/NIP..." value="${escAttr(bag.pangkatKabag)}" />
               </div>
             </div>
@@ -1050,7 +1120,7 @@ function renderMasterTree() {
                     <th style="width:24%;">Nama Sub Bagian (Eselon IV)</th>
                     <th style="width:28%;">Jabatan Lengkap (Untuk Judul & TTD)</th>
                     <th style="width:22%;">Nama Pejabat Kasubbag</th>
-                    <th style="width:20%;">Pangkat / Gol & NRP / NIP</th>
+                    <th style="width:20%;">Pangkat / Korps / Gol / NIP / NRP</th>
                     <th style="width:6%;">Aksi</th>
                   </tr>
                 </thead>
@@ -1177,6 +1247,7 @@ document.getElementById("btnTambahEselon1").addEventListener("click", () => {
     ]
   });
   renderMasterTree();
+  renderRekapPejabatTable();
 });
 
 window.hapusEselon1 = e1Idx => {
@@ -1184,6 +1255,7 @@ window.hapusEselon1 = e1Idx => {
   syncDomToDbPejabat();
   dbPejabat.eselon1List.splice(e1Idx, 1);
   renderMasterTree();
+  renderRekapPejabatTable();
 };
 
 window.tambahEselon2 = e1Idx => {
@@ -1214,6 +1286,7 @@ window.tambahEselon2 = e1Idx => {
     ]
   });
   renderMasterTree();
+  renderRekapPejabatTable();
 };
 
 window.hapusEselon2 = (e1Idx, e2Idx) => {
@@ -1221,6 +1294,7 @@ window.hapusEselon2 = (e1Idx, e2Idx) => {
   syncDomToDbPejabat();
   dbPejabat.eselon1List[e1Idx].eselon2List.splice(e2Idx, 1);
   renderMasterTree();
+  renderRekapPejabatTable();
 };
 
 window.tambahBagian = (e1Idx, e2Idx) => {
@@ -1242,6 +1316,7 @@ window.tambahBagian = (e1Idx, e2Idx) => {
     ]
   });
   renderMasterTree();
+  renderRekapPejabatTable();
 };
 
 window.hapusBagian = (e1Idx, e2Idx, bagIdx) => {
@@ -1249,6 +1324,7 @@ window.hapusBagian = (e1Idx, e2Idx, bagIdx) => {
   syncDomToDbPejabat();
   dbPejabat.eselon1List[e1Idx].eselon2List[e2Idx].bagianList.splice(bagIdx, 1);
   renderMasterTree();
+  renderRekapPejabatTable();
 };
 
 window.tambahSubbag = (e1Idx, e2Idx, bagIdx) => {
@@ -1262,6 +1338,7 @@ window.tambahSubbag = (e1Idx, e2Idx, bagIdx) => {
     pangkatNrpNip: ""
   });
   renderMasterTree();
+  renderRekapPejabatTable();
 };
 
 window.hapusSubbag = (e1Idx, e2Idx, bagIdx, subIdx) => {
@@ -1273,12 +1350,14 @@ window.hapusSubbag = (e1Idx, e2Idx, bagIdx, subIdx) => {
   }
   list.splice(subIdx, 1);
   renderMasterTree();
+  renderRekapPejabatTable();
 };
 
 async function handleSimpanMaster() {
   syncDomToDbPejabat();
   localStorage.setItem(DB_PEJABAT_STORAGE_KEY, JSON.stringify(dbPejabat));
   refreshUnitDropdowns();
+  renderRekapPejabatTable();
 
   const gasUrl = getGasUrl();
   if (gasUrl) {
@@ -1303,6 +1382,7 @@ document.getElementById("btnResetMaster").addEventListener("click", () => {
   dbPejabat = structuredClone(DEFAULT_DB_PEJABAT);
   localStorage.setItem(DB_PEJABAT_STORAGE_KEY, JSON.stringify(dbPejabat));
   renderMasterTree();
+  renderRekapPejabatTable();
   refreshUnitDropdowns();
 });
 
@@ -1435,7 +1515,7 @@ function renderArsipTable() {
         <td>${formatRp(doc.totalAnggaran)}</td>
         <td>
           <div class="toolbar-right">
-            <button type="button" class="btn btn-primary btn-sm" onclick="bukaArsip(${realIdx})">Buka / PDF</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="bukaArsip(${realIdx})">Buka / Cetak</button>
             <button type="button" class="btn btn-outline btn-sm" onclick="editArsip(${realIdx})">Edit</button>
             <button type="button" class="btn btn-danger btn-sm" onclick="hapusArsip(${realIdx})">Hapus</button>
           </div>
@@ -1499,7 +1579,7 @@ document.getElementById("btnKosongkan").addEventListener("click", () => {
 document.getElementById("btnIsiContoh").addEventListener("click", () => {
   document.getElementById("tahunAnggaran").value = "2027";
   document.getElementById("lampiranSisipan").value = "I";
-  document.getElementById("lampiranTahun").value = "2026";
+  document.getElementById("lampiranTahun").value = "2027";
   document.getElementById("tempatTanggal").value = "Jakarta, Januari 2027";
 
   sasaranContainer.innerHTML = "";
