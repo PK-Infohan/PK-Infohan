@@ -3,7 +3,7 @@ const DB_PEJABAT_STORAGE_KEY = "db_pejabat_pk_kemhan_v2";
 const USERS_STORAGE_KEY = "users_pk_kemhan_v1";
 const SESSION_STORAGE_KEY = "session_pk_kemhan_v1";
 const GAS_URL_STORAGE_KEY = "arsip_pk_gas_url_v1";
-const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbzQHleAqUvDxGfXc0Fm39z1-fp6zts4clCpy85wEGgEiKOfmrxD0Bl-4B_oQsOipK06/exec";
+const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbzX0lJ4554NyCUeRKr5ms_m3a7mv5j0eJf8-H6pPtMKTlmTH1Y86ZHFVxcpnrasnVI2/exec";
 
 // ==========================================
 // DATA AWAL ESELON I -> II -> III -> IV
@@ -252,7 +252,6 @@ function initAppAfterLogin() {
   document.getElementById("userBadgeInfo").textContent =
     `${currentUser.namaTampilan} (${isAdmin ? "Administrator" : "Admin Satker"}) • ${unitLabel}`;
 
-  // Kontrol visibilitas berdasarkan hak akses
   document.getElementById("btnKeUsers").classList.toggle("hidden", !isAdmin);
   document.getElementById("btnTambahEselon1").classList.toggle("hidden", !isAdmin);
   document.getElementById("btnResetMaster").classList.toggle("hidden", !isAdmin);
@@ -266,7 +265,6 @@ function initAppAfterLogin() {
     ? "Menampilkan seluruh arsip Perjanjian Kinerja Kementerian Pertahanan."
     : `Menampilkan arsip Perjanjian Kinerja khusus ${unitLabel}.`;
 
-  // Batasi pilihan level PK untuk Admin Satker (maksimal Eselon II unitnya)
   const optE1 = selectLevel.querySelector('option[value="eselon1"]');
   if (optE1) optE1.disabled = !isAdmin;
   if (!isAdmin && selectLevel.value === "eselon1") {
@@ -1209,7 +1207,7 @@ window.hapusUser = idx => {
   renderUsersTable();
 };
 
-document.getElementById("btnSimpanUsers").addEventListener("click", () => {
+document.getElementById("btnSimpanUsers").addEventListener("click", async () => {
   const rows = [...document.querySelectorAll("#usersTableBody tr")];
   usersList = rows.map((tr, i) => ({
     id: usersList[i]?.id || ("USR-" + Date.now() + "-" + i),
@@ -1221,6 +1219,18 @@ document.getElementById("btnSimpanUsers").addEventListener("click", () => {
   })).filter(u => u.username && u.password);
 
   localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(usersList));
+
+  const gasUrl = getGasUrl();
+  if (gasUrl) {
+    try {
+      await fetch(gasUrl, {
+        method: "POST",
+        body: JSON.stringify({ action: "saveUsers", payload: usersList })
+      });
+    } catch (err) {
+      console.warn("Gagal sinkron akun ke Google Sheets:", err);
+    }
+  }
   alert("Daftar akun pengguna & hak akses berhasil disimpan.");
 });
 
@@ -1281,12 +1291,25 @@ window.editArsip = idx => {
   populateFormFromData(arsipList[idx]);
   showView("form");
 };
-window.hapusArsip = idx => {
-  if (!confirm("Hapus arsip ini dari penyimpanan browser?")) return;
+window.hapusArsip = async idx => {
+  if (!confirm("Hapus arsip ini dari penyimpanan browser dan cloud?")) return;
+  const deletedDoc = arsipList[idx];
   arsipList.splice(idx, 1);
   localStorage.setItem(ARSIP_STORAGE_KEY, JSON.stringify(arsipList));
   updateArsipCounter();
   renderArsipTable();
+
+  const gasUrl = getGasUrl();
+  if (gasUrl && deletedDoc?.id) {
+    try {
+      await fetch(gasUrl, {
+        method: "POST",
+        body: JSON.stringify({ action: "deletePK", payload: { id: deletedDoc.id } })
+      });
+    } catch (err) {
+      console.warn("Gagal hapus arsip di Google Sheets:", err);
+    }
+  }
 };
 
 document.getElementById("pkForm").addEventListener("submit", async e => {
@@ -1336,22 +1359,65 @@ document.getElementById("btnTarikArsipGas").addEventListener("click", async () =
   const gasUrl = getGasUrl();
   if (!gasUrl) return alert("Isi URL Google Apps Script terlebih dahulu.");
   try {
-    const res = await fetch(gasUrl + "?action=listPK");
+    const res = await fetch(gasUrl + "?action=syncAll");
     const json = await res.json();
-    if (json.status === "ok" && Array.isArray(json.data)) {
-      arsipList = json.data;
-      localStorage.setItem(ARSIP_STORAGE_KEY, JSON.stringify(arsipList));
+    if (json.status === "ok") {
+      if (Array.isArray(json.arsip)) {
+        arsipList = json.arsip;
+        localStorage.setItem(ARSIP_STORAGE_KEY, JSON.stringify(arsipList));
+      }
+      if (json.masterPejabat && Array.isArray(json.masterPejabat.eselon1List)) {
+        dbPejabat = json.masterPejabat;
+        localStorage.setItem(DB_PEJABAT_STORAGE_KEY, JSON.stringify(dbPejabat));
+      }
+      if (Array.isArray(json.users) && json.users.length) {
+        usersList = json.users;
+        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(usersList));
+      }
+      refreshUnitDropdowns();
       updateArsipCounter();
       renderArsipTable();
-      alert("Arsip berhasil disinkronkan dari Google Sheets.");
+      alert("Data Arsip, Master Pejabat, dan Akun berhasil disinkronkan dari Google Sheets.");
     }
   } catch (err) {
-    alert("Gagal menarik arsip dari Google Sheets: " + err.message);
+    alert("Gagal menarik data dari Google Sheets: " + err.message);
   }
 });
 
-// Inisialisasi awal
+// ==========================================
+// SINKRONISASI CLOUD OTOMATIS SAAT HALAMAN DIBUKA
+// ==========================================
+async function syncFromCloudOnLoad() {
+  const gasUrl = getGasUrl();
+  if (!gasUrl) return;
+  try {
+    const res = await fetch(gasUrl + "?action=syncAll");
+    const json = await res.json();
+    if (json.status === "ok") {
+      if (Array.isArray(json.users) && json.users.length) {
+        usersList = json.users;
+        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(usersList));
+      }
+      if (json.masterPejabat && Array.isArray(json.masterPejabat.eselon1List)) {
+        dbPejabat = json.masterPejabat;
+        localStorage.setItem(DB_PEJABAT_STORAGE_KEY, JSON.stringify(dbPejabat));
+      }
+      if (Array.isArray(json.arsip)) {
+        arsipList = json.arsip;
+        localStorage.setItem(ARSIP_STORAGE_KEY, JSON.stringify(arsipList));
+      }
+      if (currentUser) {
+        refreshUnitDropdowns();
+        updateArsipCounter();
+      }
+    }
+  } catch (err) {
+    console.warn("Sinkronisasi awal dilewati (offline/CORS):", err);
+  }
+}
+
 addSasaranBlock();
 if (currentUser) {
   initAppAfterLogin();
 }
+syncFromCloudOnLoad();
