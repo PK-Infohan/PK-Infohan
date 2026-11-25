@@ -19,26 +19,10 @@ body { margin: 0; background: #f1f5f9; color: #0f172a; }
   padding: 28px 26px;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
 }
-.login-head {
-  text-align: center;
-  margin-bottom: 18px;
-}
-.login-logo {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
-  margin-bottom: 8px;
-}
-.login-head h1 {
-  margin: 0;
-  font-size: 17px;
-  color: #6b1515;
-}
-.login-head p {
-  margin: 4px 0 0;
-  font-size: 12.5px;
-  color: #475569;
-}
+.login-head { text-align: center; margin-bottom: 18px; }
+.login-logo { width: 72px; height: 72px; object-fit: contain; margin-bottom: 8px; }
+.login-head h1 { margin: 0; font-size: 17px; color: #6b1515; }
+.login-head p { margin: 4px 0 0; font-size: 12.5px; color: #475569; }
 .login-error {
   color: #b91c1c;
   background: #fef2f2;
@@ -47,22 +31,6 @@ body { margin: 0; background: #f1f5f9; color: #0f172a; }
   border-radius: 6px;
   font-size: 12.5px;
   margin: 10px 0 0;
-}
-.login-hint {
-  margin-top: 18px;
-  padding: 10px 12px;
-  background: #f8fafc;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 11.5px;
-  color: #334155;
-  line-height: 1.5;
-}
-.login-hint code {
-  background: #e2e8f0;
-  padding: 1px 5px;
-  border-radius: 4px;
-  font-weight: 600;
 }
 
 /* Topbar & Layout Utama */
