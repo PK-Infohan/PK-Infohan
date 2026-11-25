@@ -638,11 +638,20 @@ function populateFormFromData(data) {
 // ==========================================
 // RENDER DOKUMEN PK 2 HALAMAN TERPISAH
 // ==========================================
+function formatJabatanTtd(jabatanStr) {
+  const raw = String(jabatanStr || "").trim();
+  const match = raw.match(/^(.*?)\s+(Biro\s+Infohan\s+Setjen\s+Kemhan.*)$/i);
+  if (match) {
+    return `${match[1]}<br />${match[2]}`;
+  }
+  return raw;
+}
+
 function renderPerjanjianKinerja(data) {
   currentActiveDoc = data;
 
-  const p1TtdJabatan = data.pihakPertama.jabatanSingkat || data.pihakPertama.jabatan;
-  const p2TtdJabatan = data.pihakKedua.jabatanSingkat || data.pihakKedua.jabatan;
+  const p1TtdJabatan = formatJabatanTtd(data.pihakPertama.jabatanSingkat || data.pihakPertama.jabatan);
+  const p2TtdJabatan = formatJabatanTtd(data.pihakKedua.jabatanSingkat || data.pihakKedua.jabatan);
 
   let lampiranRowsHtml = "";
 
@@ -650,18 +659,31 @@ function renderPerjanjianKinerja(data) {
     const inds = sObj.indikatorList && sObj.indikatorList.length ? sObj.indikatorList : [{}];
     const cleanSasaran = String(sObj.sasaran || "").replace(/^\s*\d+[\.\)]\s*/, "");
     const sasaranNo = sIdx + 1;
+    const isMultiple = inds.length > 1;
 
-    inds.forEach((ind, iIdx) => {
-      const cleanIndikator = String(ind.indikator || "").replace(/^\s*\d+[\.\)]\s*/, "");
-      lampiranRowsHtml += `
-        <tr>
-          <td style="text-align:center;">${iIdx === 0 ? sasaranNo : ""}</td>
-          <td>${iIdx === 0 ? cleanSasaran : ""}</td>
-          <td>${cleanIndikator}</td>
-          <td style="text-align:center;">${ind.target || ""}</td>
-        </tr>
+    const indikatorCellHtml = inds.map((ind, idx) => {
+      const cleanIndikator = String(ind.indikator || "").replace(/^\s*(?:\d+[\.\)]|-)\s*/, "");
+      const prefixMarker = isMultiple ? `${idx + 1}.` : "-";
+      return `
+        <div class="ind-item-row">
+          <span class="ind-item-num">${prefixMarker}</span>
+          <span class="ind-item-text">${cleanIndikator}</span>
+        </div>
       `;
-    });
+    }).join("");
+
+    const targetCellHtml = inds.map(ind =>
+      `<div class="ind-item-row" style="justify-content:center;"><span>${ind.target || ""}</span></div>`
+    ).join("");
+
+    lampiranRowsHtml += `
+      <tr>
+        <td style="text-align:center;">${sasaranNo}</td>
+        <td>${cleanSasaran}</td>
+        <td>${indikatorCellHtml}</td>
+        <td style="text-align:center;">${targetCellHtml}</td>
+      </tr>
+    `;
   });
 
   const kopBaris1 = data.level === "eselon1"
@@ -735,15 +757,21 @@ function renderPerjanjianKinerja(data) {
   const ttdBlokHtml = `
     <div class="ttd-row">
       <div class="ttd-col">
-        <div class="ttd-tanggal">&nbsp;</div>
-        <div class="ttd-jabatan">Pihak Kedua,<br />${p2TtdJabatan}</div>
+        <div class="ttd-sign-wrap">
+          <div class="ttd-tanggal">&nbsp;</div>
+          <div class="ttd-role-prefix">Pihak Kedua,</div>
+          <div class="ttd-jabatan">${p2TtdJabatan}</div>
+        </div>
         <div class="ttd-space"></div>
         <div class="ttd-nama">${data.pihakKedua.nama}</div>
         <div class="ttd-pangkat">${data.pihakKedua.pangkat}</div>
       </div>
       <div class="ttd-col">
-        <div class="ttd-tanggal">${data.tempatTanggal}</div>
-        <div class="ttd-jabatan">Pihak Pertama,<br />${p1TtdJabatan}</div>
+        <div class="ttd-sign-wrap">
+          <div class="ttd-tanggal">${data.tempatTanggal}</div>
+          <div class="ttd-role-prefix">Pihak Pertama,</div>
+          <div class="ttd-jabatan">${p1TtdJabatan}</div>
+        </div>
         <div class="ttd-space"></div>
         <div class="ttd-nama">${data.pihakPertama.nama}</div>
         <div class="ttd-pangkat">${data.pihakPertama.pangkat}</div>
@@ -810,10 +838,10 @@ function renderPerjanjianKinerja(data) {
       <table class="lampiran-table">
         <thead>
           <tr>
-            <th style="width:42px;">No</th>
-            <th style="width:28%;">Sasaran Kegiatan</th>
+            <th style="width:44px;">No</th>
+            <th style="width:27%;">Sasaran Kegiatan</th>
             <th style="width:52%;">Indikator Kinerja</th>
-            <th style="width:12%;">Target</th>
+            <th style="width:13%;">Target</th>
           </tr>
         </thead>
         <tbody>
@@ -838,13 +866,13 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
   const safeSub = (currentActiveDoc.subbag || "PK_Kemhan").replace(/[^a-zA-Z0-9_-]/g, "_");
   const filename = `PK_${safeSub}_${currentActiveDoc.tahun}.pdf`;
 
-  const marginX = 11;
-  const marginY = 9;
+  const marginX = 10;
+  const marginY = 8;
 
   const workerCfg = {
     margin: [marginY, marginX, marginY, marginX],
     image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+    html2canvas: { scale: 1.5, useCORS: true, scrollY: 0 },
     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
   };
 
@@ -1453,9 +1481,9 @@ document.getElementById("btnIsiContoh").addEventListener("click", () => {
   addSasaranBlock({
     sasaran: "Terwujudnya Hubungan Kemitraan Yang Baik",
     indikatorList: [
-      { indikator: "1. Jumlah Pelaksanaan/Kehadiran Diseminasi Informasi Program Pemerintah dan Forum Komunikasi Kehumasan", target: "12" },
-      { indikator: "2. Persentase Bahan Amanat/Sambutan Pimpinan Kemhan dan Bahan Masukan Kemhan di Bidang Pertahanan Negara Yang Ditindaklanjuti", target: "52" },
-      { indikator: "3. Jumlah Kegiatan Forum Komunikasi Kehumasan Yang Diselenggarakan Oleh Kemhan", target: "2" }
+      { indikator: "Jumlah Pelaksanaan/Kehadiran Diseminasi Informasi Program Pemerintah dan Forum Komunikasi Kehumasan", target: "12" },
+      { indikator: "Persentase Bahan Amanat/Sambutan Pimpinan Kemhan dan Bahan Masukan Kemhan di Bidang Pertahanan Negara Yang Ditindaklanjuti", target: "52" },
+      { indikator: "Jumlah Kegiatan Forum Komunikasi Kehumasan Yang Diselenggarakan Oleh Kemhan", target: "2" }
     ]
   });
 
