@@ -229,7 +229,6 @@ th { background: #e2e8f0; text-align: left; }
   line-height: 1.38;
 }
 
-/* Blok Kanan Atas Lampiran: Naik ke Atas, Jarak 2 Enter ke Judul, Justify Rata Kiri-Kanan */
 /* Blok Kanan Atas Lampiran: Di Sisi Kanan, Lebar Sesuai Teks, L Sejajar B & a Sejajar 7 */
 .lampiran-kanan-wrap {
   display: flex;
