@@ -22,22 +22,22 @@
   </header>
 
   <main class="container">
-    <!-- 1. TAMPILAN AWAL: FORM INPUT PK -->
+    <!-- 1. FORM INPUT PK -->
     <section id="formSection" class="card no-print">
       <div class="section-head">
         <h2>1. Identitas Unit & Pejabat Perjanjian Kinerja</h2>
-        <button type="button" id="btnIsiContoh" class="btn btn-secondary btn-sm">Isi Contoh Proddok</button>
+        <button type="button" id="btnIsiContoh" class="btn btn-secondary btn-sm">Isi Contoh</button>
       </div>
 
       <form id="pkForm">
         <div class="grid-4">
           <div>
             <label for="tahunAnggaran">Tahun Anggaran</label>
-            <input type="text" id="tahunAnggaran" value="2026" required />
+            <input type="text" id="tahunAnggaran" value="2027" required />
           </div>
           <div>
             <label for="tempatTanggal">Tempat & Tanggal</label>
-            <input type="text" id="tempatTanggal" value="Jakarta, Maret 2026" required />
+            <input type="text" id="tempatTanggal" value="Jakarta, Januari 2027" required />
           </div>
           <div>
             <label for="selectBagian">Bagian (Otomatis)</label>
@@ -55,8 +55,11 @@
             <label for="p1Nama">Nama Lengkap & Gelar</label>
             <input type="text" id="p1Nama" required />
 
-            <label for="p1Jabatan">Jabatan (Tampil di Pernyataan & TTD)</label>
+            <label for="p1Jabatan">Jabatan (Tampil di Judul & TTD)</label>
             <input type="text" id="p1Jabatan" required />
+
+            <label for="p1JabatanSingkat">Jabatan Singkat TTD (Opsional)</label>
+            <input type="text" id="p1JabatanSingkat" placeholder="Kosongkan jika sama dengan jabatan penuh" />
 
             <label for="p1Pangkat">Pangkat / Golongan & NRP / NIP</label>
             <input type="text" id="p1Pangkat" required />
@@ -69,6 +72,9 @@
 
             <label for="p2Jabatan">Jabatan</label>
             <input type="text" id="p2Jabatan" required />
+
+            <label for="p2JabatanSingkat">Jabatan Singkat TTD (Opsional)</label>
+            <input type="text" id="p2JabatanSingkat" placeholder="Kosongkan jika sama dengan jabatan penuh" />
 
             <label for="p2Pangkat">Pangkat / Golongan & NRP / NIP</label>
             <input type="text" id="p2Pangkat" required />
@@ -92,7 +98,7 @@
       </form>
     </section>
 
-    <!-- 2. HASIL DOKUMEN PK (HALAMAN 1 PERNYATAAN + HALAMAN 2 LAMPIRAN) -->
+    <!-- 2. HASIL DOKUMEN PK (2 LEMBAR TERPISAH) -->
     <section id="hasilSection" class="hidden">
       <div class="toolbar no-print">
         <button type="button" id="btnEditKembali" class="btn btn-outline">← Kembali Edit Input</button>
