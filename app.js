@@ -717,7 +717,7 @@ function renderPerjanjianKinerja(data) {
   const tahunLampiran = data.lampiranTahun || data.tahun;
   const satkerLampiran = data.eselon2 || data.eselon1 || "Biro Informasi Pertahanan";
 
-  const lampiranKananHtml = `
+ const lampiranKananHtml = `
     <div class="lampiran-kanan-wrap">
       <div class="lampiran-kanan-atas">
         <span>Lampiran${sisipanTeks} Perjanjian Kinerja</span><br />
