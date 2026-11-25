@@ -717,7 +717,7 @@ function renderPerjanjianKinerja(data) {
   const tahunLampiran = data.lampiranTahun || data.tahun;
   const satkerLampiran = data.eselon2 || data.eselon1 || "Biro Informasi Pertahanan";
 
- const lampiranKananHtml = `
+  const lampiranKananHtml = `
     <div class="lampiran-kanan-wrap">
       <div class="lampiran-kanan-atas">
         <span>Lampiran${sisipanTeks} Perjanjian Kinerja</span><br />
@@ -741,7 +741,7 @@ function renderPerjanjianKinerja(data) {
           <td class="col-keg">Belum ada rincian kegiatan</td>
           <td class="col-rp">${formatRpDash(0)}</td>
         </tr>
-`;
+      `;
 
   const kegiatanAnggaranHtml = `
     <div class="kegiatan-anggaran-box">
@@ -762,7 +762,8 @@ function renderPerjanjianKinerja(data) {
         </tbody>
       </table>
     </div>
-`;
+  `;
+
   const ttdBlokHtml = `
     <div class="ttd-row">
       <div class="ttd-col">
