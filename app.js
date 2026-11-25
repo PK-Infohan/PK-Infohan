@@ -865,7 +865,6 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
   pdf.addImage(canvas2.toDataURL("image/jpeg", 0.98), "JPEG", offsetX, marginY, drawWidth, pdfHeight);
   pdf.save(filename);
 });
-});
 
 // ==========================================
 // MASTER PEJABAT BERJENJANG (SESUAI ROLE)
