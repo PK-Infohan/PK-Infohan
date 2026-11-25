@@ -862,13 +862,19 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
   const safeSub = (currentActiveDoc.subbag || "PK_Kemhan").replace(/[^a-zA-Z0-9_-]/g, "_");
   const filename = `PK_${safeSub}_${currentActiveDoc.tahun}.pdf`;
 
-  const marginX = 10;
+  const marginX = 8;
   const marginY = 8;
+  const pxPerMm = 96 / 25.4;
 
   const workerCfg = {
     margin: [marginY, marginX, marginY, marginX],
     image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 1.5, useCORS: true, scrollY: 0 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      scrollY: 0,
+      windowWidth: l1.scrollWidth
+    },
     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
   };
 
@@ -879,23 +885,13 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
     const pdf = await html2pdf().set(workerCfg).from(l1).toPdf().get("pdf");
     const canvas2 = await html2pdf().set(workerCfg).from(l2).toContainer().toCanvas().get("canvas");
 
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const usableWidth = pageWidth - marginX * 2;
-    const maxUsableHeight = pageHeight - marginY * 2;
-    let pdfHeight = (canvas2.height * usableWidth) / canvas2.width;
-    let drawWidth = usableWidth;
-
-    if (pdfHeight > maxUsableHeight) {
-      const ratio = maxUsableHeight / pdfHeight;
-      pdfHeight = maxUsableHeight;
-      drawWidth = usableWidth * ratio;
-    }
-
-    const offsetX = marginX + (usableWidth - drawWidth) / 2;
+    const usableWidth = pdf.internal.pageSize.getWidth() - marginX * 2;
+    const drawWidth2 = (canvas2.width / 2) / pxPerMm;
+    const pdfHeight2 = (canvas2.height * drawWidth2) / canvas2.width;
+    const offsetX2 = marginX + Math.max(0, (usableWidth - drawWidth2) / 2);
 
     pdf.addPage("a4", "portrait");
-    pdf.addImage(canvas2.toDataURL("image/jpeg", 0.98), "JPEG", offsetX, marginY, drawWidth, pdfHeight);
+    pdf.addImage(canvas2.toDataURL("image/jpeg", 0.98), "JPEG", offsetX2, marginY, drawWidth2, pdfHeight2);
     pdf.save(filename);
   } finally {
     l1.classList.remove("pdf-capturing");
