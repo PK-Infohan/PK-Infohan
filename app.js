@@ -12,7 +12,7 @@ const DEFAULT_DB_PEJABAT = {
   eselon1List: [
     {
       id: "E1-SETJEN",
-      namaUnit: "Sekretariat Jenderal Kemhan",
+      namaUnit: "Sekretariat Jenderal Kemhan RI",
       jabatanPimpinan: "Sekretaris Jenderal Kemhan",
       namaPejabat: "",
       pangkatNrpNip: "",
@@ -688,10 +688,10 @@ function renderPerjanjianKinerja(data) {
 
   const kopBaris1 = data.level === "eselon1"
     ? "KEMENTERIAN PERTAHANAN REPUBLIK INDONESIA"
-    : (data.eselon1 || "SEKRETARIAT JENDERAL");
+    : "Sekretariat Jenderal Kemhan RI";
   const kopBaris2 = data.level === "eselon1"
     ? (data.eselon1 || "SEKRETARIAT JENDERAL")
-    : (data.eselon2 || "BIRO INFORMASI PERTAHANAN");
+    : (data.eselon2 || "Biro Informasi Pertahanan");
 
   const kopHtml = `
     <div class="kop-resmi">
@@ -757,21 +757,15 @@ function renderPerjanjianKinerja(data) {
   const ttdBlokHtml = `
     <div class="ttd-row">
       <div class="ttd-col">
-        <div class="ttd-sign-wrap">
-          <div class="ttd-tanggal">&nbsp;</div>
-          <div class="ttd-role-prefix">Pihak Kedua,</div>
-          <div class="ttd-jabatan">${p2TtdJabatan}</div>
-        </div>
+        <div class="ttd-tanggal">&nbsp;</div>
+        <div class="ttd-jabatan">Pihak Kedua,<br />${p2TtdJabatan}</div>
         <div class="ttd-space"></div>
         <div class="ttd-nama">${data.pihakKedua.nama}</div>
         <div class="ttd-pangkat">${data.pihakKedua.pangkat}</div>
       </div>
       <div class="ttd-col">
-        <div class="ttd-sign-wrap">
-          <div class="ttd-tanggal">${data.tempatTanggal}</div>
-          <div class="ttd-role-prefix">Pihak Pertama,</div>
-          <div class="ttd-jabatan">${p1TtdJabatan}</div>
-        </div>
+        <div class="ttd-tanggal">${data.tempatTanggal}</div>
+        <div class="ttd-jabatan">Pihak Pertama,<br />${p1TtdJabatan}</div>
         <div class="ttd-space"></div>
         <div class="ttd-nama">${data.pihakPertama.nama}</div>
         <div class="ttd-pangkat">${data.pihakPertama.pangkat}</div>
@@ -789,39 +783,41 @@ function renderPerjanjianKinerja(data) {
         TAHUN ${data.tahun}
       </div>
 
-      <p class="paragraf">Dalam rangka mewujudkan manajemen pemerintahan yang efektif, transparan dan akuntabel serta berorientasi pada hasil, kami yang bertanda tangan di bawah ini:</p>
+      <div class="doc-body-block">
+        <p class="paragraf">Dalam rangka mewujudkan manajemen pemerintahan yang efektif, transparan dan akuntabel serta berorientasi pada hasil, kami yang bertanda tangan di bawah ini:</p>
 
-      <table class="identitas-table">
-        <tr>
-          <td style="width:100px;">Nama</td>
-          <td style="width:14px;">:</td>
-          <td>${data.pihakPertama.nama}</td>
-        </tr>
-        <tr>
-          <td>Jabatan</td>
-          <td>:</td>
-          <td>${data.pihakPertama.jabatan}</td>
-        </tr>
-      </table>
-      <p class="paragraf">Selanjutnya disebut Pihak Pertama.</p>
+        <table class="identitas-table">
+          <tr>
+            <td style="width:100px;">Nama</td>
+            <td style="width:14px;">:</td>
+            <td>${data.pihakPertama.nama}</td>
+          </tr>
+          <tr>
+            <td>Jabatan</td>
+            <td>:</td>
+            <td>${data.pihakPertama.jabatan}</td>
+          </tr>
+        </table>
+        <p class="paragraf">Selanjutnya disebut Pihak Pertama.</p>
 
-      <table class="identitas-table">
-        <tr>
-          <td style="width:100px;">Nama</td>
-          <td style="width:14px;">:</td>
-          <td>${data.pihakKedua.nama}</td>
-        </tr>
-        <tr>
-          <td>Jabatan</td>
-          <td>:</td>
-          <td>${data.pihakKedua.jabatan}</td>
-        </tr>
-      </table>
-      <p class="paragraf">Selaku atasan langsung Pihak Pertama, selanjutnya disebut Pihak Kedua.</p>
+        <table class="identitas-table">
+          <tr>
+            <td style="width:100px;">Nama</td>
+            <td style="width:14px;">:</td>
+            <td>${data.pihakKedua.nama}</td>
+          </tr>
+          <tr>
+            <td>Jabatan</td>
+            <td>:</td>
+            <td>${data.pihakKedua.jabatan}</td>
+          </tr>
+        </table>
+        <p class="paragraf">Selaku atasan langsung Pihak Pertama, selanjutnya disebut Pihak Kedua.</p>
 
-      <p class="paragraf">Pihak Pertama berjanji akan mewujudkan target kinerja sesuai lampiran Perjanjian Kinerja ini, dalam rangka mencapai target kinerja jangka pendek dan jangka menengah yang telah ditetapkan dalam dokumen perencanaan. Keberhasilan dan kegagalan pencapaian target kinerja tersebut menjadi tanggung jawab kami.</p>
+        <p class="paragraf">Pihak Pertama berjanji akan mewujudkan target kinerja sesuai lampiran Perjanjian Kinerja ini, dalam rangka mencapai target kinerja jangka pendek dan jangka menengah yang telah ditetapkan dalam dokumen perencanaan. Keberhasilan dan kegagalan pencapaian target kinerja tersebut menjadi tanggung jawab kami.</p>
 
-      <p class="paragraf">Pihak Kedua akan memberikan supervisi yang diperlukan serta akan melakukan evaluasi terhadap capaian kinerja dari perjanjian ini dan mengambil tindakan yang diperlukan dalam rangka pemberian penghargaan dan sanksi.</p>
+        <p class="paragraf">Pihak Kedua akan memberikan supervisi yang diperlukan serta akan melakukan evaluasi terhadap capaian kinerja dari perjanjian ini dan mengambil tindakan yang diperlukan dalam rangka pemberian penghargaan dan sanksi.</p>
+      </div>
 
       ${ttdBlokHtml}
     </div>
