@@ -216,25 +216,26 @@ th { background: #e2e8f0; text-align: left; }
   text-align: center;
   font-weight: 700;
   font-size: 12pt;
-  margin: 20px 0 14px;
+  margin: 18px 0 14px;
   text-transform: uppercase;
   line-height: 1.38;
 }
 
-/* Blok Kanan Atas Lampiran: Huruf L dan Huruf B Sejajar Rata Kiri */
+/* Blok Kanan Atas Lampiran */
 .lampiran-kanan-wrap {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 8px;
+  margin-top: -2mm;
+  margin-bottom: 18px;
 }
 .lampiran-kanan-atas {
   display: inline-block;
-  text-align: left;
-  font-size: 12pt;
+  text-align: right;
+  font-size: 10.5pt;
   line-height: 1.35;
 }
 
-/* Isi Dokumen Halaman 1: Sejajar Rata Kiri Penuh */
+/* Isi Dokumen Halaman 1 */
 .doc-body-block {
   width: 100%;
   margin: 0;
@@ -260,7 +261,7 @@ th { background: #e2e8f0; text-align: left; }
   vertical-align: top;
 }
 
-/* Tabel Lampiran 4 Kolom: Huruf 1 Tingkat Lebih Kecil (10.5pt) */
+/* Tabel Lampiran 4 Kolom */
 .lampiran-table {
   width: 100%;
   border-collapse: collapse;
@@ -274,10 +275,11 @@ th { background: #e2e8f0; text-align: left; }
   font-size: 10.5pt;
   line-height: 1.32;
   vertical-align: top;
+  text-align: right;
 }
 .lampiran-table th {
   font-weight: 700;
-  text-align: center;
+  text-align: right;
   background: transparent;
 }
 .lampiran-table tr.ind-sub-row td.col-ind,
@@ -294,7 +296,9 @@ th { background: #e2e8f0; text-align: left; }
 .ind-inline-wrap {
   display: flex;
   align-items: flex-start;
+  justify-content: flex-end;
   gap: 5px;
+  text-align: right;
 }
 .ind-inline-num {
   min-width: 16px;
@@ -303,9 +307,10 @@ th { background: #e2e8f0; text-align: left; }
 }
 .ind-inline-text {
   flex: 1;
+  text-align: right;
 }
 
-/* Bagian Kegiatan dan Anggaran di Bawah Tabel Lampiran */
+/* Bagian Kegiatan dan Anggaran */
 .kegiatan-anggaran-box {
   margin-top: 12px;
   font-size: 11.5pt;
@@ -341,7 +346,7 @@ th { background: #e2e8f0; text-align: left; }
   width: 185px;
 }
 
-/* Blok Tanda Tangan: Jarak Ke Nama 1 Kali Enter */
+/* Blok Tanda Tangan: Koma Setelah Jabatan & Jarak Ke Nama 3 Kali Enter (64px) */
 .ttd-row {
   display: flex;
   justify-content: space-between;
@@ -369,7 +374,7 @@ th { background: #e2e8f0; text-align: left; }
   min-height: 42px;
 }
 .ttd-space {
-  height: 24px;
+  height: 64px;
 }
 .ttd-nama {
   font-weight: 700;
@@ -400,22 +405,4 @@ th { background: #e2e8f0; text-align: left; }
     margin: 0;
   }
   #lembaran2 { page-break-before: always; break-before: page; }
-
-  body.printing-pejabat-table #masterSection {
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-  }
-  body.printing-pejabat-table #rekapPejabatWrapper {
-    border: none !important;
-    background: #fff !important;
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-  body.printing-pejabat-table #rekapPejabatTable th,
-  body.printing-pejabat-table #rekapPejabatTable td {
-    border: 1px solid #000 !important;
-    color: #000 !important;
-    font-size: 10.5pt !important;
-  }
 }
