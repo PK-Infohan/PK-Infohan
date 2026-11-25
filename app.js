@@ -192,6 +192,7 @@ const masterSection = document.getElementById("masterSection");
 const arsipSection = document.getElementById("arsipSection");
 const usersSection = document.getElementById("usersSection");
 const sasaranContainer = document.getElementById("sasaranContainer");
+const kegiatanAnggaranBody = document.getElementById("kegiatanAnggaranBody");
 const dokumenPK = document.getElementById("dokumenPK");
 
 function escAttr(str) {
@@ -200,6 +201,10 @@ function escAttr(str) {
 
 function formatRp(angka) {
   return "Rp " + Number(angka || 0).toLocaleString("id-ID");
+}
+
+function formatRpDash(angka) {
+  return "Rp. " + Number(angka || 0).toLocaleString("id-ID") + ",-";
 }
 
 function findEselon2Location(e2Id) {
@@ -445,15 +450,13 @@ selectBagian.addEventListener("change", refreshSubbagDropdown);
 selectSubbag.addEventListener("change", applyHierarchyToPejabatFields);
 
 // ==========================================
-// SASARAN KEGIATAN & INDIKATOR DINAMIS
+// SASARAN KEGIATAN & INDIKATOR LAMPIRAN (4 KOLOM)
 // ==========================================
-function createIndicatorRow(ind = { indikator: "", target: "", satuan: "", anggaran: "" }) {
+function createIndicatorRow(ind = { indikator: "", target: "" }) {
   const tr = document.createElement("tr");
   tr.innerHTML = `
-    <td><textarea class="f-indikator" placeholder="Ketik indikator kinerja...">${ind.indikator}</textarea></td>
-    <td><input type="text" class="f-target" placeholder="Contoh: 12 / 100%" value="${ind.target}" /></td>
-    <td><input type="text" class="f-satuan" placeholder="Laporan / Giat" value="${ind.satuan}" /></td>
-    <td><input type="number" class="f-anggaran" min="0" placeholder="0" value="${ind.anggaran}" /></td>
+    <td><textarea class="f-indikator" placeholder="Ketik indikator kinerja...">${ind.indikator || ""}</textarea></td>
+    <td><input type="text" class="f-target" placeholder="Contoh: 12 / 100%" value="${escAttr(ind.target || "")}" /></td>
     <td style="text-align:center;"><button type="button" class="btn btn-outline btn-sm btn-del-ind">×</button></td>
   `;
   tr.querySelector(".btn-del-ind").addEventListener("click", () => {
@@ -480,10 +483,8 @@ function addSasaranBlock(sasaranObj = { sasaran: "", indikatorList: [{}] }) {
       <table>
         <thead>
           <tr>
-            <th style="width:38%;">Indikator Kinerja</th>
-            <th style="width:14%;">Target</th>
-            <th style="width:14%;">Satuan</th>
-            <th style="width:22%;">Anggaran (Rp)</th>
+            <th style="width:62%;">Indikator Kinerja</th>
+            <th style="width:26%;">Target</th>
             <th style="width:12%;">Aksi</th>
           </tr>
         </thead>
@@ -519,27 +520,47 @@ function refreshSasaranNumbers() {
   });
 }
 
+// ==========================================
+// KEGIATAN DAN ANGGARAN (DI BAWAH TABEL LAMPIRAN)
+// ==========================================
+function addKegiatanAnggaranRow(item = { uraian: "", anggaran: "" }) {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td><input type="text" class="k-uraian" placeholder="Contoh: Pengelolaan Komunikasi dan Informasi Publik..." value="${escAttr(item.uraian || "")}" /></td>
+    <td><input type="number" class="k-anggaran" min="0" placeholder="0" value="${item.anggaran || ""}" /></td>
+    <td style="text-align:center;"><button type="button" class="btn btn-outline btn-sm btn-del-keg">×</button></td>
+  `;
+  tr.querySelector(".btn-del-keg").addEventListener("click", () => {
+    if (kegiatanAnggaranBody.children.length > 1) tr.remove();
+    else tr.querySelectorAll("input").forEach(el => (el.value = ""));
+  });
+  kegiatanAnggaranBody.appendChild(tr);
+}
+
+document.getElementById("btnTambahKegiatanAnggaran").addEventListener("click", () => addKegiatanAnggaranRow());
+
 function collectFormData() {
   const sasaranList = [];
-  let totalAnggaran = 0;
 
   [...sasaranContainer.querySelectorAll(".sasaran-card")].forEach(card => {
     const sasaranText = card.querySelector(".f-sasaran").value.trim();
-    const indikatorList = [...card.querySelectorAll(".ind-tbody tr")].map(tr => {
-      const anggaran = Number(tr.querySelector(".f-anggaran").value || 0);
-      totalAnggaran += anggaran;
-      return {
-        indikator: tr.querySelector(".f-indikator").value.trim(),
-        target: tr.querySelector(".f-target").value.trim(),
-        satuan: tr.querySelector(".f-satuan").value.trim(),
-        anggaran
-      };
-    }).filter(x => x.indikator || x.target || x.satuan || x.anggaran > 0);
+    const indikatorList = [...card.querySelectorAll(".ind-tbody tr")].map(tr => ({
+      indikator: tr.querySelector(".f-indikator").value.trim(),
+      target: tr.querySelector(".f-target").value.trim()
+    })).filter(x => x.indikator || x.target);
 
     if (sasaranText || indikatorList.length > 0) {
       sasaranList.push({ sasaran: sasaranText, indikatorList });
     }
   });
+
+  let totalAnggaran = 0;
+  const kegiatanAnggaranList = [...kegiatanAnggaranBody.querySelectorAll("tr")].map(tr => {
+    const uraian = tr.querySelector(".k-uraian").value.trim();
+    const anggaran = Number(tr.querySelector(".k-anggaran").value || 0);
+    totalAnggaran += anggaran;
+    return { uraian, anggaran };
+  }).filter(k => k.uraian || k.anggaran > 0);
 
   const level = selectLevel.value;
   const eselon1Id = selectEselon1.value;
@@ -549,11 +570,20 @@ function collectFormData() {
   const bagianNama = (level === "bagian" || level === "subbag") ? (selectBagian.options[selectBagian.selectedIndex]?.text || "") : "";
   const subbagNama = level === "subbag" ? (selectSubbag.options[selectSubbag.selectedIndex]?.text || "") : "";
 
+  const tahun = document.getElementById("tahunAnggaran").value.trim();
+  const lampiranSisipan = document.getElementById("lampiranSisipan").value.trim();
+  const lampiranTahun = document.getElementById("lampiranTahun").value.trim() || tahun;
+  const unitKegiatanLabel = document.getElementById("unitKegiatanLabel").value.trim()
+    || bagianNama || eselon2Nama || eselon1Nama;
+
   return {
     id: "PK-" + Date.now(),
     createdAt: new Date().toLocaleString("id-ID"),
     createdBy: currentUser?.username || "",
-    tahun: document.getElementById("tahunAnggaran").value.trim(),
+    tahun,
+    lampiranSisipan,
+    lampiranTahun,
+    unitKegiatanLabel,
     tempatTanggal: document.getElementById("tempatTanggal").value.trim(),
     level,
     eselon1Id,
@@ -575,12 +605,16 @@ function collectFormData() {
       pangkat: document.getElementById("p2Pangkat").value.trim()
     },
     sasaranList,
+    kegiatanAnggaranList,
     totalAnggaran
   };
 }
 
 function populateFormFromData(data) {
   document.getElementById("tahunAnggaran").value = data.tahun || "2027";
+  document.getElementById("lampiranSisipan").value = data.lampiranSisipan || "";
+  document.getElementById("lampiranTahun").value = data.lampiranTahun || data.tahun || "2026";
+  document.getElementById("unitKegiatanLabel").value = data.unitKegiatanLabel || "";
   document.getElementById("tempatTanggal").value = data.tempatTanggal || "";
   if (data.level) selectLevel.value = data.level;
   refreshUnitDropdowns();
@@ -596,6 +630,9 @@ function populateFormFromData(data) {
 
   sasaranContainer.innerHTML = "";
   (data.sasaranList && data.sasaranList.length ? data.sasaranList : [{}]).forEach(addSasaranBlock);
+
+  kegiatanAnggaranBody.innerHTML = "";
+  (data.kegiatanAnggaranList && data.kegiatanAnggaranList.length ? data.kegiatanAnggaranList : [{}]).forEach(addKegiatanAnggaranRow);
 }
 
 // ==========================================
@@ -780,109 +817,6 @@ function renderPerjanjianKinerja(data) {
       </table>
 
       ${kegiatanAnggaranHtml}
-      ${ttdBlokHtml}
-    </div>
-  `;
-
-  showView("hasil");
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-  const ttdBlokHtml = `
-    <div class="ttd-row">
-      <div class="ttd-col">
-        <div class="ttd-tanggal">&nbsp;</div>
-        <div class="ttd-jabatan">Pihak Kedua,<br />${p2TtdJabatan}</div>
-        <div class="ttd-space"></div>
-        <div class="ttd-nama">${data.pihakKedua.nama}</div>
-        <div class="ttd-pangkat">${data.pihakKedua.pangkat}</div>
-      </div>
-      <div class="ttd-col">
-        <div class="ttd-tanggal">${data.tempatTanggal}</div>
-        <div class="ttd-jabatan">Pihak Pertama,<br />${p1TtdJabatan}</div>
-        <div class="ttd-space"></div>
-        <div class="ttd-nama">${data.pihakPertama.nama}</div>
-        <div class="ttd-pangkat">${data.pihakPertama.pangkat}</div>
-      </div>
-    </div>
-  `;
-
-  dokumenPK.innerHTML = `
-    <div id="lembaran1" class="lembaran">
-      ${kopHtml}
-
-      <div class="judul-pk">
-        PERNYATAAN PERJANJIAN KINERJA<br />
-        ${data.pihakPertama.jabatan}<br />
-        TAHUN ${data.tahun}
-      </div>
-
-      <p class="paragraf">Dalam rangka mewujudkan manajemen pemerintahan yang efektif, transparan dan akuntabel serta berorientasi pada hasil, kami yang bertanda tangan di bawah ini:</p>
-
-      <table class="identitas-table">
-        <tr>
-          <td style="width:100px;">Nama</td>
-          <td style="width:14px;">:</td>
-          <td>${data.pihakPertama.nama}</td>
-        </tr>
-        <tr>
-          <td>Jabatan</td>
-          <td>:</td>
-          <td>${data.pihakPertama.jabatan}</td>
-        </tr>
-      </table>
-      <p class="paragraf">Selanjutnya disebut Pihak Pertama.</p>
-
-      <table class="identitas-table">
-        <tr>
-          <td style="width:100px;">Nama</td>
-          <td style="width:14px;">:</td>
-          <td>${data.pihakKedua.nama}</td>
-        </tr>
-        <tr>
-          <td>Jabatan</td>
-          <td>:</td>
-          <td>${data.pihakKedua.jabatan}</td>
-        </tr>
-      </table>
-      <p class="paragraf">Selaku atasan langsung Pihak Pertama, selanjutnya disebut Pihak Kedua.</p>
-
-      <p class="paragraf">Pihak Pertama berjanji akan mewujudkan target kinerja sesuai lampiran Perjanjian Kinerja ini, dalam rangka mencapai target kinerja jangka pendek dan jangka menengah yang telah ditetapkan dalam dokumen perencanaan. Keberhasilan dan kegagalan pencapaian target kinerja tersebut menjadi tanggung jawab kami.</p>
-
-      <p class="paragraf">Pihak Kedua akan memberikan supervisi yang diperlukan serta akan melakukan evaluasi terhadap capaian kinerja dari perjanjian ini dan mengambil tindakan yang diperlukan dalam rangka pemberian penghargaan dan sanksi.</p>
-
-      ${ttdBlokHtml}
-    </div>
-
-    <div id="lembaran2" class="lembaran">
-      ${kopHtml}
-
-      <div class="judul-pk">
-        LAMPIRAN PERJANJIAN KINERJA<br />
-        ${data.pihakPertama.jabatan}<br />
-        TAHUN ${data.tahun}
-      </div>
-
-      <table class="lampiran-table">
-        <thead>
-          <tr>
-            <th style="width:38px;">No</th>
-            <th style="width:27%;">Sasaran Kegiatan</th>
-            <th style="width:31%;">Indikator Kinerja</th>
-            <th style="width:78px;">Target</th>
-            <th style="width:74px;">Satuan</th>
-            <th style="width:125px;">Anggaran</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${lampiranRowsHtml || `<tr><td colspan="6" style="text-align:center;">Belum ada rincian sasaran dan indikator</td></tr>`}
-          <tr>
-            <td colspan="5" style="text-align:right;"><strong>Jumlah Anggaran</strong></td>
-            <td style="text-align:right;"><strong>${formatRp(data.totalAnggaran)}</strong></td>
-          </tr>
-        </tbody>
-      </table>
-
       ${ttdBlokHtml}
     </div>
   `;
@@ -1477,20 +1411,30 @@ document.getElementById("btnKeHasil").addEventListener("click", () => {
 document.getElementById("btnKosongkan").addEventListener("click", () => {
   sasaranContainer.innerHTML = "";
   addSasaranBlock();
+  kegiatanAnggaranBody.innerHTML = "";
+  addKegiatanAnggaranRow();
 });
 
 document.getElementById("btnIsiContoh").addEventListener("click", () => {
   document.getElementById("tahunAnggaran").value = "2027";
+  document.getElementById("lampiranSisipan").value = "I";
+  document.getElementById("lampiranTahun").value = "2026";
   document.getElementById("tempatTanggal").value = "Jakarta, Januari 2027";
 
   sasaranContainer.innerHTML = "";
   addSasaranBlock({
-    sasaran: "Terlaksananya pengelolaan administrasi dan layanan informasi pertahanan secara efektif dan akuntabel",
+    sasaran: "Terwujudnya Hubungan Kemitraan Yang Baik",
     indikatorList: [
-      { indikator: "Jumlah Laporan Pelaksanaan Kegiatan Subbagian", target: "12", satuan: "Laporan", anggaran: 250000000 },
-      { indikator: "Persentase Penyelesaian Layanan Administrasi Tepat Waktu", target: "100%", satuan: "Persen", anggaran: 75000000 }
+      { indikator: "1. Jumlah Pelaksanaan/Kehadiran Diseminasi Informasi Program Pemerintah dan Forum Komunikasi Kehumasan", target: "12" },
+      { indikator: "2. Persentase Bahan Amanat/Sambutan Pimpinan Kemhan dan Bahan Masukan Kemhan di Bidang Pertahanan Negara Yang Ditindaklanjuti", target: "52" },
+      { indikator: "3. Jumlah Kegiatan Forum Komunikasi Kehumasan Yang Diselenggarakan Oleh Kemhan", target: "2" }
     ]
   });
+
+  kegiatanAnggaranBody.innerHTML = "";
+  addKegiatanAnggaranRow({ uraian: "Pengelolaan Komunikasi dan Informasi Publik Subbagian Hubungan Lembaga Pemerintah", anggaran: 432530000 });
+  addKegiatanAnggaranRow({ uraian: "Pengelolaan Komunikasi dan Informasi Publik Subbagian Hubungan Lembaga Non Pemerintah", anggaran: 215513000 });
+  addKegiatanAnggaranRow({ uraian: "Pengelolaan Komunikasi dan Informasi Publik Subbagian Tata Usaha Biro", anggaran: 11994604000 });
 });
 
 document.getElementById("gasUrlInput").value = getGasUrl();
@@ -1561,6 +1505,7 @@ async function syncFromCloudOnLoad() {
 }
 
 addSasaranBlock();
+addKegiatanAnggaranRow();
 if (currentUser) {
   initAppAfterLogin();
 }
