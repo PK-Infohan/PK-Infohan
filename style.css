@@ -1,6 +1,71 @@
 * { box-sizing: border-box; font-family: "Segoe UI", Arial, sans-serif; }
 body { margin: 0; background: #f1f5f9; color: #0f172a; }
+.hidden { display: none !important; }
 
+/* Halaman Login */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #4a0d0d 0%, #6b1515 100%);
+}
+.login-card {
+  background: #fff;
+  width: 100%;
+  max-width: 410px;
+  border-radius: 12px;
+  padding: 28px 26px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+}
+.login-head {
+  text-align: center;
+  margin-bottom: 18px;
+}
+.login-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+.login-head h1 {
+  margin: 0;
+  font-size: 17px;
+  color: #6b1515;
+}
+.login-head p {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  color: #475569;
+}
+.login-error {
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  margin: 10px 0 0;
+}
+.login-hint {
+  margin-top: 18px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 11.5px;
+  color: #334155;
+  line-height: 1.5;
+}
+.login-hint code {
+  background: #e2e8f0;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* Topbar & Layout Utama */
 .topbar {
   background: #6b1515;
   color: #fff;
@@ -12,11 +77,10 @@ body { margin: 0; background: #f1f5f9; color: #0f172a; }
   flex-wrap: wrap;
 }
 .topbar h1 { margin: 0; font-size: 18px; }
-.topbar p { margin: 2px 0 0; font-size: 12px; opacity: 0.9; }
+.topbar p { margin: 2px 0 0; font-size: 12px; opacity: 0.92; }
 .top-actions, .toolbar-right { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
-.container { max-width: 1220px; margin: 22px auto; padding: 0 16px; }
-.hidden { display: none !important; }
+.container { max-width: 1260px; margin: 22px auto; padding: 0 16px; }
 
 .card {
   background: #fff;
@@ -38,8 +102,10 @@ body { margin: 0; background: #f1f5f9; color: #0f172a; }
 .muted { color: #64748b; font-size: 12.5px; margin: 3px 0 0; }
 .mt-20 { margin-top: 20px; }
 
-.grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 14px; }
+.grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 10px; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
 .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 16px; margin-bottom: 14px; }
+
 .box { border: 1px solid #cbd5e1; border-radius: 8px; padding: 14px; background: #f8fafc; }
 .box legend { font-weight: 700; padding: 0 6px; color: #6b1515; }
 
@@ -69,6 +135,41 @@ textarea { resize: vertical; min-height: 46px; }
   margin-bottom: 8px;
 }
 .sasaran-title { font-weight: 700; color: #6b1515; font-size: 14px; }
+
+/* Hirarki Master Pejabat */
+.tree-eselon1 {
+  border: 2px solid #6b1515;
+  border-radius: 8px;
+  padding: 14px;
+  background: #fff8f8;
+  margin-bottom: 18px;
+}
+.tree-eselon2 {
+  border: 1.5px solid #334155;
+  border-radius: 8px;
+  padding: 14px;
+  background: #f8fafc;
+  margin-top: 12px;
+}
+.tree-bagian {
+  border: 1px solid #94a3b8;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+  margin-top: 12px;
+}
+.tree-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: #6b1515;
+  color: #fff;
+}
+.tree-badge.e2 { background: #1e293b; }
+.tree-badge.bag { background: #0f766e; }
 
 .gas-bar { display: flex; gap: 8px; margin-top: 10px; }
 .table-wrap { overflow-x: auto; margin-top: 10px; }
