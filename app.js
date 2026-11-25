@@ -177,8 +177,16 @@ function getGasUrl() {
   return localStorage.getItem(GAS_URL_STORAGE_KEY) || DEFAULT_GAS_URL;
 }
 
+function normalizeUsers(rawUsers) {
+  if (!Array.isArray(rawUsers) || !rawUsers.length) {
+    return structuredClone(DEFAULT_USERS);
+  }
+  const hasAdmin = rawUsers.some(u => u && String(u.username || "").toLowerCase() === "admin");
+  return hasAdmin ? rawUsers : [structuredClone(DEFAULT_USERS[0]), ...rawUsers];
+}
+
 let dbPejabat = JSON.parse(localStorage.getItem(DB_PEJABAT_STORAGE_KEY) || "null") || structuredClone(DEFAULT_DB_PEJABAT);
-let usersList = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || "null") || structuredClone(DEFAULT_USERS);
+let usersList = normalizeUsers(JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || "null"));
 let arsipList = JSON.parse(localStorage.getItem(ARSIP_STORAGE_KEY) || "[]");
 let currentUser = JSON.parse(sessionStorage.getItem(SESSION_STORAGE_KEY) || "null");
 let currentActiveDoc = null;
@@ -908,31 +916,6 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
   }
 });
 
-  try {
-    const canvas1 = await html2pdf().set(workerCfg).from(l1).toContainer().toCanvas().get("canvas");
-    const canvas2 = await html2pdf().set(workerCfg).from(l2).toContainer().toCanvas().get("canvas");
-
-    const { jsPDF } = window.jspdf || html2pdf().set(workerCfg).toPdf().get("pdf").constructor;
-    const pdf = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
-
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const usableWidth = pageWidth - marginX * 2;
-
-    const drawWidth1 = usableWidth;
-    const drawHeight1 = (canvas1.height * drawWidth1) / canvas1.width;
-    pdf.addImage(canvas1.toDataURL("image/jpeg", 0.98), "JPEG", marginX, marginY, drawWidth1, drawHeight1);
-
-    const drawWidth2 = usableWidth;
-    const drawHeight2 = (canvas2.height * drawWidth2) / canvas2.width;
-    pdf.addPage("a4", "portrait");
-    pdf.addImage(canvas2.toDataURL("image/jpeg", 0.98), "JPEG", marginX, marginY, drawWidth2, drawHeight2);
-
-    pdf.save(filename);
-  } finally {
-    l1.classList.remove("pdf-capturing");
-    l2.classList.remove("pdf-capturing");
-  }
-});
 // ==========================================
 // MASTER PEJABAT BERJENJANG (SESUAI ROLE)
 // ==========================================
@@ -1369,14 +1352,14 @@ window.hapusUser = idx => {
 
 document.getElementById("btnSimpanUsers").addEventListener("click", async () => {
   const rows = [...document.querySelectorAll("#usersTableBody tr")];
-  usersList = rows.map((tr, i) => ({
+  usersList = normalizeUsers(rows.map((tr, i) => ({
     id: usersList[i]?.id || ("USR-" + Date.now() + "-" + i),
     username: tr.querySelector(".u-username").value.trim(),
     password: tr.querySelector(".u-password").value.trim(),
     namaTampilan: tr.querySelector(".u-nama").value.trim(),
     role: tr.querySelector(".u-role").value,
     eselon2Id: tr.querySelector(".u-e2").value
-  })).filter(u => u.username && u.password);
+  })).filter(u => u.username && u.password));
 
   localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(usersList));
 
@@ -1541,7 +1524,7 @@ document.getElementById("btnTarikArsipGas").addEventListener("click", async () =
         localStorage.setItem(DB_PEJABAT_STORAGE_KEY, JSON.stringify(dbPejabat));
       }
       if (Array.isArray(json.users) && json.users.length) {
-        usersList = json.users;
+        usersList = normalizeUsers(json.users);
         localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(usersList));
       }
       refreshUnitDropdowns();
@@ -1565,7 +1548,7 @@ async function syncFromCloudOnLoad() {
     const json = await res.json();
     if (json.status === "ok") {
       if (Array.isArray(json.users) && json.users.length) {
-        usersList = json.users;
+        usersList = normalizeUsers(json.users);
         localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(usersList));
       }
       if (json.masterPejabat && Array.isArray(json.masterPejabat.eselon1List)) {
