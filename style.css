@@ -1,5 +1,5 @@
 * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
-body { margin: 0; background: #f1f5f9; color: #0f172a; font-size: 12px; }
+body { margin: 0; background: #f1f5f9; color: #0f172a; font-size: 13px; }
 .hidden { display: none !important; }
 
 /* Halaman Login */
@@ -165,7 +165,7 @@ th { background: #e2e8f0; text-align: left; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
 }
 
 .dokumen-wrapper,
@@ -176,31 +176,33 @@ th { background: #e2e8f0; text-align: left; }
 
 .lembaran {
   width: 210mm;
+  min-height: 297mm;
   background: #fff;
   border: 1px solid #cbd5e1;
-  padding: 13mm 17mm;
-  line-height: 1.36;
-  font-size: 12px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  padding: 14mm 16mm;
+  line-height: 1.4;
+  font-size: 12pt;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
 .lembaran.pdf-capturing {
   border: none !important;
   box-shadow: none !important;
-  padding: 6mm 10mm !important;
+  padding: 8mm 10mm !important;
+  font-size: 15.5px !important;
 }
 
-/* Kop Surat: Logo Lebih Besar & Rapat di Sebelah Teks 14px */
+/* Kop Surat: Logo Lebih Besar & Rapat di Sebelah Teks 14pt */
 .kop-resmi {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 .kop-logo {
-  width: 66px;
-  height: 66px;
+  width: 68px;
+  height: 68px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -210,49 +212,66 @@ th { background: #e2e8f0; text-align: left; }
 .kop-teks p {
   margin: 1px 0;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 14pt;
   letter-spacing: 0.2px;
   text-transform: uppercase;
   line-height: 1.25;
+}
+.lembaran.pdf-capturing .kop-teks p {
+  font-size: 18px !important;
+}
+
+/* Jarak Lebar Antara Biro Informasi Pertahanan & Judul Pernyataan PK */
+.judul-pk {
+  text-align: center;
+  font-weight: 700;
+  font-size: 12pt;
+  margin: 22px 0 14px;
+  text-transform: uppercase;
+  line-height: 1.38;
+}
+.lembaran.pdf-capturing .judul-pk {
+  font-size: 15.5px !important;
+  margin-top: 26px !important;
 }
 
 /* Blok Kanan Atas Lampiran: Huruf L dan Huruf B Sejajar Rata Kiri */
 .lampiran-kanan-wrap {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .lampiran-kanan-atas {
   display: inline-block;
   text-align: left;
-  font-size: 12px;
+  font-size: 12pt;
   line-height: 1.35;
 }
-
-.judul-pk {
-  text-align: center;
-  font-weight: 700;
-  font-size: 12px;
-  margin: 8px 0 12px;
-  text-transform: uppercase;
-  line-height: 1.35;
+.lembaran.pdf-capturing .lampiran-kanan-atas {
+  font-size: 15.5px !important;
 }
 
 .paragraf {
-  font-size: 12px;
-  margin: 7px 0;
+  font-size: 12pt;
+  margin: 8px 0;
   text-align: justify;
+}
+.lembaran.pdf-capturing .paragraf {
+  font-size: 15.5px !important;
 }
 
 .identitas-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 5px 0 4px;
+  margin: 6px 0 4px;
 }
 .identitas-table td {
   border: none;
   padding: 2px 4px;
-  font-size: 12px;
+  font-size: 12pt;
+}
+.lembaran.pdf-capturing .identitas-table td {
+  font-size: 15.5px !important;
 }
 
 /* Tabel Lampiran 4 Kolom: Garis Tepi Ditutup Rapat */
@@ -266,8 +285,12 @@ th { background: #e2e8f0; text-align: left; }
 .lampiran-table td {
   border: 1px solid #000;
   padding: 6px 8px;
-  font-size: 12px;
+  font-size: 12pt;
   vertical-align: top;
+}
+.lembaran.pdf-capturing .lampiran-table th,
+.lembaran.pdf-capturing .lampiran-table td {
+  font-size: 15px !important;
 }
 .lampiran-table th {
   font-weight: 700;
@@ -275,14 +298,38 @@ th { background: #e2e8f0; text-align: left; }
   background: transparent;
 }
 
+/* Penomoran Rapi Indikator Kinerja di Dalam Tabel Lampiran */
+.ind-item-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.ind-item-row:last-child {
+  margin-bottom: 0;
+}
+.ind-item-num {
+  min-width: 18px;
+  flex-shrink: 0;
+  text-align: right;
+}
+.ind-item-text {
+  flex: 1;
+}
+
 /* Bagian Kegiatan dan Anggaran di Bawah Tabel Lampiran */
 .kegiatan-anggaran-box {
-  margin-top: 12px;
-  font-size: 12px;
-  line-height: 1.38;
+  margin-top: 14px;
+  font-size: 12pt;
+  line-height: 1.4;
+}
+.lembaran.pdf-capturing .kegiatan-anggaran-box,
+.lembaran.pdf-capturing .rincian-keg-table th,
+.lembaran.pdf-capturing .rincian-keg-table td {
+  font-size: 15px !important;
 }
 .kegiatan-anggaran-title {
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 .kegiatan-anggaran-ringkasan {
   margin: 0 0 8px;
@@ -296,8 +343,8 @@ th { background: #e2e8f0; text-align: left; }
 .rincian-keg-table th,
 .rincian-keg-table td {
   border: none;
-  padding: 2.5px 6px;
-  font-size: 12px;
+  padding: 3px 6px;
+  font-size: 12pt;
   vertical-align: top;
 }
 .rincian-keg-table th {
@@ -308,25 +355,58 @@ th { background: #e2e8f0; text-align: left; }
 .rincian-keg-table td.col-rp {
   text-align: left;
   white-space: nowrap;
-  width: 175px;
+  width: 195px;
 }
 
+/* Blok Tanda Tangan: Huruf J pada Tanggal Sejajar Rata Kiri dengan K pada Kepala Bagian */
 .ttd-row {
   display: flex;
   justify-content: space-between;
   gap: 28px;
-  margin-top: 18px;
-  text-align: center;
-  font-size: 12px;
+  margin-top: 20px;
+  font-size: 12pt;
   break-inside: avoid;
   page-break-inside: avoid;
 }
-.ttd-col { flex: 1; }
-.ttd-tanggal { margin-bottom: 3px; }
-.ttd-jabatan { line-height: 1.35; }
-.ttd-space { height: 52px; }
-.ttd-nama { font-weight: 700; text-decoration: underline; line-height: 1.35; }
-.ttd-pangkat { line-height: 1.35; }
+.lembaran.pdf-capturing .ttd-row {
+  font-size: 15px !important;
+}
+.ttd-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.ttd-sign-wrap {
+  display: inline-block;
+  text-align: left;
+}
+.ttd-tanggal {
+  margin-bottom: 4px;
+  text-align: left;
+}
+.ttd-role-prefix {
+  margin-bottom: 2px;
+  text-align: left;
+}
+.ttd-jabatan {
+  line-height: 1.35;
+  text-align: left;
+}
+.ttd-space {
+  height: 54px;
+}
+.ttd-nama {
+  font-weight: 700;
+  text-decoration: underline;
+  line-height: 1.35;
+  text-align: center;
+}
+.ttd-pangkat {
+  line-height: 1.35;
+  text-align: center;
+}
 
 @page {
   size: A4 portrait;
@@ -340,6 +420,7 @@ th { background: #e2e8f0; text-align: left; }
   .dokumen-wrapper { gap: 0; align-items: stretch; }
   .lembaran {
     width: 100%;
+    min-height: auto;
     border: none !important;
     box-shadow: none !important;
     padding: 6mm 10mm;
