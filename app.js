@@ -854,7 +854,6 @@ function renderPerjanjianKinerja(data) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-
 document.getElementById("btnDownloadPdf").addEventListener("click", async () => {
   const l1 = document.getElementById("lembaran1");
   const l2 = document.getElementById("lembaran2");
@@ -866,20 +865,48 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
   const marginX = 8;
   const marginY = 8;
 
-  const workerCfg = {
-    margin: [marginY, marginX, marginY, marginX],
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      scrollY: 0,
-      windowWidth: document.documentElement.scrollWidth
-    },
-    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-  };
-
   l1.classList.add("pdf-capturing");
   l2.classList.add("pdf-capturing");
+
+  try {
+    const captureOpts = {
+      scale: 2,
+      useCORS: true,
+      scrollX: 0,
+      scrollY: 0,
+      width: l1.offsetWidth,
+      windowWidth: l1.offsetWidth
+    };
+
+    const canvas1 = await html2canvas(l1, captureOpts);
+    const canvas2 = await html2canvas(l2, {
+      ...captureOpts,
+      width: l2.offsetWidth,
+      windowWidth: l2.offsetWidth
+    });
+
+    const tempWorker = html2pdf().set({
+      margin: 0,
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    });
+    const pdf = await tempWorker.toPdf().get("pdf");
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const usableWidth = pageWidth - marginX * 2;
+
+    const drawHeight1 = (canvas1.height * usableWidth) / canvas1.width;
+    pdf.addImage(canvas1.toDataURL("image/jpeg", 0.98), "JPEG", marginX, marginY, usableWidth, drawHeight1);
+
+    const drawHeight2 = (canvas2.height * usableWidth) / canvas2.width;
+    pdf.addPage("a4", "portrait");
+    pdf.addImage(canvas2.toDataURL("image/jpeg", 0.98), "JPEG", marginX, marginY, usableWidth, drawHeight2);
+
+    pdf.save(filename);
+  } finally {
+    l1.classList.remove("pdf-capturing");
+    l2.classList.remove("pdf-capturing");
+  }
+});
 
   try {
     const canvas1 = await html2pdf().set(workerCfg).from(l1).toContainer().toCanvas().get("canvas");
