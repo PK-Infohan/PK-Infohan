@@ -231,13 +231,12 @@ th { background: #e2e8f0; text-align: left; }
 
 /* Blok Kanan Atas Lampiran: Naik ke Atas, Jarak 2 Enter ke Judul, Justify Rata Kiri-Kanan */
 .lampiran-kanan-wrap {
-  display: flex;
-  justify-content: flex-end;
+  width: 100%;
   margin-top: -4mm;
   margin-bottom: 26px;
 }
 .lampiran-kanan-atas {
-  display: inline-block;
+  width: 100%;
   text-align: justify;
   text-align-last: justify;
   font-size: 10.5pt;
