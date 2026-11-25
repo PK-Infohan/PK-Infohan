@@ -833,8 +833,11 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
   const safeSub = (currentActiveDoc.subbag || "PK_Kemhan").replace(/[^a-zA-Z0-9_-]/g, "_");
   const filename = `PK_${safeSub}_${currentActiveDoc.tahun}.pdf`;
 
+  const marginX = 10;
+  const marginY = 8;
+
   const workerCfg = {
-    margin: [10, 12, 10, 12],
+    margin: [marginY, marginX, marginY, marginX],
     image: { type: "jpeg", quality: 0.98 },
     html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
@@ -843,12 +846,25 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
   const pdf = await html2pdf().set(workerCfg).from(l1).toPdf().get("pdf");
   const canvas2 = await html2pdf().set(workerCfg).from(l2).toContainer().toCanvas().get("canvas");
 
-  const pdfWidth = pdf.internal.pageSize.getWidth() - 24;
-  const pdfHeight = (canvas2.height * pdfWidth) / canvas2.width;
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const usableWidth = pageWidth - marginX * 2;
+  const maxUsableHeight = pageHeight - marginY * 2;
+  let pdfHeight = (canvas2.height * usableWidth) / canvas2.width;
+  let drawWidth = usableWidth;
 
-  pdf.addPage();
-  pdf.addImage(canvas2.toDataURL("image/jpeg", 0.98), "JPEG", 12, 10, pdfWidth, pdfHeight);
+  if (pdfHeight > maxUsableHeight) {
+    const ratio = maxUsableHeight / pdfHeight;
+    pdfHeight = maxUsableHeight;
+    drawWidth = usableWidth * ratio;
+  }
+
+  const offsetX = marginX + (usableWidth - drawWidth) / 2;
+
+  pdf.addPage("a4", "portrait");
+  pdf.addImage(canvas2.toDataURL("image/jpeg", 0.98), "JPEG", offsetX, marginY, drawWidth, pdfHeight);
   pdf.save(filename);
+});
 });
 
 // ==========================================
