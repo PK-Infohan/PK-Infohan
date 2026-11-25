@@ -194,48 +194,61 @@ th { background: #e2e8f0; text-align: left; }
 .lembaran {
   background: #fff;
   border: 1px solid #cbd5e1;
-  padding: 24px 34px;
-  line-height: 1.4;
+  padding: 26px 36px;
+  line-height: 1.38;
   margin-bottom: 20px;
 }
 
+/* Kop Surat Halaman 1 (Logo Sejajar Proporsional di Kiri) */
 .kop-resmi {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 14px;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 .kop-logo {
-  width: 64px;
-  height: 64px;
+  width: 58px;
+  height: 58px;
   object-fit: contain;
   flex-shrink: 0;
 }
 .kop-teks {
   flex: 1;
   text-align: center;
-  margin-right: 64px;
 }
 .kop-teks p {
-  margin: 2px 0;
+  margin: 1px 0;
   font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.4px;
+  font-size: 12.5px;
+  letter-spacing: 0.3px;
   text-transform: uppercase;
+}
+.kop-spacer {
+  width: 58px;
+  flex-shrink: 0;
+}
+
+/* Catatan Kanan Atas Halaman Lampiran (Tanpa Kop/Logo) */
+.lampiran-kanan-atas {
+  text-align: right;
+  font-size: 11px;
+  line-height: 1.35;
+  margin-bottom: 10px;
 }
 
 .judul-pk {
   text-align: center;
   font-weight: 700;
-  font-size: 13.5px;
-  margin: 10px 0 14px;
+  font-size: 12.5px;
+  margin: 8px 0 14px;
   text-transform: uppercase;
   line-height: 1.35;
 }
 
 .paragraf {
   font-size: 12px;
-  margin: 8px 0;
+  margin: 7px 0;
   text-align: justify;
 }
 
@@ -250,33 +263,81 @@ th { background: #e2e8f0; text-align: left; }
   font-size: 12px;
 }
 
+/* Tabel Lampiran 4 Kolom: No | Sasaran Kegiatan | Indikator Kinerja | Target */
 .lampiran-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 8px;
+  border-left: none;
+  border-right: none;
 }
 .lampiran-table th, .lampiran-table td {
-  border: 1px solid #000;
+  border-top: 1px solid #475569;
+  border-bottom: 1px solid #475569;
+  border-left: 1px solid #94a3b8;
+  border-right: 1px solid #94a3b8;
   padding: 6px 8px;
-  font-size: 11.5px;
+  font-size: 11px;
+  vertical-align: top;
+}
+.lampiran-table th:first-child, .lampiran-table td:first-child {
+  border-left: none;
+}
+.lampiran-table th:last-child, .lampiran-table td:last-child {
+  border-right: none;
 }
 .lampiran-table th {
-  background: #f1f5f9;
+  font-weight: 700;
   text-align: center;
+  background: transparent;
+}
+
+/* Bagian Kegiatan dan Anggaran di Bawah Tabel Lampiran */
+.kegiatan-anggaran-box {
+  margin-top: 14px;
+  font-size: 11.5px;
+  line-height: 1.42;
+}
+.kegiatan-anggaran-title {
+  margin-bottom: 4px;
+}
+.kegiatan-anggaran-ringkasan {
+  margin: 0 0 10px;
+  text-align: justify;
+}
+.rincian-keg-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 4px;
+}
+.rincian-keg-table th, .rincian-keg-table td {
+  border: none;
+  padding: 3px 6px;
+  font-size: 11.5px;
+  vertical-align: top;
+}
+.rincian-keg-table th {
+  font-weight: 600;
+  text-align: left;
+}
+.rincian-keg-table th.col-rp, .rincian-keg-table td.col-rp {
+  text-align: left;
+  white-space: nowrap;
+  width: 170px;
 }
 
 .ttd-row {
   display: flex;
   justify-content: space-between;
   gap: 28px;
-  margin-top: 22px;
+  margin-top: 20px;
   text-align: center;
-  font-size: 12px;
+  font-size: 11.5px;
 }
 .ttd-col { flex: 1; }
 .ttd-tanggal { margin-bottom: 4px; }
 .ttd-jabatan { line-height: 1.35; }
-.ttd-space { height: 58px; }
+.ttd-space { height: 54px; }
 .ttd-nama { font-weight: 700; text-decoration: underline; line-height: 1.35; }
 .ttd-pangkat { line-height: 1.35; }
 
