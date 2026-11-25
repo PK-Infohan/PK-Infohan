@@ -724,7 +724,6 @@ function renderPerjanjianKinerja(data) {
         <span>${satkerLampiran} Tahun ${tahunLampiran}</span>
       </div>
     </div>
-
   `;
 
   const kegList = data.kegiatanAnggaranList || [];
