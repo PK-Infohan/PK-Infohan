@@ -192,7 +192,7 @@ th { background: #e2e8f0; text-align: left; }
   font-size: 15.5px !important;
 }
 
-/* Kop Surat: Logo Lebih Besar & Rapat di Sebelah Teks 14pt */
+/* Kop Surat: Logo di Sebelah Teks, Ukuran Disamakan dengan Pernyataan PK */
 .kop-resmi {
   display: flex;
   align-items: center;
@@ -201,8 +201,8 @@ th { background: #e2e8f0; text-align: left; }
   margin-bottom: 6px;
 }
 .kop-logo {
-  width: 68px;
-  height: 68px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -212,13 +212,13 @@ th { background: #e2e8f0; text-align: left; }
 .kop-teks p {
   margin: 1px 0;
   font-weight: 700;
-  font-size: 14pt;
+  font-size: 12pt;
   letter-spacing: 0.2px;
   text-transform: uppercase;
-  line-height: 1.25;
+  line-height: 1.3;
 }
 .lembaran.pdf-capturing .kop-teks p {
-  font-size: 18px !important;
+  font-size: 15.5px !important;
 }
 
 /* Jarak Lebar Antara Biro Informasi Pertahanan & Judul Pernyataan PK */
@@ -251,10 +251,18 @@ th { background: #e2e8f0; text-align: left; }
   font-size: 15.5px !important;
 }
 
+/* Isi Dokumen Halaman 1: Sejajar Rata Kiri Penuh */
+.doc-body-block {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
 .paragraf {
   font-size: 12pt;
   margin: 8px 0;
+  padding: 0;
   text-align: justify;
+  text-indent: 0;
 }
 .lembaran.pdf-capturing .paragraf {
   font-size: 15.5px !important;
@@ -267,8 +275,9 @@ th { background: #e2e8f0; text-align: left; }
 }
 .identitas-table td {
   border: none;
-  padding: 2px 4px;
+  padding: 2px 0;
   font-size: 12pt;
+  vertical-align: top;
 }
 .lembaran.pdf-capturing .identitas-table td {
   font-size: 15.5px !important;
@@ -358,12 +367,14 @@ th { background: #e2e8f0; text-align: left; }
   width: 195px;
 }
 
-/* Blok Tanda Tangan: Huruf J pada Tanggal Sejajar Rata Kiri dengan K pada Kepala Bagian */
+/* Blok Tanda Tangan: Pihak Kedua (Kiri) & Pihak Pertama (Kanan), Sejajar */
 .ttd-row {
   display: flex;
   justify-content: space-between;
+  align-items: flex-end;
   gap: 28px;
   margin-top: 20px;
+  text-align: center;
   font-size: 12pt;
   break-inside: avoid;
   page-break-inside: avoid;
@@ -375,24 +386,16 @@ th { background: #e2e8f0; text-align: left; }
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: flex-end;
   text-align: center;
-}
-.ttd-sign-wrap {
-  display: inline-block;
-  text-align: left;
 }
 .ttd-tanggal {
   margin-bottom: 4px;
-  text-align: left;
-}
-.ttd-role-prefix {
-  margin-bottom: 2px;
-  text-align: left;
+  min-height: 18px;
 }
 .ttd-jabatan {
   line-height: 1.35;
-  text-align: left;
+  min-height: 44px;
 }
 .ttd-space {
   height: 54px;
@@ -401,11 +404,10 @@ th { background: #e2e8f0; text-align: left; }
   font-weight: 700;
   text-decoration: underline;
   line-height: 1.35;
-  text-align: center;
 }
 .ttd-pangkat {
   line-height: 1.35;
-  text-align: center;
+  min-height: 20px;
 }
 
 @page {
