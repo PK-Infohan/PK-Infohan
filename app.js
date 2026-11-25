@@ -645,17 +645,19 @@ function renderPerjanjianKinerja(data) {
   const p2TtdJabatan = data.pihakKedua.jabatanSingkat || data.pihakKedua.jabatan;
 
   let lampiranRowsHtml = "";
-  let noCounter = 0;
 
   (data.sasaranList || []).forEach((sObj, sIdx) => {
     const inds = sObj.indikatorList && sObj.indikatorList.length ? sObj.indikatorList : [{}];
+    const cleanSasaran = String(sObj.sasaran || "").replace(/^\s*\d+[\.\)]\s*/, "");
+    const sasaranNo = sIdx + 1;
+
     inds.forEach((ind, iIdx) => {
-      noCounter++;
+      const cleanIndikator = String(ind.indikator || "").replace(/^\s*\d+[\.\)]\s*/, "");
       lampiranRowsHtml += `
         <tr>
-          <td style="text-align:center;">${noCounter}</td>
-          <td>${iIdx === 0 ? `${sIdx + 1}. ${sObj.sasaran}` : ""}</td>
-          <td>${ind.indikator || ""}</td>
+          <td style="text-align:center;">${iIdx === 0 ? sasaranNo : ""}</td>
+          <td>${iIdx === 0 ? cleanSasaran : ""}</td>
+          <td>${cleanIndikator}</td>
           <td style="text-align:center;">${ind.target || ""}</td>
         </tr>
       `;
@@ -664,7 +666,7 @@ function renderPerjanjianKinerja(data) {
 
   const kopBaris1 = data.level === "eselon1"
     ? "KEMENTERIAN PERTAHANAN REPUBLIK INDONESIA"
-    : (data.eselon1 || "SEKRETARIAT JENDERAL KEMHAN");
+    : (data.eselon1 || "SEKRETARIAT JENDERAL");
   const kopBaris2 = data.level === "eselon1"
     ? (data.eselon1 || "SEKRETARIAT JENDERAL")
     : (data.eselon2 || "BIRO INFORMASI PERTAHANAN");
@@ -676,16 +678,23 @@ function renderPerjanjianKinerja(data) {
         <p>${kopBaris1}</p>
         <p>${kopBaris2}</p>
       </div>
-      <div class="kop-spacer"></div>
     </div>
   `;
 
   const sisipanTeks = data.lampiranSisipan ? ` ${data.lampiranSisipan}` : "";
   const tahunLampiran = data.lampiranTahun || data.tahun;
-  const kananAtasHtml = `
-    <div class="lampiran-kanan-atas">
-      Lampiran${sisipanTeks} Perjanjian Kinerja<br />
-      ${data.eselon2 || data.eselon1 || "Biro Infohan Setjen Kemhan"} Tahun ${tahunLampiran}
+  const satkerLampiran = data.eselon2 || data.eselon1 || "Biro Informasi Pertahanan";
+
+  const lampiranHeaderRowHtml = `
+    <div class="lampiran-header-row">
+      <div class="lampiran-satker-kiri">
+        ${satkerLampiran}<br />
+        ${data.bagian || ""}
+      </div>
+      <div class="lampiran-kanan-atas">
+        Lampiran${sisipanTeks} Perjanjian Kinerja<br />
+        ${satkerLampiran} Tahun ${tahunLampiran}
+      </div>
     </div>
   `;
 
@@ -794,7 +803,7 @@ function renderPerjanjianKinerja(data) {
     </div>
 
     <div id="lembaran2" class="lembaran">
-      ${kananAtasHtml}
+      ${lampiranHeaderRowHtml}
 
       <div class="judul-pk">
         PERJANJIAN KINERJA<br />
