@@ -185,13 +185,6 @@ th { background: #e2e8f0; text-align: left; }
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
-.lembaran.pdf-capturing {
-  border: none !important;
-  box-shadow: none !important;
-  min-height: auto !important;
-  padding: 6mm 8mm !important;
-}
-
 /* Kop Surat: Logo & Teks 1 Tingkat Lebih Besar dari Pernyataan PK (14pt) */
 .kop-resmi {
   display: flex;
@@ -287,7 +280,6 @@ th { background: #e2e8f0; text-align: left; }
   text-align: center;
   background: transparent;
 }
-/* Hilangkan garis horizontal antar-indikator dalam sasaran yang sama agar tampilan bersih */
 .lampiran-table tr.ind-sub-row td.col-ind,
 .lampiran-table tr.ind-sub-row td.col-tgt {
   border-top: none;
@@ -349,7 +341,7 @@ th { background: #e2e8f0; text-align: left; }
   width: 185px;
 }
 
-/* Blok Tanda Tangan: Pihak Kedua (Kiri) & Pihak Pertama (Kanan), Sejajar */
+/* Blok Tanda Tangan: Jarak Ke Nama 1 Kali Enter */
 .ttd-row {
   display: flex;
   justify-content: space-between;
@@ -377,7 +369,7 @@ th { background: #e2e8f0; text-align: left; }
   min-height: 42px;
 }
 .ttd-space {
-  height: 50px;
+  height: 24px;
 }
 .ttd-nama {
   font-weight: 700;
@@ -408,4 +400,22 @@ th { background: #e2e8f0; text-align: left; }
     margin: 0;
   }
   #lembaran2 { page-break-before: always; break-before: page; }
+
+  body.printing-pejabat-table #masterSection {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  body.printing-pejabat-table #rekapPejabatWrapper {
+    border: none !important;
+    background: #fff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  body.printing-pejabat-table #rekapPejabatTable th,
+  body.printing-pejabat-table #rekapPejabatTable td {
+    border: 1px solid #000 !important;
+    color: #000 !important;
+    font-size: 10.5pt !important;
+  }
 }
