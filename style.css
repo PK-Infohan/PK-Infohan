@@ -350,9 +350,9 @@ th { background: #e2e8f0; text-align: left; }
 }
 .rincian-keg-table th.col-rp,
 .rincian-keg-table td.col-rp {
-  text-align: left;
+  text-align: right;
   white-space: nowrap;
-  width: 185px;
+  width: 195px;
 }
 
 /* Blok Tanda Tangan: Koma Setelah Jabatan & Jarak Ke Nama 4 Kali Enter (84px) */
