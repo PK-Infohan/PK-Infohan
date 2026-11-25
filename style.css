@@ -1,5 +1,5 @@
-* { box-sizing: border-box; font-family: "Segoe UI", Arial, sans-serif; }
-body { margin: 0; background: #f1f5f9; color: #0f172a; }
+* { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+body { margin: 0; background: #f1f5f9; color: #0f172a; font-size: 12px; }
 .hidden { display: none !important; }
 
 /* Halaman Login */
@@ -20,16 +20,16 @@ body { margin: 0; background: #f1f5f9; color: #0f172a; }
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
 }
 .login-head { text-align: center; margin-bottom: 18px; }
-.login-logo { width: 72px; height: 72px; object-fit: contain; margin-bottom: 8px; }
+.login-logo { width: 76px; height: 76px; object-fit: contain; margin-bottom: 8px; }
 .login-head h1 { margin: 0; font-size: 17px; color: #6b1515; }
-.login-head p { margin: 4px 0 0; font-size: 12.5px; color: #475569; }
+.login-head p { margin: 4px 0 0; font-size: 12px; color: #475569; }
 .login-error {
   color: #b91c1c;
   background: #fef2f2;
   border: 1px solid #fecaca;
   padding: 8px 10px;
   border-radius: 6px;
-  font-size: 12.5px;
+  font-size: 12px;
   margin: 10px 0 0;
 }
 
@@ -66,8 +66,8 @@ body { margin: 0; background: #f1f5f9; color: #0f172a; }
   margin-bottom: 12px;
   flex-wrap: wrap;
 }
-.section-head h2 { margin: 0; font-size: 16px; }
-.muted { color: #64748b; font-size: 12.5px; margin: 3px 0 0; }
+.section-head h2 { margin: 0; font-size: 15px; }
+.muted { color: #64748b; font-size: 12px; margin: 3px 0 0; }
 .mt-20 { margin-top: 20px; }
 
 .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 10px; }
@@ -75,7 +75,7 @@ body { margin: 0; background: #f1f5f9; color: #0f172a; }
 .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 16px; margin-bottom: 14px; }
 
 .box { border: 1px solid #cbd5e1; border-radius: 8px; padding: 14px; background: #f8fafc; }
-.box legend { font-weight: 700; padding: 0 6px; color: #6b1515; }
+.box legend { font-weight: 700; padding: 0 6px; color: #6b1515; font-size: 12px; }
 
 label { display: block; font-size: 12px; font-weight: 600; margin: 8px 0 4px; color: #334155; }
 input, select, textarea {
@@ -83,7 +83,7 @@ input, select, textarea {
   padding: 7px 9px;
   border: 1px solid #94a3b8;
   border-radius: 6px;
-  font-size: 13px;
+  font-size: 12px;
   background: #fff;
 }
 textarea { resize: vertical; min-height: 46px; }
@@ -102,7 +102,7 @@ textarea { resize: vertical; min-height: 46px; }
   gap: 10px;
   margin-bottom: 8px;
 }
-.sasaran-title { font-weight: 700; color: #6b1515; font-size: 14px; }
+.sasaran-title { font-weight: 700; color: #6b1515; font-size: 13px; }
 
 /* Hirarki Master Pejabat */
 .tree-eselon1 {
@@ -141,14 +141,14 @@ textarea { resize: vertical; min-height: 46px; }
 
 .gas-bar { display: flex; gap: 8px; margin-top: 10px; }
 .table-wrap { overflow-x: auto; margin-top: 10px; }
-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
 th, td { border: 1px solid #cbd5e1; padding: 6px 8px; vertical-align: top; }
 th { background: #e2e8f0; text-align: left; }
 
 .form-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; flex-wrap: wrap; }
 
-.btn { padding: 8px 14px; border-radius: 6px; border: 1px solid transparent; font-weight: 600; font-size: 13px; cursor: pointer; }
+.btn { padding: 8px 14px; border-radius: 6px; border: 1px solid transparent; font-weight: 600; font-size: 12px; cursor: pointer; }
 .btn-sm { padding: 5px 10px; font-size: 12px; }
 .btn-primary { background: #6b1515; color: #fff; }
 .btn-secondary { background: #1e293b; color: #fff; }
@@ -157,7 +157,9 @@ th { background: #e2e8f0; text-align: left; }
 .btn-light { background: #f8fafc; color: #6b1515; }
 .btn-outline-light { background: transparent; border-color: #fff; color: #fff; }
 
-/* Lembar Dokumen Resmi: Portrait A4, Font Arial, Maksimalkan Halaman */
+/* ==========================================
+   LEMBAR DOKUMEN RESMI (PORTRAIT A4, ARIAL 12)
+   ========================================== */
 .dokumen-wrapper {
   width: 100%;
   display: flex;
@@ -174,56 +176,65 @@ th { background: #e2e8f0; text-align: left; }
 
 .lembaran {
   width: 210mm;
-  min-height: 297mm;
   background: #fff;
   border: 1px solid #cbd5e1;
-  padding: 14mm 15mm;
-  line-height: 1.36;
+  padding: 12mm 14mm;
+  line-height: 1.35;
+  font-size: 12px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
-/* Kop Surat Halaman 1 (Logo Sejajar Proporsional di Kiri) */
+/* Kop Surat: Logo Lebih Besar & Rapat di Sebelah Teks 14px */
 .kop-resmi {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  justify-content: center;
+  gap: 12px;
   margin-bottom: 10px;
 }
 .kop-logo {
-  width: 54px;
-  height: 54px;
+  width: 68px;
+  height: 68px;
   object-fit: contain;
   flex-shrink: 0;
 }
 .kop-teks {
-  flex: 1;
   text-align: center;
 }
 .kop-teks p {
   margin: 1px 0;
   font-weight: 700;
-  font-size: 12.5px;
-  letter-spacing: 0.3px;
+  font-size: 14px;
+  letter-spacing: 0.2px;
   text-transform: uppercase;
-}
-.kop-spacer {
-  width: 54px;
-  flex-shrink: 0;
+  line-height: 1.25;
 }
 
-/* Catatan Kanan Atas Halaman Lampiran */
+/* Header Lampiran: Sejajar Satuan Kerja & Keterangan Kanan Atas */
+.lampiran-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+.lampiran-satker-kiri {
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
 .lampiran-kanan-atas {
   text-align: right;
-  font-size: 11px;
-  line-height: 1.35;
-  margin-bottom: 8px;
+  font-size: 12px;
+  line-height: 1.3;
+  flex-shrink: 0;
 }
 
 .judul-pk {
   text-align: center;
   font-weight: 700;
-  font-size: 12.5px;
+  font-size: 12px;
   margin: 8px 0 12px;
   text-transform: uppercase;
   line-height: 1.35;
@@ -231,43 +242,34 @@ th { background: #e2e8f0; text-align: left; }
 
 .paragraf {
   font-size: 12px;
-  margin: 8px 0;
+  margin: 7px 0;
   text-align: justify;
 }
 
 .identitas-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 6px 0 5px;
+  margin: 5px 0 4px;
 }
 .identitas-table td {
   border: none;
-  padding: 2.5px 4px;
+  padding: 2px 4px;
   font-size: 12px;
 }
 
-/* Tabel Lampiran 4 Kolom: No | Sasaran Kegiatan | Indikator Kinerja | Target */
+/* Tabel Lampiran 4 Kolom: Garis Tepi Ditutup Rapat */
 .lampiran-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 8px;
-  border-left: none;
-  border-right: none;
+  border: 1px solid #000;
 }
-.lampiran-table th, .lampiran-table td {
-  border-top: 1px solid #475569;
-  border-bottom: 1px solid #475569;
-  border-left: 1px solid #94a3b8;
-  border-right: 1px solid #94a3b8;
+.lampiran-table th,
+.lampiran-table td {
+  border: 1px solid #000;
   padding: 6px 8px;
-  font-size: 11px;
+  font-size: 12px;
   vertical-align: top;
-}
-.lampiran-table th:first-child, .lampiran-table td:first-child {
-  border-left: none;
-}
-.lampiran-table th:last-child, .lampiran-table td:last-child {
-  border-right: none;
 }
 .lampiran-table th {
   font-weight: 700;
@@ -277,12 +279,12 @@ th { background: #e2e8f0; text-align: left; }
 
 /* Bagian Kegiatan dan Anggaran di Bawah Tabel Lampiran */
 .kegiatan-anggaran-box {
-  margin-top: 14px;
-  font-size: 11.5px;
-  line-height: 1.4;
+  margin-top: 12px;
+  font-size: 12px;
+  line-height: 1.38;
 }
 .kegiatan-anggaran-title {
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 .kegiatan-anggaran-ringkasan {
   margin: 0 0 8px;
@@ -293,17 +295,19 @@ th { background: #e2e8f0; text-align: left; }
   border-collapse: collapse;
   margin-top: 4px;
 }
-.rincian-keg-table th, .rincian-keg-table td {
+.rincian-keg-table th,
+.rincian-keg-table td {
   border: none;
-  padding: 3px 6px;
-  font-size: 11.5px;
+  padding: 2.5px 6px;
+  font-size: 12px;
   vertical-align: top;
 }
 .rincian-keg-table th {
   font-weight: 600;
   text-align: left;
 }
-.rincian-keg-table th.col-rp, .rincian-keg-table td.col-rp {
+.rincian-keg-table th.col-rp,
+.rincian-keg-table td.col-rp {
   text-align: left;
   white-space: nowrap;
   width: 175px;
@@ -313,16 +317,16 @@ th { background: #e2e8f0; text-align: left; }
   display: flex;
   justify-content: space-between;
   gap: 28px;
-  margin-top: 22px;
+  margin-top: 18px;
   text-align: center;
-  font-size: 11.5px;
+  font-size: 12px;
   break-inside: avoid;
   page-break-inside: avoid;
 }
 .ttd-col { flex: 1; }
-.ttd-tanggal { margin-bottom: 4px; }
+.ttd-tanggal { margin-bottom: 3px; }
 .ttd-jabatan { line-height: 1.35; }
-.ttd-space { height: 56px; }
+.ttd-space { height: 52px; }
 .ttd-nama { font-weight: 700; text-decoration: underline; line-height: 1.35; }
 .ttd-pangkat { line-height: 1.35; }
 
@@ -338,10 +342,9 @@ th { background: #e2e8f0; text-align: left; }
   .dokumen-wrapper { gap: 0; align-items: stretch; }
   .lembaran {
     width: 100%;
-    min-height: auto;
     border: none;
     box-shadow: none;
-    padding: 6mm 8mm;
+    padding: 5mm 7mm;
     margin: 0;
   }
   #lembaran2 { page-break-before: always; break-before: page; }
