@@ -5,245 +5,260 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Penyusunan & Arsip Perjanjian Kinerja - Kementerian Pertahanan RI</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
+
   <!-- HALAMAN LOGIN -->
   <section id="loginSection" class="login-wrapper">
     <div class="login-card">
       <div class="login-head">
         <img src="logo.png" alt="Logo Kemhan" class="login-logo" />
-        <h1>SISTEM PERJANJIAN KINERJA</h1>
-        <p>Kementerian Pertahanan Republik Indonesia</p>
+        <h1>Perjanjian Kinerja Kemhan RI</h1>
+        <p>Sistem Penyusunan & Arsip Digital Berjenjang</p>
       </div>
-
       <form id="loginForm">
-        <label for="loginUsername">Username</label>
-        <input type="text" id="loginUsername" placeholder="Masukkan username..." required autocomplete="username" />
-
-        <label for="loginPassword">Password</label>
-        <input type="password" id="loginPassword" placeholder="Masukkan password..." required autocomplete="current-password" />
-
+        <label>Username</label>
+        <input type="text" id="loginUsername" placeholder="Masukkan username..." required />
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="Masukkan password..." required />
         <p id="loginError" class="login-error hidden"></p>
-
-        <button type="submit" class="btn btn-primary" style="width:100%; margin-top:16px; padding:10px;">
-          Masuk ke Aplikasi →
-        </button>
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:14px;">Masuk Aplikasi</button>
       </form>
     </div>
   </section>
 
-  <!-- APLIKASI UTAMA (TAMPIL SETELAH LOGIN) -->
+  <!-- APLIKASI UTAMA -->
   <div id="appShell" class="hidden">
     <header class="topbar no-print">
       <div>
         <h1>Penyusunan Perjanjian Kinerja Kemhan RI</h1>
-        <p id="userBadgeInfo">User: -</p>
+        <p id="userBadgeInfo">Administrator • Kementerian Pertahanan RI</p>
       </div>
-      <div class="top-actions">
+      <nav class="top-actions">
         <button type="button" id="btnKeForm" class="btn btn-light">Form Input PK</button>
         <button type="button" id="btnKeHasil" class="btn btn-outline-light">Dokumen PK</button>
         <button type="button" id="btnKeMaster" class="btn btn-outline-light">Master Pejabat & Unit</button>
         <button type="button" id="btnKeArsip" class="btn btn-outline-light">Arsip PK (<span id="arsipCount">0</span>)</button>
         <button type="button" id="btnKeUsers" class="btn btn-outline-light hidden">Kelola Akun</button>
-        <button type="button" id="btnLogout" class="btn btn-danger btn-sm">Keluar</button>
-      </div>
+        <button type="button" id="btnLogout" class="btn btn-danger">Keluar</button>
+      </nav>
     </header>
 
     <main class="container">
-      <!-- 1. FORM INPUT PK -->
+      <!-- 1. FORM INPUT -->
       <section id="formSection" class="card no-print">
         <div class="section-head">
-          <h2>1. Identitas Unit & Pejabat Perjanjian Kinerja</h2>
-          <button type="button" id="btnIsiContoh" class="btn btn-secondary btn-sm">Isi Contoh</button>
+          <div>
+            <h2>Formulir Perjanjian Kinerja</h2>
+            <p class="muted">Pilih jenjang jabatan dan unit kerja; data pejabat Pihak Pertama dan Pihak Kedua terisi otomatis.</p>
+          </div>
+          <div class="toolbar-right">
+            <button type="button" id="btnIsiContoh" class="btn btn-outline">Isi Contoh Data</button>
+            <button type="button" id="btnKosongkan" class="btn btn-outline">Bersihkan Isian</button>
+          </div>
         </div>
 
         <form id="pkForm">
-          <div class="grid-4">
-            <div>
-              <label for="tahunAnggaran">Tahun Anggaran (Pernyataan & Judul)</label>
-              <input type="text" id="tahunAnggaran" value="2027" required />
+          <fieldset class="box">
+            <legend>1. Jenjang Jabatan & Unit Kerja</legend>
+            <div class="grid-4">
+              <div>
+                <label>Jenjang Perjanjian Kinerja</label>
+                <select id="selectLevel">
+                  <option value="subbag">Eselon IV (Kepala Subbagian)</option>
+                  <option value="bagian">Eselon III (Kepala Bagian / Bidang)</option>
+                  <option value="eselon2">Eselon II (Kepala Biro / Pusat / Direktur)</option>
+                  <option value="eselon1">Eselon I (Sekjen / Dirjen / Irjen / Kabadan)</option>
+                </select>
+              </div>
+              <div>
+                <label>Unit Kerja Eselon I</label>
+                <select id="selectEselon1"></select>
+              </div>
+              <div id="wrapSelectEselon2">
+                <label>Unit Kerja Eselon II (Satker)</label>
+                <select id="selectEselon2"></select>
+              </div>
+              <div id="wrapSelectBagian">
+                <label>Bagian / Bidang (Eselon III)</label>
+                <select id="selectBagian"></select>
+              </div>
+              <div id="wrapSelectSubbag">
+                <label>Sub Bagian (Eselon IV)</label>
+                <select id="selectSubbag"></select>
+              </div>
             </div>
-            <div>
-              <label for="tempatTanggal">Tempat & Tanggal</label>
-              <input type="text" id="tempatTanggal" value="Jakarta, Januari 2027" required />
-            </div>
-            <div>
-              <label for="selectLevel">Level Dokumen PK</label>
-              <select id="selectLevel">
-                <option value="subbag">Eselon IV / Subbagian (P1: Kasubbag → P2: Kabag)</option>
-                <option value="bagian">Eselon III / Bagian (P1: Kabag → P2: Karo/Direktur)</option>
-                <option value="eselon2">Eselon II / Biro / Pusat (P1: Karo → P2: Eselon I)</option>
-                <option value="eselon1">Eselon I / Setjen / Ditjen (P1: Eselon I → P2: Menhan)</option>
-              </select>
-            </div>
-            <div>
-              <label for="selectEselon1">Unit Eselon I</label>
-              <select id="selectEselon1"></select>
-            </div>
-          </div>
 
-          <div class="grid-3" style="margin-bottom: 14px;">
-            <div id="wrapSelectEselon2">
-              <label for="selectEselon2">Unit Eselon II (Biro / Pusat / Direktorat)</label>
-              <select id="selectEselon2"></select>
+            <div class="grid-4">
+              <div>
+                <label>Tahun Perjanjian Kinerja</label>
+                <input type="text" id="tahunAnggaran" value="2027" required />
+              </div>
+              <div>
+                <label>Sisipan Nomor Lampiran (Opsional)</label>
+                <input type="text" id="lampiranSisipan" placeholder="Kosongkan atau isi: I / II" />
+              </div>
+              <div>
+                <label>Tahun Pada Keterangan Lampiran</label>
+                <input type="text" id="lampiranTahun" value="2027" required />
+              </div>
+              <div>
+                <label>Tempat & Tanggal Tanda Tangan</label>
+                <input type="text" id="tempatTanggal" value="Jakarta, Januari 2027" required />
+              </div>
             </div>
-            <div id="wrapSelectBagian">
-              <label for="selectBagian">Eselon III (Bagian / Bidang)</label>
-              <select id="selectBagian"></select>
-            </div>
-            <div id="wrapSelectSubbag">
-              <label for="selectSubbag">Eselon IV (Subbagian / Subbidang)</label>
-              <select id="selectSubbag"></select>
-            </div>
-          </div>
+          </fieldset>
 
-          <div class="grid-2">
+          <div class="grid-2 mt-20">
             <fieldset class="box">
-              <legend>Pihak Pertama (Otomatis dari Master / Ketik Bebas)</legend>
-              <label for="p1Nama">Nama Lengkap & Gelar</label>
-              <input type="text" id="p1Nama" placeholder="Ketik nama pejabat..." required />
-
-              <label for="p1Jabatan">Jabatan Penuh (Tampil di Judul & Identitas)</label>
+              <legend>2. Pihak Pertama (Pembuat Perjanjian)</legend>
+              <label>Nama Lengkap & Gelar</label>
+              <input type="text" id="p1Nama" required />
+              <label>Jabatan Lengkap (Untuk Judul & Identitas)</label>
               <input type="text" id="p1Jabatan" required />
-
-              <label for="p1JabatanSingkat">Jabatan Singkat TTD (Opsional)</label>
-              <input type="text" id="p1JabatanSingkat" placeholder="Kosongkan jika sama dengan jabatan penuh" />
-
-              <label for="p1Pangkat">Pangkat / Golongan & NRP / NIP</label>
-              <input type="text" id="p1Pangkat" placeholder="Contoh: Penata Tk. I III/d NIP. ..." required />
+              <label>Jabatan Di Atas Tanda Tangan (Opsional)</label>
+              <input type="text" id="p1JabatanSingkat" placeholder="Kosongkan jika sama dengan jabatan lengkap" />
+              <label>Pangkat / Golongan & NRP / NIP</label>
+              <input type="text" id="p1Pangkat" required />
             </fieldset>
 
             <fieldset class="box">
-              <legend>Pihak Kedua / Atasan Langsung (Otomatis / Ketik Bebas)</legend>
-              <label for="p2Nama">Nama Lengkap & Gelar</label>
-              <input type="text" id="p2Nama" placeholder="Ketik nama atasan langsung..." required />
-
-              <label for="p2Jabatan">Jabatan Penuh</label>
+              <legend>3. Pihak Kedua (Atasan Langsung)</legend>
+              <label>Nama Lengkap & Gelar</label>
+              <input type="text" id="p2Nama" required />
+              <label>Jabatan Lengkap (Untuk Identitas)</label>
               <input type="text" id="p2Jabatan" required />
-
-              <label for="p2JabatanSingkat">Jabatan Singkat TTD (Opsional)</label>
-              <input type="text" id="p2JabatanSingkat" placeholder="Kosongkan jika sama dengan jabatan penuh" />
-
-              <label for="p2Pangkat">Pangkat / Golongan & NRP / NIP</label>
-              <input type="text" id="p2Pangkat" placeholder="Contoh: Kolonel Inf NRP. ..." required />
+              <label>Jabatan Di Atas Tanda Tangan (Opsional)</label>
+              <input type="text" id="p2JabatanSingkat" placeholder="Kosongkan jika sama dengan jabatan lengkap" />
+              <label>Pangkat / Golongan & NRP / NIP</label>
+              <input type="text" id="p2Pangkat" required />
             </fieldset>
           </div>
 
-          <!-- 2. SASARAN & INDIKATOR LAMPIRAN -->
-          <div class="section-head mt-20">
-            <div>
-              <h2>2. Sasaran Kegiatan & Indikator Kinerja Lampiran</h2>
-              <p class="muted">Tabel Lampiran terdiri dari No, Sasaran Kegiatan, Indikator Kinerja, dan Target.</p>
+          <fieldset class="box">
+            <legend>4. Lampiran: Sasaran Kegiatan, Indikator Kinerja & Target</legend>
+            <div class="section-head">
+              <p class="muted">Setiap Sasaran Kegiatan dapat memiliki satu atau lebih Indikator Kinerja beserta Targetnya.</p>
+              <button type="button" id="btnTambahSasaran" class="btn btn-primary btn-sm">+ Tambah Sasaran Kegiatan</button>
             </div>
-            <button type="button" id="btnTambahSasaran" class="btn btn-primary btn-sm">+ Tambah Sasaran Kegiatan</button>
-          </div>
+            <div id="sasaranContainer"></div>
+          </fieldset>
 
-          <div id="sasaranContainer"></div>
-
-          <!-- 3. PENGATURAN KHUSUS LAMPIRAN & KEGIATAN DAN ANGGARAN -->
           <fieldset class="box mt-20">
-            <legend>3. Judul Lampiran & Rincian Kegiatan dan Anggaran (Di Bawah Tabel)</legend>
-
-            <div class="grid-3">
+            <legend>5. Rincian Kegiatan dan Anggaran (Di Bawah Tabel Lampiran)</legend>
+            <div class="grid-2">
               <div>
-                <label for="lampiranSisipan">Keterangan Kanan Atas (Lampiran ... Perjanjian Kinerja)</label>
-                <input type="text" id="lampiranSisipan" placeholder="Ketik bebas, misal: I atau Revisi..." />
-              </div>
-              <div>
-                <label for="lampiranTahun">Tahun Pada Judul Lampiran (Bisa Diketik Sendiri)</label>
-                <input type="text" id="lampiranTahun" value="2026" placeholder="Contoh: 2026 atau 2027" />
-              </div>
-              <div>
-                <label for="unitKegiatanLabel">Nama Unit / Kegiatan Utama (Opsional)</label>
-                <input type="text" id="unitKegiatanLabel" placeholder="Kosongkan agar otomatis mengikuti unit terpilih" />
+                <label>Nama Unit Pelaksana Kegiatan (Opsional)</label>
+                <input type="text" id="unitKegiatanLabel" placeholder="Contoh: Bagian Hubungan Kemitraan Biro Infohan Setjen Kemhan" />
               </div>
             </div>
-
-            <div class="section-head mt-20">
-              <div>
-                <label style="margin:0;">Daftar Kegiatan & Anggaran (Otomatis Dijumlahkan)</label>
-              </div>
-              <button type="button" id="btnTambahKegiatanAnggaran" class="btn btn-secondary btn-sm">+ Tambah Kegiatan & Anggaran</button>
-            </div>
-
             <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th style="width:52%;">Uraian Kegiatan</th>
+                    <th style="width:68%;">Nama Kegiatan / Subkegiatan</th>
                     <th style="width:24%;">Anggaran (Rp)</th>
-                    <th style="width:14%;">Aksi</th>
+                    <th style="width:8%;">Aksi</th>
                   </tr>
                 </thead>
                 <tbody id="kegiatanAnggaranBody"></tbody>
               </table>
             </div>
+            <button type="button" id="btnTambahKegiatanAnggaran" class="btn btn-secondary btn-sm" style="margin-top:8px;">+ Tambah Rincian Kegiatan</button>
           </fieldset>
 
           <div class="form-footer">
-            <button type="button" id="btnKosongkan" class="btn btn-outline">Bersihkan Form</button>
-            <button type="submit" class="btn btn-primary">Buat & Simpan ke Arsip →</button>
+            <button type="submit" class="btn btn-primary">Simpan & Tampilkan Dokumen PK</button>
           </div>
         </form>
       </section>
 
-      <!-- 2. HASIL DOKUMEN PK (2 LEMBAR TERPISAH) -->
+      <!-- 2. HASIL DOKUMEN PK -->
       <section id="hasilSection" class="hidden">
         <div class="toolbar no-print">
           <button type="button" id="btnEditKembali" class="btn btn-outline">← Kembali Edit Input</button>
           <div class="toolbar-right">
-            <button type="button" id="btnDownloadPdf" class="btn btn-primary">⬇ Download PDF (2 Lembar)</button>
-            <button type="button" onclick="window.print()" class="btn btn-outline">🖨 Cetak</button>
+            <button type="button" onclick="window.print()" class="btn btn-primary">Cetak</button>
           </div>
         </div>
-
         <div id="dokumenPK" class="dokumen-wrapper"></div>
       </section>
 
-      <!-- 3. MASTER PEJABAT & UNIT KERJA BERJENJANG -->
-      <section id="masterSection" class="card hidden no-print">
-        <div class="section-head">
+      <!-- 3. MASTER PEJABAT & REKAP TABEL PEJABAT -->
+      <section id="masterSection" class="card hidden">
+        <div class="section-head no-print">
           <div>
-            <h2>Master Pejabat & Struktur Organisasi Kemhan (Eselon I → II → III → IV)</h2>
-            <p class="muted" id="masterRoleNote">Administrator dapat menambah Eselon I, II, III, dan IV. Admin Satker mengelola struktur di unit kerjanya.</p>
+            <h2>Master Struktur Organisasi & Pejabat</h2>
+            <p id="masterRoleNote" class="muted"></p>
           </div>
           <div class="toolbar-right">
-            <button type="button" id="btnTambahEselon1" class="btn btn-secondary btn-sm hidden">+ Tambah Unit Eselon I</button>
-            <button type="button" id="btnSimpanMaster" class="btn btn-primary btn-sm">💾 Simpan Semua Perubahan</button>
+            <button type="button" id="btnTambahEselon1" class="btn btn-secondary">+ Tambah Unit Eselon I</button>
+            <button type="button" id="btnResetMaster" class="btn btn-outline">Reset Bawaan</button>
+            <button type="button" id="btnSimpanMaster" class="btn btn-primary">Simpan Database Pejabat</button>
           </div>
         </div>
 
-        <div id="masterTreeContainer"></div>
+        <div id="masterTreeContainer" class="no-print"></div>
 
-        <div class="form-footer">
-          <button type="button" id="btnResetMaster" class="btn btn-outline hidden">Reset Struktur Default</button>
-          <button type="button" id="btnSimpanMasterBottom" class="btn btn-primary">💾 Simpan Semua Perubahan</button>
+        <div class="form-footer no-print">
+          <button type="button" id="btnSimpanMasterBottom" class="btn btn-primary">Simpan Database Pejabat</button>
+        </div>
+
+        <!-- TABEL REKAP PEJABAT (EKSPOR EXCEL / PDF) -->
+        <div id="rekapPejabatWrapper" class="box mt-20">
+          <div class="section-head">
+            <div>
+              <h3 style="margin:0;color:#6b1515;font-size:15px;">Daftar Pejabat & Personel Struktural</h3>
+              <p class="muted no-print">Rekap otomatis dari struktur pejabat di atas. Dapat diunduh ke Excel atau dicetak/disimpan PDF.</p>
+            </div>
+            <div class="toolbar-right no-print">
+              <button type="button" id="btnExportPejabatExcel" class="btn btn-secondary btn-sm">Download Excel (.xlsx)</button>
+              <button type="button" id="btnPrintPejabatPdf" class="btn btn-primary btn-sm">Download PDF / Cetak Tabel</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table id="rekapPejabatTable">
+              <thead>
+                <tr>
+                  <th style="width:42px;text-align:center;">No</th>
+                  <th style="width:23%;">Nama</th>
+                  <th style="width:20%;">Pangkat / Korps / Gol / Ruang</th>
+                  <th style="width:16%;">NIP / NRP</th>
+                  <th style="width:26%;">Jabatan</th>
+                  <th style="width:11%;">Ket</th>
+                </tr>
+              </thead>
+              <tbody id="rekapPejabatBody"></tbody>
+            </table>
+          </div>
         </div>
       </section>
 
-      <!-- 4. HALAMAN ARSIP PERJANJIAN KINERJA -->
+      <!-- 4. ARSIP PK -->
       <section id="arsipSection" class="card hidden no-print">
         <div class="section-head">
           <div>
-            <h2>Arsip Dokumen Perjanjian Kinerja</h2>
-            <p class="muted" id="arsipRoleNote">Menampilkan arsip sesuai hak akses akun.</p>
+            <h2>Arsip Perjanjian Kinerja</h2>
+            <p id="arsipRoleNote" class="muted"></p>
           </div>
-          <button type="button" id="btnTarikArsipGas" class="btn btn-outline btn-sm">↻ Sinkron dari Google Sheets</button>
+          <div class="toolbar-right">
+            <button type="button" id="btnTarikArsipGas" class="btn btn-secondary btn-sm">Sinkronkan Cloud</button>
+          </div>
         </div>
 
-        <div class="gas-bar" id="gasConfigBar">
+        <div id="gasConfigBar" class="gas-bar hidden">
           <input type="url" id="gasUrlInput" placeholder="URL Web App Google Apps Script..." />
-          <button type="button" id="btnSimpanGasUrl" class="btn btn-secondary btn-sm">Simpan URL</button>
+          <button type="button" id="btnSimpanGasUrl" class="btn btn-outline btn-sm">Simpan URL</button>
         </div>
 
-        <div class="table-wrap mt-20">
+        <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>Waktu Simpan</th>
                 <th>Tahun</th>
-                <th>Eselon I / II / Unit</th>
+                <th>Unit Kerja</th>
                 <th>Pihak Pertama</th>
                 <th>Pihak Kedua</th>
                 <th>Total Anggaran</th>
@@ -255,34 +270,32 @@
         </div>
       </section>
 
-      <!-- 5. MANAJEMEN AKUN & HAK AKSES (KHUSUS ADMINISTRATOR) -->
+      <!-- 5. KELOLA AKUN -->
       <section id="usersSection" class="card hidden no-print">
         <div class="section-head">
           <div>
-            <h2>Manajemen Akun Pengguna & Hak Akses Satker</h2>
-            <p class="muted">Buat akun Administrator (akses semua satker) atau Admin Satker (terkunci khusus pada 1 unit Eselon II).</p>
+            <h2>Manajemen Akun Pengguna & Hak Akses</h2>
+            <p class="muted">Khusus Administrator: Atur akun Administrator dan Admin Satker per Eselon II.</p>
           </div>
-          <button type="button" id="btnTambahUser" class="btn btn-secondary btn-sm">+ Tambah Akun Baru</button>
+          <div class="toolbar-right">
+            <button type="button" id="btnTambahUser" class="btn btn-secondary btn-sm">+ Tambah Akun</button>
+            <button type="button" id="btnSimpanUsers" class="btn btn-primary btn-sm">Simpan Akun</button>
+          </div>
         </div>
-
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th style="width:16%;">Username</th>
-                <th style="width:16%;">Password</th>
-                <th style="width:20%;">Nama Tampilan</th>
-                <th style="width:16%;">Hak Akses</th>
-                <th style="width:24%;">Unit Kerja Eselon II (Untuk Admin Satker)</th>
-                <th style="width:8%;">Aksi</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Nama Tampilan</th>
+                <th>Hak Akses</th>
+                <th>Unit Kerja Eselon II</th>
+                <th>Aksi</th>
               </tr>
             </thead>
             <tbody id="usersTableBody"></tbody>
           </table>
-        </div>
-
-        <div class="form-footer">
-          <button type="button" id="btnSimpanUsers" class="btn btn-primary">💾 Simpan Daftar Akun</button>
         </div>
       </section>
     </main>
