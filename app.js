@@ -644,4 +644,3 @@ refreshBagianSubbagDropdown();
 updateArsipCounter();
 addSasaranBlock();
 
-    if (sasaranText || indikatorList
