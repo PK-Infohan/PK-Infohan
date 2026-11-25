@@ -731,17 +731,17 @@ function renderPerjanjianKinerja(data) {
     ? kegList.map((k, idx) => `
         <tr>
           <td style="width:28px;">${idx + 1}</td>
-          <td>${k.uraian || "-"}</td>
+          <td class="col-keg">${k.uraian || "-"}</td>
           <td class="col-rp">${formatRpDash(k.anggaran)}</td>
         </tr>
       `).join("")
     : `
         <tr>
           <td style="width:28px;">-</td>
-          <td>Belum ada rincian kegiatan</td>
+          <td class="col-keg">Belum ada rincian kegiatan</td>
           <td class="col-rp">${formatRpDash(0)}</td>
         </tr>
-      `;
+';
 
   const kegiatanAnggaranHtml = `
     <div class="kegiatan-anggaran-box">
