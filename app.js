@@ -685,12 +685,8 @@ function renderPerjanjianKinerja(data) {
   const tahunLampiran = data.lampiranTahun || data.tahun;
   const satkerLampiran = data.eselon2 || data.eselon1 || "Biro Informasi Pertahanan";
 
-  const lampiranHeaderRowHtml = `
-    <div class="lampiran-header-row">
-      <div class="lampiran-satker-kiri">
-        ${satkerLampiran}<br />
-        ${data.bagian || ""}
-      </div>
+  const lampiranKananHtml = `
+    <div class="lampiran-kanan-wrap">
       <div class="lampiran-kanan-atas">
         Lampiran${sisipanTeks} Perjanjian Kinerja<br />
         ${satkerLampiran} Tahun ${tahunLampiran}
@@ -803,7 +799,7 @@ function renderPerjanjianKinerja(data) {
     </div>
 
     <div id="lembaran2" class="lembaran">
-      ${lampiranHeaderRowHtml}
+      ${lampiranKananHtml}
 
       <div class="judul-pk">
         PERJANJIAN KINERJA<br />
@@ -842,8 +838,8 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
   const safeSub = (currentActiveDoc.subbag || "PK_Kemhan").replace(/[^a-zA-Z0-9_-]/g, "_");
   const filename = `PK_${safeSub}_${currentActiveDoc.tahun}.pdf`;
 
-  const marginX = 10;
-  const marginY = 8;
+  const marginX = 11;
+  const marginY = 9;
 
   const workerCfg = {
     margin: [marginY, marginX, marginY, marginX],
@@ -852,27 +848,35 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
   };
 
-  const pdf = await html2pdf().set(workerCfg).from(l1).toPdf().get("pdf");
-  const canvas2 = await html2pdf().set(workerCfg).from(l2).toContainer().toCanvas().get("canvas");
+  l1.classList.add("pdf-capturing");
+  l2.classList.add("pdf-capturing");
 
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-  const usableWidth = pageWidth - marginX * 2;
-  const maxUsableHeight = pageHeight - marginY * 2;
-  let pdfHeight = (canvas2.height * usableWidth) / canvas2.width;
-  let drawWidth = usableWidth;
+  try {
+    const pdf = await html2pdf().set(workerCfg).from(l1).toPdf().get("pdf");
+    const canvas2 = await html2pdf().set(workerCfg).from(l2).toContainer().toCanvas().get("canvas");
 
-  if (pdfHeight > maxUsableHeight) {
-    const ratio = maxUsableHeight / pdfHeight;
-    pdfHeight = maxUsableHeight;
-    drawWidth = usableWidth * ratio;
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const usableWidth = pageWidth - marginX * 2;
+    const maxUsableHeight = pageHeight - marginY * 2;
+    let pdfHeight = (canvas2.height * usableWidth) / canvas2.width;
+    let drawWidth = usableWidth;
+
+    if (pdfHeight > maxUsableHeight) {
+      const ratio = maxUsableHeight / pdfHeight;
+      pdfHeight = maxUsableHeight;
+      drawWidth = usableWidth * ratio;
+    }
+
+    const offsetX = marginX + (usableWidth - drawWidth) / 2;
+
+    pdf.addPage("a4", "portrait");
+    pdf.addImage(canvas2.toDataURL("image/jpeg", 0.98), "JPEG", offsetX, marginY, drawWidth, pdfHeight);
+    pdf.save(filename);
+  } finally {
+    l1.classList.remove("pdf-capturing");
+    l2.classList.remove("pdf-capturing");
   }
-
-  const offsetX = marginX + (usableWidth - drawWidth) / 2;
-
-  pdf.addPage("a4", "portrait");
-  pdf.addImage(canvas2.toDataURL("image/jpeg", 0.98), "JPEG", offsetX, marginY, drawWidth, pdfHeight);
-  pdf.save(filename);
 });
 
 // ==========================================
