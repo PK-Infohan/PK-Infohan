@@ -650,11 +650,13 @@ function populateFormFromData(data) {
 function formatJabatanTtdRingkas(jabatanStr) {
   const raw = String(jabatanStr || "").trim();
   if (!raw) return "";
-  return raw
+  const cleaned = raw
     .replace(/\s+(?:Bag\.?\s*)?Hubmitra\s+Biro\s+Infohan\s+Setjen\s+Kemhan.*$/i, "")
     .replace(/\s+Biro\s+Infohan\s+Setjen\s+Kemhan.*$/i, "")
     .replace(/\s+Setjen\s+Kemhan.*$/i, "")
+    .replace(/,+$/g, "")
     .trim();
+  return cleaned ? `${cleaned},` : "";
 }
 
 function renderPerjanjianKinerja(data) {
@@ -680,15 +682,15 @@ function renderPerjanjianKinerja(data) {
 
       lampiranRowsHtml += `
         <tr class="${rowClasses.join(" ")}">
-          ${idx === 0 ? `<td rowspan="${inds.length}" style="text-align:center;">${sasaranNo}</td>` : ""}
+          ${idx === 0 ? `<td rowspan="${inds.length}">${sasaranNo}</td>` : ""}
           ${idx === 0 ? `<td rowspan="${inds.length}">${cleanSasaran}</td>` : ""}
           <td class="col-ind">
             <div class="ind-inline-wrap">
-              <span class="ind-inline-num">${prefixMarker}</span>
               <span class="ind-inline-text">${cleanIndikator}</span>
+              <span class="ind-inline-num">${prefixMarker}</span>
             </div>
           </td>
-          <td class="col-tgt" style="text-align:center;">${ind.target || ""}</td>
+          <td class="col-tgt">${ind.target || ""}</td>
         </tr>
       `;
     });
@@ -863,23 +865,23 @@ function renderPerjanjianKinerja(data) {
 }
 
 // ==========================================
-// TABEL REKAP PEJABAT (EXCEL & PDF)
+// DATA JABATAN (UNDUH FILE EXCEL & FILE PDF)
 // ==========================================
 function parsePangkatDanNipNrp(rawStr) {
   const txt = String(rawStr || "").trim();
-  if (!txt) return { pangkatKorpsGol: "-", nipNrp: "-" };
+  if (!txt) return { pangkatKorpsGolRuang: "-", nipNrp: "-" };
 
   const match = txt.match(/^(.*?)\s+((?:NIP|NRP)\.?\s*[\d\s./-]+)$/i);
   if (match) {
     return {
-      pangkatKorpsGol: match[1].trim() || "-",
+      pangkatKorpsGolRuang: match[1].trim() || "-",
       nipNrp: match[2].trim() || "-"
     };
   }
-  return { pangkatKorpsGol: txt, nipNrp: "-" };
+  return { pangkatKorpsGolRuang: txt, nipNrp: "-" };
 }
 
-function collectPejabatRekapRows() {
+function collectJabatanExportRows() {
   const isAdmin = currentUser?.role === "admin";
   const rows = [];
 
@@ -890,11 +892,11 @@ function collectPejabatRekapRows() {
     if (isAdmin && (e1.namaPejabat || e1.jabatanPimpinan)) {
       const parsedE1 = parsePangkatDanNipNrp(e1.pangkatNrpNip);
       rows.push({
-        nama: e1.namaPejabat || "-",
-        pangkatKorpsGol: parsedE1.pangkatKorpsGol,
-        nipNrp: parsedE1.nipNrp,
-        jabatan: e1.jabatanPimpinan || "-",
-        ket: e1.namaUnit || "Eselon I"
+        Nama: e1.namaPejabat || "-",
+        "Pangkat/Korps/Golongan/Ruang": parsedE1.pangkatKorpsGolRuang,
+        "NIP/NRP": parsedE1.nipNrp,
+        Jabatan: e1.jabatanPimpinan || "-",
+        Ket: e1.namaUnit || "Eselon I"
       });
     }
 
@@ -902,11 +904,11 @@ function collectPejabatRekapRows() {
       if (e2.namaPejabat || e2.jabatanPimpinan) {
         const parsedE2 = parsePangkatDanNipNrp(e2.pangkatNrpNip);
         rows.push({
-          nama: e2.namaPejabat || "-",
-          pangkatKorpsGol: parsedE2.pangkatKorpsGol,
-          nipNrp: parsedE2.nipNrp,
-          jabatan: e2.jabatanPimpinan || "-",
-          ket: e2.namaUnit || "Eselon II"
+          Nama: e2.namaPejabat || "-",
+          "Pangkat/Korps/Golongan/Ruang": parsedE2.pangkatKorpsGolRuang,
+          "NIP/NRP": parsedE2.nipNrp,
+          Jabatan: e2.jabatanPimpinan || "-",
+          Ket: e2.namaUnit || "Eselon II"
         });
       }
 
@@ -914,11 +916,11 @@ function collectPejabatRekapRows() {
         if (bag.namaKabag || bag.jabatanKabag) {
           const parsedBag = parsePangkatDanNipNrp(bag.pangkatKabag);
           rows.push({
-            nama: bag.namaKabag || "-",
-            pangkatKorpsGol: parsedBag.pangkatKorpsGol,
-            nipNrp: parsedBag.nipNrp,
-            jabatan: bag.jabatanKabag || "-",
-            ket: bag.namaBagian || "Eselon III"
+            Nama: bag.namaKabag || "-",
+            "Pangkat/Korps/Golongan/Ruang": parsedBag.pangkatKorpsGolRuang,
+            "NIP/NRP": parsedBag.nipNrp,
+            Jabatan: bag.jabatanKabag || "-",
+            Ket: bag.namaBagian || "Eselon III"
           });
         }
 
@@ -926,11 +928,11 @@ function collectPejabatRekapRows() {
           if (sub.namaPejabat || sub.jabatanKasubbag || sub.namaSubbag) {
             const parsedSub = parsePangkatDanNipNrp(sub.pangkatNrpNip);
             rows.push({
-              nama: sub.namaPejabat || "-",
-              pangkatKorpsGol: parsedSub.pangkatKorpsGol,
-              nipNrp: parsedSub.nipNrp,
-              jabatan: sub.jabatanKasubbag || sub.namaSubbag || "-",
-              ket: sub.namaSubbag || "Eselon IV"
+              Nama: sub.namaPejabat || "-",
+              "Pangkat/Korps/Golongan/Ruang": parsedSub.pangkatKorpsGolRuang,
+              "NIP/NRP": parsedSub.nipNrp,
+              Jabatan: sub.jabatanKasubbag || sub.namaSubbag || "-",
+              Ket: sub.namaSubbag || "Eselon IV"
             });
           }
         });
@@ -945,20 +947,19 @@ function renderRekapPejabatTable() {
   const tbody = document.getElementById("rekapPejabatBody");
   if (!tbody) return;
 
-  const rows = collectPejabatRekapRows();
+  const rows = collectJabatanExportRows();
   if (!rows.length) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#64748b;">Belum ada data pejabat.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#64748b;">Belum ada data jabatan.</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = rows.map((r, i) => `
+  tbody.innerHTML = rows.map(r => `
     <tr>
-      <td style="text-align:center;">${i + 1}</td>
-      <td>${r.nama}</td>
-      <td>${r.pangkatKorpsGol}</td>
-      <td>${r.nipNrp}</td>
-      <td>${r.jabatan}</td>
-      <td>${r.ket}</td>
+      <td>${r.Nama}</td>
+      <td>${r["Pangkat/Korps/Golongan/Ruang"]}</td>
+      <td>${r["NIP/NRP"]}</td>
+      <td>${r.Jabatan}</td>
+      <td>${r.Ket}</td>
     </tr>
   `).join("");
 }
@@ -967,39 +968,42 @@ document.getElementById("btnExportPejabatExcel").addEventListener("click", () =>
   syncDomToDbPejabat();
   renderRekapPejabatTable();
 
-  const rows = collectPejabatRekapRows().map((r, i) => ({
-    No: i + 1,
-    Nama: r.nama,
-    "Pangkat/Korps/Gol/Ruang": r.pangkatKorpsGol,
-    "NIP/NRP": r.nipNrp,
-    Jabatan: r.jabatan,
-    Ket: r.ket
-  }));
-
+  const rows = collectJabatanExportRows();
   if (!rows.length) {
-    alert("Tidak ada data pejabat untuk diunduh ke Excel.");
+    alert("Tidak ada data jabatan untuk diunduh ke Excel.");
     return;
   }
 
   if (typeof XLSX === "undefined") {
-    alert("Pustaka Excel belum termuat. Periksa koneksi internet dan muat ulang halaman.");
+    alert("Pustaka Excel belum termuat.");
     return;
   }
 
   const ws = XLSX.utils.json_to_sheet(rows);
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Data Pejabat");
-  XLSX.writeFile(wb, "Daftar_Pejabat_Kemhan.xlsx");
+  XLSX.utils.book_append_sheet(wb, ws, "Data Jabatan");
+  XLSX.writeFile(wb, "Daftar_Jabatan_Kemhan.xlsx");
 });
 
-document.getElementById("btnPrintPejabatPdf").addEventListener("click", () => {
+document.getElementById("btnDownloadJabatanPdf").addEventListener("click", async () => {
   syncDomToDbPejabat();
   renderRekapPejabatTable();
-  document.body.classList.add("printing-pejabat-table");
-  window.print();
-  setTimeout(() => {
-    document.body.classList.remove("printing-pejabat-table");
-  }, 500);
+
+  const targetEl = document.getElementById("jabatanExportArea");
+  if (!targetEl || typeof html2pdf === "undefined") {
+    alert("Pustaka PDF belum termuat.");
+    return;
+  }
+
+  const opt = {
+    margin: 10,
+    filename: "Daftar_Jabatan_Kemhan.pdf",
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, scrollX: 0, scrollY: 0 },
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+  };
+
+  await html2pdf().set(opt).from(targetEl).save();
 });
 
 // ==========================================
@@ -1042,8 +1046,8 @@ function renderMasterTree() {
             <input type="text" class="m-e1-nama" placeholder="Input nama pejabat..." value="${escAttr(e1.namaPejabat)}" />
           </div>
           <div>
-            <label>Pangkat / Korps / Gol / NIP / NRP</label>
-            <input type="text" class="m-e1-pangkat" placeholder="Pangkat & NRP/NIP..." value="${escAttr(e1.pangkatNrpNip)}" />
+            <label>Pangkat/Korps/Golongan/Ruang & NIP/NRP</label>
+            <input type="text" class="m-e1-pangkat" placeholder="Pangkat/Korps/Gol/Ruang & NIP/NRP..." value="${escAttr(e1.pangkatNrpNip)}" />
           </div>
         </div>
       `;
@@ -1072,8 +1076,8 @@ function renderMasterTree() {
               <input type="text" class="m-e2-nama" placeholder="Input nama pimpinan..." value="${escAttr(e2.namaPejabat)}" />
             </div>
             <div>
-              <label>Pangkat / Korps / Gol / NIP / NRP</label>
-              <input type="text" class="m-e2-pangkat" placeholder="Pangkat & NRP/NIP..." value="${escAttr(e2.pangkatNrpNip)}" />
+              <label>Pangkat/Korps/Golongan/Ruang & NIP/NRP</label>
+              <input type="text" class="m-e2-pangkat" placeholder="Pangkat/Korps/Gol/Ruang & NIP/NRP..." value="${escAttr(e2.pangkatNrpNip)}" />
             </div>
           </div>
 
@@ -1108,8 +1112,8 @@ function renderMasterTree() {
                 <input type="text" class="m-bag-nama-pejabat" placeholder="Input nama pejabat..." value="${escAttr(bag.namaKabag)}" />
               </div>
               <div>
-                <label>Pangkat / Korps / Gol / NIP / NRP</label>
-                <input type="text" class="m-bag-pangkat" placeholder="Pangkat & NRP/NIP..." value="${escAttr(bag.pangkatKabag)}" />
+                <label>Pangkat/Korps/Golongan/Ruang & NIP/NRP</label>
+                <input type="text" class="m-bag-pangkat" placeholder="Pangkat/Korps/Gol/Ruang & NIP/NRP..." value="${escAttr(bag.pangkatKabag)}" />
               </div>
             </div>
 
@@ -1120,7 +1124,7 @@ function renderMasterTree() {
                     <th style="width:24%;">Nama Sub Bagian (Eselon IV)</th>
                     <th style="width:28%;">Jabatan Lengkap (Untuk Judul & TTD)</th>
                     <th style="width:22%;">Nama Pejabat Kasubbag</th>
-                    <th style="width:20%;">Pangkat / Korps / Gol / NIP / NRP</th>
+                    <th style="width:20%;">Pangkat/Korps/Gol/Ruang & NIP/NRP</th>
                     <th style="width:6%;">Aksi</th>
                   </tr>
                 </thead>
@@ -1130,7 +1134,7 @@ function renderMasterTree() {
                       <td><input type="text" class="m-sub-nama" value="${escAttr(sub.namaSubbag)}" /></td>
                       <td><input type="text" class="m-sub-jabatan" value="${escAttr(sub.jabatanKasubbag)}" /></td>
                       <td><input type="text" class="m-sub-pejabat" placeholder="Input nama pejabat..." value="${escAttr(sub.namaPejabat)}" /></td>
-                      <td><input type="text" class="m-sub-pangkat" placeholder="Pangkat & NRP/NIP..." value="${escAttr(sub.pangkatNrpNip)}" /></td>
+                      <td><input type="text" class="m-sub-pangkat" placeholder="Pangkat/Korps/Gol/Ruang & NIP/NRP..." value="${escAttr(sub.pangkatNrpNip)}" /></td>
                       <td style="text-align:center;">
                         <button type="button" class="btn btn-danger btn-sm" onclick="hapusSubbag(${e1Idx}, ${e2Idx}, ${bagIdx}, ${subIdx})">×</button>
                       </td>
