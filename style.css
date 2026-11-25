@@ -157,7 +157,6 @@ th { background: #e2e8f0; text-align: left; }
 .btn-light { background: #f8fafc; color: #6b1515; }
 .btn-outline-light { background: transparent; border-color: #fff; color: #fff; }
 
-/* Lembar Dokumen Resmi */
 /* Lembar Dokumen Resmi: Portrait A4, Font Arial, Maksimalkan Halaman */
 .dokumen-wrapper {
   width: 100%;
