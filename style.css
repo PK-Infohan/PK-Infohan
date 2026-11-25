@@ -180,7 +180,7 @@ th { background: #e2e8f0; text-align: left; }
   background: #fff;
   border: 1px solid #cbd5e1;
   padding: 12mm 14mm;
-  line-height: 1.4;
+  line-height: 1.38;
   font-size: 12pt;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
@@ -192,7 +192,7 @@ th { background: #e2e8f0; text-align: left; }
   padding: 6mm 8mm !important;
 }
 
-/* Kop Surat: Logo Lebih Besar & Rapat di Sebelah Teks */
+/* Kop Surat: Logo & Teks 1 Tingkat Lebih Besar dari Pernyataan PK (14pt) */
 .kop-resmi {
   display: flex;
   align-items: center;
@@ -201,8 +201,8 @@ th { background: #e2e8f0; text-align: left; }
   margin-bottom: 6px;
 }
 .kop-logo {
-  width: 80px;
-  height: 80px;
+  width: 86px;
+  height: 86px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -212,18 +212,18 @@ th { background: #e2e8f0; text-align: left; }
 .kop-teks p {
   margin: 1px 0;
   font-weight: 700;
-  font-size: 12pt;
+  font-size: 14pt;
   letter-spacing: 0.2px;
   text-transform: uppercase;
-  line-height: 1.3;
+  line-height: 1.28;
 }
 
-/* Jarak Lebar Antara Biro Informasi Pertahanan & Judul Pernyataan PK */
+/* Judul Pernyataan PK: 12pt */
 .judul-pk {
   text-align: center;
   font-weight: 700;
   font-size: 12pt;
-  margin: 22px 0 14px;
+  margin: 20px 0 14px;
   text-transform: uppercase;
   line-height: 1.38;
 }
@@ -232,7 +232,7 @@ th { background: #e2e8f0; text-align: left; }
 .lampiran-kanan-wrap {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .lampiran-kanan-atas {
   display: inline-block;
@@ -267,7 +267,7 @@ th { background: #e2e8f0; text-align: left; }
   vertical-align: top;
 }
 
-/* Tabel Lampiran 4 Kolom: Garis Tepi Ditutup Rapat */
+/* Tabel Lampiran 4 Kolom: Huruf 1 Tingkat Lebih Kecil (10.5pt) */
 .lampiran-table {
   width: 100%;
   border-collapse: collapse;
@@ -277,8 +277,9 @@ th { background: #e2e8f0; text-align: left; }
 .lampiran-table th,
 .lampiran-table td {
   border: 1px solid #000;
-  padding: 6px 8px;
-  font-size: 12pt;
+  padding: 5px 7px;
+  font-size: 10.5pt;
+  line-height: 1.32;
   vertical-align: top;
 }
 .lampiran-table th {
@@ -286,49 +287,55 @@ th { background: #e2e8f0; text-align: left; }
   text-align: center;
   background: transparent;
 }
+/* Hilangkan garis horizontal antar-indikator dalam sasaran yang sama agar tampilan bersih */
+.lampiran-table tr.ind-sub-row td.col-ind,
+.lampiran-table tr.ind-sub-row td.col-tgt {
+  border-top: none;
+  padding-top: 2px;
+}
+.lampiran-table tr.ind-has-next td.col-ind,
+.lampiran-table tr.ind-has-next td.col-tgt {
+  border-bottom: none;
+  padding-bottom: 2px;
+}
 
-/* Penomoran Rapi Indikator Kinerja di Dalam Tabel Lampiran */
-.ind-item-row {
+.ind-inline-wrap {
   display: flex;
   align-items: flex-start;
-  gap: 6px;
-  margin-bottom: 4px;
+  gap: 5px;
 }
-.ind-item-row:last-child {
-  margin-bottom: 0;
-}
-.ind-item-num {
-  min-width: 18px;
+.ind-inline-num {
+  min-width: 16px;
   flex-shrink: 0;
   text-align: right;
 }
-.ind-item-text {
+.ind-inline-text {
   flex: 1;
 }
 
 /* Bagian Kegiatan dan Anggaran di Bawah Tabel Lampiran */
 .kegiatan-anggaran-box {
-  margin-top: 14px;
-  font-size: 12pt;
-  line-height: 1.4;
+  margin-top: 12px;
+  font-size: 11.5pt;
+  line-height: 1.36;
 }
 .kegiatan-anggaran-title {
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 .kegiatan-anggaran-ringkasan {
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   text-align: justify;
 }
 .rincian-keg-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 4px;
+  margin-top: 3px;
 }
 .rincian-keg-table th,
 .rincian-keg-table td {
   border: none;
-  padding: 3px 6px;
-  font-size: 12pt;
+  padding: 2.5px 6px;
+  font-size: 11.5pt;
   vertical-align: top;
 }
 .rincian-keg-table th {
@@ -339,7 +346,7 @@ th { background: #e2e8f0; text-align: left; }
 .rincian-keg-table td.col-rp {
   text-align: left;
   white-space: nowrap;
-  width: 195px;
+  width: 185px;
 }
 
 /* Blok Tanda Tangan: Pihak Kedua (Kiri) & Pihak Pertama (Kanan), Sejajar */
@@ -348,7 +355,7 @@ th { background: #e2e8f0; text-align: left; }
   justify-content: space-between;
   align-items: flex-end;
   gap: 28px;
-  margin-top: 20px;
+  margin-top: 18px;
   text-align: center;
   font-size: 12pt;
   break-inside: avoid;
@@ -367,10 +374,10 @@ th { background: #e2e8f0; text-align: left; }
 }
 .ttd-jabatan {
   line-height: 1.35;
-  min-height: 44px;
+  min-height: 42px;
 }
 .ttd-space {
-  height: 54px;
+  height: 50px;
 }
 .ttd-nama {
   font-weight: 700;
@@ -379,7 +386,7 @@ th { background: #e2e8f0; text-align: left; }
 }
 .ttd-pangkat {
   line-height: 1.35;
-  min-height: 20px;
+  min-height: 18px;
 }
 
 @page {
