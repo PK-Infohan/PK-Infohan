@@ -854,6 +854,7 @@ function renderPerjanjianKinerja(data) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+
 document.getElementById("btnDownloadPdf").addEventListener("click", async () => {
   const l1 = document.getElementById("lembaran1");
   const l2 = document.getElementById("lembaran2");
@@ -864,7 +865,6 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
 
   const marginX = 8;
   const marginY = 8;
-  const pxPerMm = 96 / 25.4;
 
   const workerCfg = {
     margin: [marginY, marginX, marginY, marginX],
@@ -873,7 +873,7 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
       scale: 2,
       useCORS: true,
       scrollY: 0,
-      windowWidth: l1.scrollWidth
+      windowWidth: document.documentElement.scrollWidth
     },
     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
   };
@@ -882,23 +882,30 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
   l2.classList.add("pdf-capturing");
 
   try {
-    const pdf = await html2pdf().set(workerCfg).from(l1).toPdf().get("pdf");
+    const canvas1 = await html2pdf().set(workerCfg).from(l1).toContainer().toCanvas().get("canvas");
     const canvas2 = await html2pdf().set(workerCfg).from(l2).toContainer().toCanvas().get("canvas");
 
-    const usableWidth = pdf.internal.pageSize.getWidth() - marginX * 2;
-    const drawWidth2 = (canvas2.width / 2) / pxPerMm;
-    const pdfHeight2 = (canvas2.height * drawWidth2) / canvas2.width;
-    const offsetX2 = marginX + Math.max(0, (usableWidth - drawWidth2) / 2);
+    const { jsPDF } = window.jspdf || html2pdf().set(workerCfg).toPdf().get("pdf").constructor;
+    const pdf = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
 
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const usableWidth = pageWidth - marginX * 2;
+
+    const drawWidth1 = usableWidth;
+    const drawHeight1 = (canvas1.height * drawWidth1) / canvas1.width;
+    pdf.addImage(canvas1.toDataURL("image/jpeg", 0.98), "JPEG", marginX, marginY, drawWidth1, drawHeight1);
+
+    const drawWidth2 = usableWidth;
+    const drawHeight2 = (canvas2.height * drawWidth2) / canvas2.width;
     pdf.addPage("a4", "portrait");
-    pdf.addImage(canvas2.toDataURL("image/jpeg", 0.98), "JPEG", offsetX2, marginY, drawWidth2, pdfHeight2);
+    pdf.addImage(canvas2.toDataURL("image/jpeg", 0.98), "JPEG", marginX, marginY, drawWidth2, drawHeight2);
+
     pdf.save(filename);
   } finally {
     l1.classList.remove("pdf-capturing");
     l2.classList.remove("pdf-capturing");
   }
 });
-
 // ==========================================
 // MASTER PEJABAT BERJENJANG (SESUAI ROLE)
 // ==========================================
