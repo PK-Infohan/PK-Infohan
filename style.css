@@ -185,6 +185,14 @@ th { background: #e2e8f0; text-align: left; }
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
+/* Halaman 1: Margin Kiri & Kanan Seimbang Masing-Masing 3 (24mm kiri & 24mm kanan) */
+#lembaran1 {
+  padding-top: 12mm;
+  padding-bottom: 12mm;
+  padding-left: 24mm;
+  padding-right: 24mm;
+}
+
 /* Kop Surat: Logo & Teks 1 Tingkat Lebih Besar dari Pernyataan PK (14pt) */
 .kop-resmi {
   display: flex;
@@ -221,16 +229,17 @@ th { background: #e2e8f0; text-align: left; }
   line-height: 1.38;
 }
 
-/* Blok Kanan Atas Lampiran */
+/* Blok Kanan Atas Lampiran: Naik ke Atas, Jarak 2 Enter ke Judul, Justify Rata Kiri-Kanan */
 .lampiran-kanan-wrap {
   display: flex;
   justify-content: flex-end;
-  margin-top: -2mm;
-  margin-bottom: 18px;
+  margin-top: -4mm;
+  margin-bottom: 26px;
 }
 .lampiran-kanan-atas {
   display: inline-block;
-  text-align: right;
+  text-align: justify;
+  text-align-last: justify;
   font-size: 10.5pt;
   line-height: 1.35;
 }
@@ -261,7 +270,7 @@ th { background: #e2e8f0; text-align: left; }
   vertical-align: top;
 }
 
-/* Tabel Lampiran 4 Kolom: Huruf 10.5pt & Justify */
+/* Tabel Lampiran 4 Kolom */
 .lampiran-table {
   width: 100%;
   border-collapse: collapse;
@@ -346,7 +355,7 @@ th { background: #e2e8f0; text-align: left; }
   width: 185px;
 }
 
-/* Blok Tanda Tangan: Koma Setelah Jabatan & Jarak Ke Nama 3 Kali Enter (64px) */
+/* Blok Tanda Tangan: Koma Setelah Jabatan & Jarak Ke Nama 4 Kali Enter (84px) */
 .ttd-row {
   display: flex;
   justify-content: space-between;
@@ -374,7 +383,7 @@ th { background: #e2e8f0; text-align: left; }
   min-height: 42px;
 }
 .ttd-space {
-  height: 64px;
+  height: 84px;
 }
 .ttd-nama {
   font-weight: 700;
@@ -403,6 +412,12 @@ th { background: #e2e8f0; text-align: left; }
     box-shadow: none !important;
     padding: 6mm 8mm;
     margin: 0;
+  }
+  #lembaran1 {
+    padding-top: 6mm;
+    padding-bottom: 6mm;
+    padding-left: 24mm;
+    padding-right: 24mm;
   }
   #lembaran2 { page-break-before: always; break-before: page; }
 }
