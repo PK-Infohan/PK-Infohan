@@ -762,8 +762,7 @@ function renderPerjanjianKinerja(data) {
         </tbody>
       </table>
     </div>
-  `;
-
+`;
   const ttdBlokHtml = `
     <div class="ttd-row">
       <div class="ttd-col">
