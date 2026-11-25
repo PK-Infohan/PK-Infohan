@@ -302,14 +302,15 @@ document.getElementById("btnKosongkan").addEventListener("click", () => {
 });
 
 // Konfigurasi Google Apps Script untuk Arsip Cloud
-document.getElementById("gasUrlInput").value = localStorage.getItem(GAS_URL_STORAGE_KEY) || "";
+// Konfigurasi Google Apps Script untuk Arsip Cloud
+document.getElementById("gasUrlInput").value = getGasUrl();
 document.getElementById("btnSimpanGasUrl").addEventListener("click", () => {
   localStorage.setItem(GAS_URL_STORAGE_KEY, document.getElementById("gasUrlInput").value.trim());
   alert("URL Google Apps Script untuk arsip cloud tersimpan.");
 });
 
 document.getElementById("btnTarikArsipGas").addEventListener("click", async () => {
-  const gasUrl = localStorage.getItem(GAS_URL_STORAGE_KEY);
+  const gasUrl = getGasUrl();
   if (!gasUrl) return alert("Isi URL Google Apps Script terlebih dahulu.");
   try {
     const res = await fetch(gasUrl + "?action=listPK");
@@ -342,6 +343,10 @@ document.getElementById("btnIsiContoh").addEventListener("click", () => {
     { sasaran: "Terlaksananya Layanan Umum, Ketatausahaan, Kerumahtanggaan dan Kepegawaian Biro Yang Tepat Waktu", indikator: "Persentase Pengelolaan BMN Yang Tertib", target: "90%", satuan: "Persen", anggaran: 1714602000 },
     { sasaran: "Tersedianya Dokumen Perencanaan, Penganggaran dan Pelaporan Biro Informasi Pertahanan", indikator: "Persentase Produk Perencanaan dan Penganggaran Biro Yang Akuntabel", target: "95%", satuan: "Persen", anggaran: 136880000 }
   ].forEach(addRow);
+});
+
+updateArsipCounter();
+addRow();
 });
 
 updateArsipCounter();
