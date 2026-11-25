@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Penyusunan & Arsip Perjanjian Kinerja - Biro Infohan Setjen Kemhan</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Library untuk generate & download PDF langsung -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+  <header class="topbar no-print">
+    <div>
+      <h1>Penyusunan Perjanjian Kinerja</h1>
+      <p>Biro Informasi Pertahanan • Sekretariat Jenderal Kemhan</p>
+    </div>
+    <div class="top-actions">
+      <button type="button" id="btnKeForm" class="btn btn-light">Form Input</button>
+      <button type="button" id="btnKeHasil" class="btn btn-outline-light">Dokumen PK</button>
+      <button type="button" id="btnKeArsip" class="btn btn-outline-light">Arsip PK (<span id="arsipCount">0</span>)</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- 1. TAMPILAN AWAL: FORM INPUT -->
+    <section id="formSection" class="card no-print">
+      <div class="section-head">
+        <h2>1. Data Pejabat & Identitas Perjanjian Kinerja</h2>
+        <button type="button" id="btnIsiContoh" class="btn btn-secondary btn-sm">Isi Template Contoh</button>
+      </div>
+
+      <form id="pkForm">
+        <div class="grid-3">
+          <div>
+            <label for="tahunAnggaran">Tahun Anggaran</label>
+            <input type="text" id="tahunAnggaran" value="2026" required />
+          </div>
+          <div>
+            <label for="tempatTanggal">Tempat & Tanggal Penetapan</label>
+            <input type="text" id="tempatTanggal" value="Jakarta, Januari 2026" required />
+          </div>
+          <div>
+            <label for="unitLabel">Nama Unit / Bagian / Subbag</label>
+            <input type="text" id="unitLabel" placeholder="Contoh: Subbag TU Bag Hubmitra" required />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <fieldset class="box">
+            <legend>Pihak Pertama (Yang Menyusun PK)</legend>
+            <label for="p1Nama">Nama Lengkap & Gelar (Ketik Bebas)</label>
+            <input type="text" id="p1Nama" placeholder="Ketik nama lengkap & gelar..." required />
+
+            <label for="p1Jabatan">Jabatan</label>
+            <input type="text" id="p1Jabatan" placeholder="Ketik jabatan..." required />
+
+            <label for="p1Pangkat">Pangkat / Golongan & NRP / NIP</label>
+            <input type="text" id="p1Pangkat" placeholder="Contoh: Letkol Cke NRP. 11020009710575" required />
+          </fieldset>
+
+          <fieldset class="box">
+            <legend>Pihak Kedua (Atasan Langsung)</legend>
+            <label for="p2Nama">Nama Lengkap & Gelar (Ketik Bebas)</label>
+            <input type="text" id="p2Nama" placeholder="Ketik nama lengkap & gelar..." required />
+
+            <label for="p2Jabatan">Jabatan</label>
+            <input type="text" id="p2Jabatan" placeholder="Ketik jabatan atasan..." required />
+
+            <label for="p2Pangkat">Pangkat / Golongan & NRP / NIP</label>
+            <input type="text" id="p2Pangkat" placeholder="Contoh: Kolonel Inf NRP. 11970036090675" required />
+          </fieldset>
+        </div>
+
+        <div class="section-head mt-20">
+          <h2>2. Sasaran Kegiatan, Indikator Kinerja, Target & Anggaran</h2>
+          <button type="button" id="btnTambahBaris" class="btn btn-secondary btn-sm">+ Tambah Baris Indikator</button>
+        </div>
+
+        <div class="table-wrap">
+          <table id="inputRowsTable">
+            <thead>
+              <tr>
+                <th style="width: 5%;">No</th>
+                <th style="width: 25%;">Sasaran Kegiatan</th>
+                <th style="width: 27%;">Indikator Kinerja</th>
+                <th style="width: 11%;">Target</th>
+                <th style="width: 10%;">Satuan</th>
+                <th style="width: 15%;">Anggaran (Rp)</th>
+                <th style="width: 7%;">Hapus</th>
+              </tr>
+            </thead>
+            <tbody id="inputRowsBody"></tbody>
+          </table>
+        </div>
+
+        <div class="form-footer">
+          <button type="button" id="btnKosongkan" class="btn btn-outline">Bersihkan Form</button>
+          <button type="submit" class="btn btn-primary">Buat & Simpan ke Arsip →</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 2. HASIL SETELAH DIINPUT: DOKUMEN PERJANJIAN KINERJA + DOWNLOAD PDF -->
+    <section id="hasilSection" class="hidden">
+      <div class="toolbar no-print">
+        <button type="button" id="btnEditKembali" class="btn btn-outline">← Kembali Edit Input</button>
+        <div class="toolbar-right">
+          <button type="button" id="btnDownloadPdf" class="btn btn-primary">⬇ Download PDF</button>
+          <button type="button" onclick="window.print()" class="btn btn-outline">🖨 Cetak</button>
+        </div>
+      </div>
+
+      <div id="dokumenPK" class="dokumen-kertas"></div>
+    </section>
+
+    <!-- 3. HALAMAN ARSIP PERJANJIAN KINERJA -->
+    <section id="arsipSection" class="card hidden no-print">
+      <div class="section-head">
+        <div>
+          <h2>Arsip Dokumen Perjanjian Kinerja</h2>
+          <p class="muted">Daftar seluruh PK yang pernah dibuat. Tersimpan di browser dan Google Sheets (jika URL diatur).</p>
+        </div>
+        <div class="toolbar-right">
+          <button type="button" id="btnTarikArsipGas" class="btn btn-outline btn-sm">↻ Sinkron dari Google Sheets</button>
+        </div>
+      </div>
+
+      <div class="gas-bar">
+        <input type="url" id="gasUrlInput" placeholder="Tempel URL Web App Google Apps Script (opsional untuk arsip cloud)..." />
+        <button type="button" id="btnSimpanGasUrl" class="btn btn-secondary btn-sm">Simpan URL</button>
+      </div>
+
+      <div class="table-wrap mt-20">
+        <table>
+          <thead>
+            <tr>
+              <th>Waktu Simpan</th>
+              <th>Tahun</th>
+              <th>Unit / Bagian</th>
+              <th>Pihak Pertama</th>
+              <th>Pihak Kedua</th>
+              <th>Total Anggaran</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="arsipTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
