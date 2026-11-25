@@ -204,7 +204,7 @@ async function saveToArsip(doc) {
   localStorage.setItem(ARSIP_STORAGE_KEY, JSON.stringify(arsipList));
   updateArsipCounter();
 
-  const gasUrl = localStorage.getItem(GAS_URL_STORAGE_KEY);
+  const gasUrl = getGasUrl();;
   if (gasUrl) {
     try {
       await fetch(gasUrl, {
