@@ -741,7 +741,7 @@ function renderPerjanjianKinerja(data) {
           <td class="col-keg">Belum ada rincian kegiatan</td>
           <td class="col-rp">${formatRpDash(0)}</td>
         </tr>
-';
+`;
 
   const kegiatanAnggaranHtml = `
     <div class="kegiatan-anggaran-box">
