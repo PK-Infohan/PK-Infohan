@@ -669,29 +669,27 @@ function renderPerjanjianKinerja(data) {
     const sasaranNo = sIdx + 1;
     const isMultiple = inds.length > 1;
 
-    const indikatorCellHtml = inds.map((ind, idx) => {
+    inds.forEach((ind, idx) => {
       const cleanIndikator = String(ind.indikator || "").replace(/^\s*(?:\d+[\.\)]|-)\s*/, "");
       const prefixMarker = isMultiple ? `${idx + 1}.` : "-";
-      return `
-        <div class="ind-item-row">
-          <span class="ind-item-num">${prefixMarker}</span>
-          <span class="ind-item-text">${cleanIndikator}</span>
-        </div>
+      const rowClasses = [];
+      if (idx > 0) rowClasses.push("ind-sub-row");
+      if (idx < inds.length - 1) rowClasses.push("ind-has-next");
+
+      lampiranRowsHtml += `
+        <tr class="${rowClasses.join(" ")}">
+          ${idx === 0 ? `<td rowspan="${inds.length}" style="text-align:center;">${sasaranNo}</td>` : ""}
+          ${idx === 0 ? `<td rowspan="${inds.length}">${cleanSasaran}</td>` : ""}
+          <td class="col-ind">
+            <div class="ind-inline-wrap">
+              <span class="ind-inline-num">${prefixMarker}</span>
+              <span class="ind-inline-text">${cleanIndikator}</span>
+            </div>
+          </td>
+          <td class="col-tgt" style="text-align:center;">${ind.target || ""}</td>
+        </tr>
       `;
-    }).join("");
-
-    const targetCellHtml = inds.map(ind =>
-      `<div class="ind-item-row" style="justify-content:center;"><span>${ind.target || ""}</span></div>`
-    ).join("");
-
-    lampiranRowsHtml += `
-      <tr>
-        <td style="text-align:center;">${sasaranNo}</td>
-        <td>${cleanSasaran}</td>
-        <td>${indikatorCellHtml}</td>
-        <td style="text-align:center;">${targetCellHtml}</td>
-      </tr>
-    `;
+    });
   });
 
   const kopBaris1 = data.level === "eselon1"
@@ -842,10 +840,10 @@ function renderPerjanjianKinerja(data) {
       <table class="lampiran-table">
         <thead>
           <tr>
-            <th style="width:44px;">No</th>
+            <th style="width:40px;">No</th>
             <th style="width:27%;">Sasaran Kegiatan</th>
-            <th style="width:52%;">Indikator Kinerja</th>
-            <th style="width:13%;">Target</th>
+            <th style="width:53%;">Indikator Kinerja</th>
+            <th style="width:12%;">Target</th>
           </tr>
         </thead>
         <tbody>
@@ -873,31 +871,57 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
   const marginX = 8;
   const marginY = 8;
 
-  const workerCfg = {
-    margin: [marginY, marginX, marginY, marginX],
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      scrollX: 0,
-      scrollY: 0
-    },
-    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-  };
-
   l1.classList.add("pdf-capturing");
   l2.classList.add("pdf-capturing");
 
   try {
-    const pdf = await html2pdf().set(workerCfg).from(l1).toPdf().get("pdf");
-    const canvas2 = await html2pdf().set(workerCfg).from(l2).toContainer().toCanvas().get("canvas");
+    const captureOpts1 = {
+      margin: 0,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        scrollX: 0,
+        scrollY: 0,
+        width: l1.offsetWidth,
+        windowWidth: l1.offsetWidth
+      },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    };
+
+    const captureOpts2 = {
+      ...captureOpts1,
+      html2canvas: {
+        ...captureOpts1.html2canvas,
+        width: l2.offsetWidth,
+        windowWidth: l2.offsetWidth
+      }
+    };
+
+    const canvas1 = await html2pdf().set(captureOpts1).from(l1).toContainer().toCanvas().get("canvas");
+    const canvas2 = await html2pdf().set(captureOpts2).from(l2).toContainer().toCanvas().get("canvas");
+    const pdf = await html2pdf().set(captureOpts1).toPdf().get("pdf");
 
     const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
     const usableWidth = pageWidth - marginX * 2;
-    const drawHeight2 = (canvas2.height * usableWidth) / canvas2.width;
+    const maxUsableHeight = pageHeight - marginY * 2;
 
-    pdf.addPage("a4", "portrait");
-    pdf.addImage(canvas2.toDataURL("image/jpeg", 0.98), "JPEG", marginX, marginY, usableWidth, drawHeight2);
+    const addCanvasPage = (canvas, isFirstPage) => {
+      if (!isFirstPage) pdf.addPage("a4", "portrait");
+      let drawWidth = usableWidth;
+      let drawHeight = (canvas.height * drawWidth) / canvas.width;
+      if (drawHeight > maxUsableHeight) {
+        const ratio = maxUsableHeight / drawHeight;
+        drawHeight = maxUsableHeight;
+        drawWidth = drawWidth * ratio;
+      }
+      const offsetX = marginX + (usableWidth - drawWidth) / 2;
+      pdf.addImage(canvas.toDataURL("image/jpeg", 0.98), "JPEG", offsetX, marginY, drawWidth, drawHeight);
+    };
+
+    addCanvasPage(canvas1, true);
+    addCanvasPage(canvas2, false);
     pdf.save(filename);
   } catch (err) {
     console.error("Gagal membuat PDF:", err);
