@@ -230,17 +230,28 @@ th { background: #e2e8f0; text-align: left; }
 }
 
 /* Blok Kanan Atas Lampiran: Naik ke Atas, Jarak 2 Enter ke Judul, Justify Rata Kiri-Kanan */
+/* Blok Kanan Atas Lampiran: Di Sisi Kanan, Lebar Sesuai Teks, L Sejajar B & a Sejajar 7 */
 .lampiran-kanan-wrap {
-  width: 100%;
+  display: flex;
+  justify-content: flex-end;
   margin-top: -4mm;
   margin-bottom: 26px;
 }
 .lampiran-kanan-atas {
-  width: 100%;
-  text-align: justify;
-  text-align-last: justify;
+  display: inline-block;
+  width: fit-content;
   font-size: 10.5pt;
   line-height: 1.35;
+}
+.lampiran-baris-atas {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.lampiran-baris-bawah {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
 }
 
 /* Isi Dokumen Halaman 1 */
