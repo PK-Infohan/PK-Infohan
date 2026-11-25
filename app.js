@@ -1,350 +1,123 @@
-const ARSIP_STORAGE_KEY = "arsip_pk_roinfohan_v1";
-const GAS_URL_STORAGE_KEY = "arsip_pk_gas_url_v1";
-const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbyIksW2hVtI7CI6VW73tCe9weFbo7GRikodlvFnhP-IBFMZkZrP_ZEcGwEpnPErSkL1/exec";
+* { box-sizing: border-box; font-family: "Segoe UI", Arial, sans-serif; }
+body { margin: 0; background: #f1f5f9; color: #0f172a; }
 
-function getGasUrl() {
-  return localStorage.getItem(GAS_URL_STORAGE_KEY) || DEFAULT_GAS_URL;
+.topbar {
+  background: #6b1515;
+  color: #fff;
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.topbar h1 { margin: 0; font-size: 18px; }
+.topbar p { margin: 2px 0 0; font-size: 12px; opacity: 0.9; }
+.top-actions, .toolbar-right { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+.container { max-width: 1220px; margin: 22px auto; padding: 0 16px; }
+.hidden { display: none !important; }
+
+.card {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 22px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
-const formSection = document.getElementById("formSection");
-const hasilSection = document.getElementById("hasilSection");
-const arsipSection = document.getElementById("arsipSection");
-const inputRowsBody = document.getElementById("inputRowsBody");
-const dokumenPK = document.getElementById("dokumenPK");
-
-let currentActiveDoc = null;
-let arsipList = JSON.parse(localStorage.getItem(ARSIP_STORAGE_KEY) || "[]");
-
-function showView(view) {
-  [formSection, hasilSection, arsipSection].forEach(el => el.classList.add("hidden"));
-  if (view === "form") formSection.classList.remove("hidden");
-  if (view === "hasil") hasilSection.classList.remove("hidden");
-  if (view === "arsip") {
-    renderArsipTable();
-    arsipSection.classList.remove("hidden");
-  }
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
 }
+.section-head h2 { margin: 0; font-size: 16px; }
+.muted { color: #64748b; font-size: 12.5px; margin: 3px 0 0; }
+.mt-20 { margin-top: 20px; }
 
-function updateArsipCounter() {
-  document.getElementById("arsipCount").textContent = arsipList.length;
+.grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 14px; }
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 16px; margin-bottom: 14px; }
+.box { border: 1px solid #cbd5e1; border-radius: 8px; padding: 14px; background: #f8fafc; }
+.box legend { font-weight: 700; padding: 0 6px; color: #6b1515; }
+
+label { display: block; font-size: 12px; font-weight: 600; margin: 8px 0 4px; color: #334155; }
+input, select, textarea {
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid #94a3b8;
+  border-radius: 6px;
+  font-size: 13px;
+  background: #fff;
 }
+textarea { resize: vertical; min-height: 46px; }
 
-function addRow(row = { sasaran: "", indikator: "", target: "", satuan: "", anggaran: "" }) {
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td class="row-num" style="text-align:center;"></td>
-    <td><textarea class="f-sasaran" placeholder="Sasaran kegiatan...">${row.sasaran}</textarea></td>
-    <td><textarea class="f-indikator" placeholder="Indikator kinerja...">${row.indikator}</textarea></td>
-    <td><input type="text" class="f-target" placeholder="12 / 95%" value="${row.target}" /></td>
-    <td><input type="text" class="f-satuan" placeholder="Laporan" value="${row.satuan}" /></td>
-    <td><input type="number" class="f-anggaran" min="0" placeholder="0" value="${row.anggaran}" /></td>
-    <td style="text-align:center;"><button type="button" class="btn btn-outline btn-sm btn-del">×</button></td>
-  `;
-  tr.querySelector(".btn-del").addEventListener("click", () => {
-    tr.remove();
-    refreshRowNumbers();
-  });
-  inputRowsBody.appendChild(tr);
-  refreshRowNumbers();
+.sasaran-card {
+  border: 1px solid #94a3b8;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 14px;
+  background: #f8fafc;
 }
-
-function refreshRowNumbers() {
-  [...inputRowsBody.querySelectorAll("tr")].forEach((tr, idx) => {
-    tr.querySelector(".row-num").textContent = idx + 1;
-  });
+.sasaran-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
 }
+.sasaran-title { font-weight: 700; color: #6b1515; font-size: 14px; }
 
-function formatRp(angka) {
-  return "Rp " + Number(angka || 0).toLocaleString("id-ID");
+.gas-bar { display: flex; gap: 8px; margin-top: 10px; }
+.table-wrap { overflow-x: auto; margin-top: 10px; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th, td { border: 1px solid #cbd5e1; padding: 6px 8px; vertical-align: top; }
+th { background: #e2e8f0; text-align: left; }
+
+.form-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; flex-wrap: wrap; }
+
+.btn { padding: 8px 14px; border-radius: 6px; border: 1px solid transparent; font-weight: 600; font-size: 13px; cursor: pointer; }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+.btn-primary { background: #6b1515; color: #fff; }
+.btn-secondary { background: #1e293b; color: #fff; }
+.btn-outline { background: #fff; border-color: #94a3b8; color: #0f172a; }
+.btn-danger { background: #b91c1c; color: #fff; }
+.btn-light { background: #f8fafc; color: #6b1515; }
+.btn-outline-light { background: transparent; border-color: #fff; color: #fff; }
+
+/* Lembar Dokumen Resmi (Halaman 1 Pernyataan + Halaman 2 Lampiran) */
+.dokumen-wrapper * { font-family: "Times New Roman", Times, serif; color: #000; }
+.lembaran {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  padding: 28px 36px;
+  line-height: 1.45;
+  margin-bottom: 20px;
 }
+.page-break { page-break-before: always; break-before: page; }
 
-function collectFormData() {
-  const items = [...inputRowsBody.querySelectorAll("tr")].map((tr, idx) => ({
-    no: idx + 1,
-    sasaran: tr.querySelector(".f-sasaran").value.trim(),
-    indikator: tr.querySelector(".f-indikator").value.trim(),
-    target: tr.querySelector(".f-target").value.trim(),
-    satuan: tr.querySelector(".f-satuan").value.trim(),
-    anggaran: Number(tr.querySelector(".f-anggaran").value || 0)
-  })).filter(x => x.sasaran || x.indikator || x.target || x.anggaran > 0);
+.kop { text-align: center; border-bottom: 3px double #000; padding-bottom: 6px; margin-bottom: 14px; }
+.kop p { margin: 2px 0; font-weight: 700; font-size: 13.5px; text-transform: uppercase; }
+.judul-pk { text-align: center; font-weight: 700; font-size: 14px; margin: 10px 0 14px; text-transform: uppercase; line-height: 1.35; }
+.paragraf { font-size: 12.5px; margin: 8px 0; text-align: justify; }
 
-  return {
-    id: "PK-" + Date.now(),
-    createdAt: new Date().toLocaleString("id-ID"),
-    tahun: document.getElementById("tahunAnggaran").value.trim(),
-    tempatTanggal: document.getElementById("tempatTanggal").value.trim(),
-    unitLabel: document.getElementById("unitLabel").value.trim(),
-    pihakPertama: {
-      nama: document.getElementById("p1Nama").value.trim(),
-      jabatan: document.getElementById("p1Jabatan").value.trim(),
-      pangkat: document.getElementById("p1Pangkat").value.trim()
-    },
-    pihakKedua: {
-      nama: document.getElementById("p2Nama").value.trim(),
-      jabatan: document.getElementById("p2Jabatan").value.trim(),
-      pangkat: document.getElementById("p2Pangkat").value.trim()
-    },
-    items,
-    totalAnggaran: items.reduce((sum, i) => sum + i.anggaran, 0)
-  };
+.identitas-table { width: 100%; border-collapse: collapse; margin: 6px 0; }
+.identitas-table td { border: none; padding: 2px 6px; font-size: 12.5px; }
+
+.lampiran-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.lampiran-table th, .lampiran-table td { border: 1px solid #000; padding: 6px 8px; font-size: 12px; }
+.lampiran-table th { background: #f1f5f9; text-align: center; }
+
+.ttd-row { display: flex; justify-content: space-between; gap: 28px; margin-top: 24px; text-align: center; font-size: 12.5px; }
+.ttd-col { flex: 1; }
+.ttd-space { height: 62px; }
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+  .container { margin: 0; padding: 0; max-width: 100%; }
+  .lembaran { border: none; padding: 0; margin-bottom: 0; }
 }
-
-function populateFormFromData(data) {
-  document.getElementById("tahunAnggaran").value = data.tahun || "";
-  document.getElementById("tempatTanggal").value = data.tempatTanggal || "";
-  document.getElementById("unitLabel").value = data.unitLabel || "";
-  document.getElementById("p1Nama").value = data.pihakPertama?.nama || "";
-  document.getElementById("p1Jabatan").value = data.pihakPertama?.jabatan || "";
-  document.getElementById("p1Pangkat").value = data.pihakPertama?.pangkat || "";
-  document.getElementById("p2Nama").value = data.pihakKedua?.nama || "";
-  document.getElementById("p2Jabatan").value = data.pihakKedua?.jabatan || "";
-  document.getElementById("p2Pangkat").value = data.pihakKedua?.pangkat || "";
-
-  inputRowsBody.innerHTML = "";
-  (data.items && data.items.length ? data.items : [{}]).forEach(addRow);
-}
-
-function renderPerjanjianKinerja(data) {
-  currentActiveDoc = data;
-  const rowsHtml = (data.items || []).map((it, idx) => `
-    <tr>
-      <td style="text-align:center;">${idx + 1}</td>
-      <td>${it.sasaran}</td>
-      <td>${it.indikator}</td>
-      <td style="text-align:center;">${it.target}</td>
-      <td style="text-align:center;">${it.satuan}</td>
-      <td style="text-align:right;">${formatRp(it.anggaran)}</td>
-    </tr>
-  `).join("");
-
-  dokumenPK.innerHTML = `
-    <div class="kop">
-      <p>Kementerian Pertahanan Republik Indonesia</p>
-      <p>Sekretariat Jenderal • Biro Informasi Pertahanan</p>
-    </div>
-
-    <div class="judul-pk">PERJANJIAN KINERJA TAHUN ${data.tahun}</div>
-
-    <p style="font-size:13px;">Dalam rangka mewujudkan manajemen pemerintahan yang efektif, transparan, dan akuntabel serta berorientasi pada hasil, kami yang bertanda tangan di bawah ini:</p>
-
-    <table class="identitas-table">
-      <tr>
-        <td style="width:120px;"><strong>Nama</strong></td>
-        <td style="width:12px;">:</td>
-        <td><strong>${data.pihakPertama.nama}</strong></td>
-      </tr>
-      <tr>
-        <td><strong>Jabatan</strong></td>
-        <td>:</td>
-        <td>${data.pihakPertama.jabatan}</td>
-      </tr>
-    </table>
-    <p style="font-size:13px;">Selanjutnya disebut <strong>Pihak Pertama</strong>.</p>
-
-    <table class="identitas-table">
-      <tr>
-        <td style="width:120px;"><strong>Nama</strong></td>
-        <td style="width:12px;">:</td>
-        <td><strong>${data.pihakKedua.nama}</strong></td>
-      </tr>
-      <tr>
-        <td><strong>Jabatan</strong></td>
-        <td>:</td>
-        <td>${data.pihakKedua.jabatan}</td>
-      </tr>
-    </table>
-    <p style="font-size:13px;">Selaku atasan langsung Pihak Pertama, selanjutnya disebut <strong>Pihak Kedua</strong>.</p>
-
-    <p style="font-size:13px;">Pihak Pertama berjanji akan mewujudkan target kinerja sesuai lampiran Perjanjian Kinerja ini, dalam rangka mencapai target kinerja jangka pendek dan jangka menengah yang telah ditetapkan dalam dokumen perencanaan.</p>
-
-    <div class="judul-pk" style="margin-top:20px;">LAMPIRAN PERJANJIAN KINERJA TAHUN ${data.tahun}</div>
-
-    <table class="pk-table">
-      <thead>
-        <tr>
-          <th style="width:40px;">No</th>
-          <th>Sasaran Kegiatan</th>
-          <th>Indikator Kinerja</th>
-          <th style="width:85px;">Target</th>
-          <th style="width:80px;">Satuan</th>
-          <th style="width:135px;">Anggaran</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${rowsHtml || `<tr><td colspan="6" style="text-align:center;">Belum ada rincian indikator</td></tr>`}
-        <tr>
-          <td colspan="5" style="text-align:right;"><strong>Jumlah Anggaran</strong></td>
-          <td style="text-align:right;"><strong>${formatRp(data.totalAnggaran)}</strong></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="ttd-row">
-      <div class="ttd-col">
-        <div>Pihak Kedua,</div>
-        <div>${data.pihakKedua.jabatan}</div>
-        <div class="ttd-space"></div>
-        <div><strong><u>${data.pihakKedua.nama}</u></strong></div>
-        <div>${data.pihakKedua.pangkat}</div>
-      </div>
-      <div class="ttd-col">
-        <div>${data.tempatTanggal}</div>
-        <div>Pihak Pertama,</div>
-        <div class="ttd-space"></div>
-        <div><strong><u>${data.pihakPertama.nama}</u></strong></div>
-        <div>${data.pihakPertama.pangkat}</div>
-      </div>
-    </div>
-  `;
-
-  showView("hasil");
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-async function saveToArsip(doc) {
-  arsipList.unshift(doc);
-  localStorage.setItem(ARSIP_STORAGE_KEY, JSON.stringify(arsipList));
-  updateArsipCounter();
-
-  const gasUrl = getGasUrl();
-  if (gasUrl) {
-    try {
-      await fetch(gasUrl, {
-        method: "POST",
-        body: JSON.stringify({ action: "savePK", payload: doc })
-      });
-    } catch (err) {
-      console.warn("Gagal sinkron ke Google Sheets:", err);
-    }
-  }
-}
-
-function renderArsipTable() {
-  const tbody = document.getElementById("arsipTableBody");
-  if (!arsipList.length) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#64748b;">Belum ada arsip Perjanjian Kinerja.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = arsipList.map((doc, idx) => `
-    <tr>
-      <td>${doc.createdAt || "-"}</td>
-      <td>${doc.tahun}</td>
-      <td><strong>${doc.unitLabel || "-"}</strong></td>
-      <td>${doc.pihakPertama?.nama || "-"}</td>
-      <td>${doc.pihakKedua?.nama || "-"}</td>
-      <td>${formatRp(doc.totalAnggaran)}</td>
-      <td>
-        <div class="toolbar-right">
-          <button type="button" class="btn btn-primary btn-sm" onclick="bukaArsip(${idx})">Buka / PDF</button>
-          <button type="button" class="btn btn-outline btn-sm" onclick="editArsip(${idx})">Edit</button>
-          <button type="button" class="btn btn-danger btn-sm" onclick="hapusArsip(${idx})">Hapus</button>
-        </div>
-      </td>
-    </tr>
-  `).join("");
-}
-
-window.bukaArsip = function(idx) {
-  renderPerjanjianKinerja(arsipList[idx]);
-};
-
-window.editArsip = function(idx) {
-  populateFormFromData(arsipList[idx]);
-  showView("form");
-};
-
-window.hapusArsip = function(idx) {
-  if (!confirm("Hapus arsip Perjanjian Kinerja ini dari daftar lokal?")) return;
-  arsipList.splice(idx, 1);
-  localStorage.setItem(ARSIP_STORAGE_KEY, JSON.stringify(arsipList));
-  updateArsipCounter();
-  renderArsipTable();
-};
-
-// Download PDF langsung menggunakan html2pdf.js
-document.getElementById("btnDownloadPdf").addEventListener("click", () => {
-  if (!currentActiveDoc) return;
-  const safeUnit = (currentActiveDoc.unitLabel || "Biro_Infohan").replace(/[^a-zA-Z0-9_-]/g, "_");
-  const filename = `PK_${safeUnit}_${currentActiveDoc.tahun}.pdf`;
-
-  const opt = {
-    margin: [12, 14, 12, 14],
-    filename: filename,
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-  };
-
-  html2pdf().set(opt).from(dokumenPK).save();
-});
-
-// Submit Form -> Simpan Arsip & Tampilkan Dokumen PK
-document.getElementById("pkForm").addEventListener("submit", async e => {
-  e.preventDefault();
-  const doc = collectFormData();
-  await saveToArsip(doc);
-  renderPerjanjianKinerja(doc);
-});
-
-// Navigasi & Tombol Pendukung
-document.getElementById("btnTambahBaris").addEventListener("click", () => addRow());
-document.getElementById("btnEditKembali").addEventListener("click", () => showView("form"));
-document.getElementById("btnKeForm").addEventListener("click", () => showView("form"));
-document.getElementById("btnKeHasil").addEventListener("click", () => {
-  if (currentActiveDoc) renderPerjanjianKinerja(currentActiveDoc);
-  else renderPerjanjianKinerja(collectFormData());
-});
-document.getElementById("btnKeArsip").addEventListener("click", () => showView("arsip"));
-
-document.getElementById("btnKosongkan").addEventListener("click", () => {
-  document.getElementById("pkForm").reset();
-  inputRowsBody.innerHTML = "";
-  addRow();
-});
-
-// Konfigurasi Google Apps Script untuk Arsip Cloud
-document.getElementById("gasUrlInput").value = getGasUrl();
-document.getElementById("btnSimpanGasUrl").addEventListener("click", () => {
-  localStorage.setItem(GAS_URL_STORAGE_KEY, document.getElementById("gasUrlInput").value.trim());
-  alert("URL Google Apps Script untuk arsip cloud tersimpan.");
-});
-
-document.getElementById("btnTarikArsipGas").addEventListener("click", async () => {
-  const gasUrl = getGasUrl();
-  if (!gasUrl) return alert("Isi URL Google Apps Script terlebih dahulu.");
-  try {
-    const res = await fetch(gasUrl + "?action=listPK");
-    const json = await res.json();
-    if (json.status === "ok" && Array.isArray(json.data)) {
-      arsipList = json.data;
-      localStorage.setItem(ARSIP_STORAGE_KEY, JSON.stringify(arsipList));
-      updateArsipCounter();
-      renderArsipTable();
-      alert("Arsip berhasil disinkronkan dari Google Sheets.");
-    }
-  } catch (err) {
-    alert("Gagal menarik arsip dari Google Sheets: " + err.message);
-  }
-});
-
-document.getElementById("btnIsiContoh").addEventListener("click", () => {
-  document.getElementById("tahunAnggaran").value = "2026";
-  document.getElementById("tempatTanggal").value = "Jakarta, Januari 2026";
-  document.getElementById("unitLabel").value = "Subbag Tata Usaha Biro Bag Hubmitra";
-  document.getElementById("p1Nama").value = "I Putu Astika, S.T.";
-  document.getElementById("p1Jabatan").value = "Kasubbag Tata Usaha Biro Bag. Hubmitra Biro Infohan Setjen Kemhan";
-  document.getElementById("p1Pangkat").value = "Letkol Cke NRP. 11020009710575";
-  document.getElementById("p2Nama").value = "A. Yoyok Pranowo, S.IP., M.Han.";
-  document.getElementById("p2Jabatan").value = "Kabag Hubmitra Biro Infohan Setjen Kemhan";
-  document.getElementById("p2Pangkat").value = "Kolonel Inf NRP. 11970036090675";
-
-  inputRowsBody.innerHTML = "";
-  [
-    { sasaran: "Terlaksananya Layanan Umum, Ketatausahaan, Kerumahtanggaan dan Kepegawaian Biro Yang Tepat Waktu", indikator: "Persentase Pengelolaan BMN Yang Tertib", target: "90%", satuan: "Persen", anggaran: 1714602000 },
-    { sasaran: "Tersedianya Dokumen Perencanaan, Penganggaran dan Pelaporan Biro Informasi Pertahanan", indikator: "Persentase Produk Perencanaan dan Penganggaran Biro Yang Akuntabel", target: "95%", satuan: "Persen", anggaran: 136880000 }
-  ].forEach(addRow);
-});
-
-updateArsipCounter();
-addRow();
