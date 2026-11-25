@@ -1,5 +1,5 @@
 const ARSIP_STORAGE_KEY = "arsip_pk_roinfohan_v1";
-const GAS_URL_STORAGE_KEY = "arsip_pk_gas_url_v1";
+const GAS_URL_STORAGE_KEY = "https://script.google.com/macros/s/AKfycbyIksW2hVtI7CI6VW73tCe9weFbo7GRikodlvFnhP-IBFMZkZrP_ZEcGwEpnPErSkL1/exec";
 
 const formSection = document.getElementById("formSection");
 const hasilSection = document.getElementById("hasilSection");
