@@ -30,7 +30,7 @@
           Masuk ke Aplikasi →
         </button>
       </form>
-  </div>
+    </div>
   </section>
 
   <!-- APLIKASI UTAMA (TAMPIL SETELAH LOGIN) -->
@@ -61,7 +61,7 @@
         <form id="pkForm">
           <div class="grid-4">
             <div>
-              <label for="tahunAnggaran">Tahun Anggaran</label>
+              <label for="tahunAnggaran">Tahun Anggaran (Pernyataan & Judul)</label>
               <input type="text" id="tahunAnggaran" value="2027" required />
             </div>
             <div>
@@ -130,15 +130,56 @@
             </fieldset>
           </div>
 
+          <!-- 2. SASARAN & INDIKATOR LAMPIRAN -->
           <div class="section-head mt-20">
             <div>
               <h2>2. Sasaran Kegiatan & Indikator Kinerja Lampiran</h2>
-              <p class="muted">Bisa input lebih dari 1 Sasaran Kegiatan, dan di tiap Sasaran bisa tambah lebih dari 1 Indikator Kinerja.</p>
+              <p class="muted">Tabel Lampiran terdiri dari No, Sasaran Kegiatan, Indikator Kinerja, dan Target.</p>
             </div>
             <button type="button" id="btnTambahSasaran" class="btn btn-primary btn-sm">+ Tambah Sasaran Kegiatan</button>
           </div>
 
           <div id="sasaranContainer"></div>
+
+          <!-- 3. PENGATURAN KHUSUS LAMPIRAN & KEGIATAN DAN ANGGARAN -->
+          <fieldset class="box mt-20">
+            <legend>3. Judul Lampiran & Rincian Kegiatan dan Anggaran (Di Bawah Tabel)</legend>
+
+            <div class="grid-3">
+              <div>
+                <label for="lampiranSisipan">Keterangan Kanan Atas (Lampiran ... Perjanjian Kinerja)</label>
+                <input type="text" id="lampiranSisipan" placeholder="Ketik bebas, misal: I atau Revisi..." />
+              </div>
+              <div>
+                <label for="lampiranTahun">Tahun Pada Judul Lampiran (Bisa Diketik Sendiri)</label>
+                <input type="text" id="lampiranTahun" value="2026" placeholder="Contoh: 2026 atau 2027" />
+              </div>
+              <div>
+                <label for="unitKegiatanLabel">Nama Unit / Kegiatan Utama (Opsional)</label>
+                <input type="text" id="unitKegiatanLabel" placeholder="Kosongkan agar otomatis mengikuti unit terpilih" />
+              </div>
+            </div>
+
+            <div class="section-head mt-20">
+              <div>
+                <label style="margin:0;">Daftar Kegiatan & Anggaran (Otomatis Dijumlahkan)</label>
+              </div>
+              <button type="button" id="btnTambahKegiatanAnggaran" class="btn btn-secondary btn-sm">+ Tambah Kegiatan & Anggaran</button>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:52%;">Uraian Kegiatan</th>
+                    <th style="width:24%;">Anggaran (Rp)</th>
+                    <th style="width:14%;">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="kegiatanAnggaranBody"></tbody>
+              </table>
+            </div>
+          </fieldset>
 
           <div class="form-footer">
             <button type="button" id="btnKosongkan" class="btn btn-outline">Bersihkan Form</button>
