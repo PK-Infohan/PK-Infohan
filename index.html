@@ -6,6 +6,7 @@
   <title>Penyusunan & Arsip Perjanjian Kinerja - Kementerian Pertahanan RI</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -185,7 +186,7 @@
         <div id="dokumenPK" class="dokumen-wrapper"></div>
       </section>
 
-      <!-- 3. MASTER PEJABAT & REKAP TABEL PEJABAT -->
+      <!-- 3. MASTER PEJABAT & REKAP TABEL JABATAN -->
       <section id="masterSection" class="card hidden">
         <div class="section-head no-print">
           <div>
@@ -205,28 +206,27 @@
           <button type="button" id="btnSimpanMasterBottom" class="btn btn-primary">Simpan Database Pejabat</button>
         </div>
 
-        <!-- TABEL REKAP PEJABAT (EKSPOR EXCEL / PDF) -->
+        <!-- TABEL DATA JABATAN (UNDUH FILE EXCEL & FILE PDF) -->
         <div id="rekapPejabatWrapper" class="box mt-20">
           <div class="section-head">
             <div>
-              <h3 style="margin:0;color:#6b1515;font-size:15px;">Daftar Pejabat & Personel Struktural</h3>
-              <p class="muted no-print">Rekap otomatis dari struktur pejabat di atas. Dapat diunduh ke Excel atau dicetak/disimpan PDF.</p>
+              <h3 style="margin:0;color:#6b1515;font-size:15px;">Data Jabatan & Personel</h3>
+              <p class="muted no-print">Dapat diunduh langsung sebagai file Excel (.xlsx) atau file PDF (.pdf).</p>
             </div>
             <div class="toolbar-right no-print">
               <button type="button" id="btnExportPejabatExcel" class="btn btn-secondary btn-sm">Download Excel (.xlsx)</button>
-              <button type="button" id="btnPrintPejabatPdf" class="btn btn-primary btn-sm">Download PDF / Cetak Tabel</button>
+              <button type="button" id="btnDownloadJabatanPdf" class="btn btn-primary btn-sm">Download PDF (.pdf)</button>
             </div>
           </div>
-          <div class="table-wrap">
+          <div id="jabatanExportArea" class="table-wrap">
             <table id="rekapPejabatTable">
               <thead>
                 <tr>
-                  <th style="width:42px;text-align:center;">No</th>
-                  <th style="width:23%;">Nama</th>
-                  <th style="width:20%;">Pangkat / Korps / Gol / Ruang</th>
-                  <th style="width:16%;">NIP / NRP</th>
-                  <th style="width:26%;">Jabatan</th>
-                  <th style="width:11%;">Ket</th>
+                  <th>Nama</th>
+                  <th>Pangkat/Korps/Golongan/Ruang</th>
+                  <th>NIP/NRP</th>
+                  <th>Jabatan</th>
+                  <th>Ket</th>
                 </tr>
               </thead>
               <tbody id="rekapPejabatBody"></tbody>
