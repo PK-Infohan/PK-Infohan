@@ -617,11 +617,9 @@ function renderPerjanjianKinerja(data) {
       lampiranRowsHtml += `
         <tr>
           <td style="text-align:center;">${noCounter}</td>
-          <td>${iIdx === 0 ? `<strong>${sIdx + 1}.</strong> ${sObj.sasaran}` : ""}</td>
+          <td>${iIdx === 0 ? `${sIdx + 1}. ${sObj.sasaran}` : ""}</td>
           <td>${ind.indikator || ""}</td>
           <td style="text-align:center;">${ind.target || ""}</td>
-          <td style="text-align:center;">${ind.satuan || ""}</td>
-          <td style="text-align:right;">${formatRp(ind.anggaran)}</td>
         </tr>
       `;
     });
@@ -629,7 +627,7 @@ function renderPerjanjianKinerja(data) {
 
   const kopBaris1 = data.level === "eselon1"
     ? "KEMENTERIAN PERTAHANAN REPUBLIK INDONESIA"
-    : (data.eselon1 || "SEKRETARIAT JENDERAL KEMHAN RI");
+    : (data.eselon1 || "SEKRETARIAT JENDERAL KEMHAN");
   const kopBaris2 = data.level === "eselon1"
     ? (data.eselon1 || "SEKRETARIAT JENDERAL")
     : (data.eselon2 || "BIRO INFORMASI PERTAHANAN");
@@ -641,8 +639,154 @@ function renderPerjanjianKinerja(data) {
         <p>${kopBaris1}</p>
         <p>${kopBaris2}</p>
       </div>
+      <div class="kop-spacer"></div>
     </div>
   `;
+
+  const sisipanTeks = data.lampiranSisipan ? ` ${data.lampiranSisipan}` : "";
+  const tahunLampiran = data.lampiranTahun || data.tahun;
+  const kananAtasHtml = `
+    <div class="lampiran-kanan-atas">
+      Lampiran${sisipanTeks} Perjanjian Kinerja<br />
+      ${data.eselon2 || data.eselon1 || "Biro Infohan Setjen Kemhan"} Tahun ${tahunLampiran}
+    </div>
+  `;
+
+  const kegList = data.kegiatanAnggaranList || [];
+  const rincianRowsHtml = kegList.length
+    ? kegList.map((k, idx) => `
+        <tr>
+          <td style="width:28px;">${idx + 1}</td>
+          <td>${k.uraian || "-"}</td>
+          <td class="col-rp">${formatRpDash(k.anggaran)}</td>
+        </tr>
+      `).join("")
+    : `
+        <tr>
+          <td style="width:28px;">-</td>
+          <td>Belum ada rincian kegiatan</td>
+          <td class="col-rp">${formatRpDash(0)}</td>
+        </tr>
+      `;
+
+  const kegiatanAnggaranHtml = `
+    <div class="kegiatan-anggaran-box">
+      <div class="kegiatan-anggaran-title">Kegiatan dan Anggaran:</div>
+      <p class="kegiatan-anggaran-ringkasan">
+        Kegiatan ${data.unitKegiatanLabel || data.bagian || data.eselon2 || "Biro Infohan Setjen Kemhan"} Tahun ${data.tahun},
+        dengan anggaran sebesar ${formatRpDash(data.totalAnggaran)} (didapat dari penjumlahan dengan rincian kegiatan sebagai berikut :
+      </p>
+      <table class="rincian-keg-table">
+        <thead>
+          <tr>
+            <th colspan="2">Kegiatan :</th>
+            <th class="col-rp">Anggaran :</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rincianRowsHtml}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  const ttdBlokHtml = `
+    <div class="ttd-row">
+      <div class="ttd-col">
+        <div class="ttd-tanggal">&nbsp;</div>
+        <div class="ttd-jabatan">Pihak Kedua,<br />${p2TtdJabatan}</div>
+        <div class="ttd-space"></div>
+        <div class="ttd-nama">${data.pihakKedua.nama}</div>
+        <div class="ttd-pangkat">${data.pihakKedua.pangkat}</div>
+      </div>
+      <div class="ttd-col">
+        <div class="ttd-tanggal">${data.tempatTanggal}</div>
+        <div class="ttd-jabatan">Pihak Pertama,<br />${p1TtdJabatan}</div>
+        <div class="ttd-space"></div>
+        <div class="ttd-nama">${data.pihakPertama.nama}</div>
+        <div class="ttd-pangkat">${data.pihakPertama.pangkat}</div>
+      </div>
+    </div>
+  `;
+
+  dokumenPK.innerHTML = `
+    <div id="lembaran1" class="lembaran">
+      ${kopHtml}
+
+      <div class="judul-pk">
+        PERNYATAAN PERJANJIAN KINERJA<br />
+        ${data.pihakPertama.jabatan}<br />
+        TAHUN ${data.tahun}
+      </div>
+
+      <p class="paragraf">Dalam rangka mewujudkan manajemen pemerintahan yang efektif, transparan dan akuntabel serta berorientasi pada hasil, kami yang bertanda tangan di bawah ini:</p>
+
+      <table class="identitas-table">
+        <tr>
+          <td style="width:100px;">Nama</td>
+          <td style="width:14px;">:</td>
+          <td>${data.pihakPertama.nama}</td>
+        </tr>
+        <tr>
+          <td>Jabatan</td>
+          <td>:</td>
+          <td>${data.pihakPertama.jabatan}</td>
+        </tr>
+      </table>
+      <p class="paragraf">Selanjutnya disebut Pihak Pertama.</p>
+
+      <table class="identitas-table">
+        <tr>
+          <td style="width:100px;">Nama</td>
+          <td style="width:14px;">:</td>
+          <td>${data.pihakKedua.nama}</td>
+        </tr>
+        <tr>
+          <td>Jabatan</td>
+          <td>:</td>
+          <td>${data.pihakKedua.jabatan}</td>
+        </tr>
+      </table>
+      <p class="paragraf">Selaku atasan langsung Pihak Pertama, selanjutnya disebut Pihak Kedua.</p>
+
+      <p class="paragraf">Pihak Pertama berjanji akan mewujudkan target kinerja sesuai lampiran Perjanjian Kinerja ini, dalam rangka mencapai target kinerja jangka pendek dan jangka menengah yang telah ditetapkan dalam dokumen perencanaan. Keberhasilan dan kegagalan pencapaian target kinerja tersebut menjadi tanggung jawab kami.</p>
+
+      <p class="paragraf">Pihak Kedua akan memberikan supervisi yang diperlukan serta akan melakukan evaluasi terhadap capaian kinerja dari perjanjian ini dan mengambil tindakan yang diperlukan dalam rangka pemberian penghargaan dan sanksi.</p>
+
+      ${ttdBlokHtml}
+    </div>
+
+    <div id="lembaran2" class="lembaran">
+      ${kananAtasHtml}
+
+      <div class="judul-pk">
+        PERJANJIAN KINERJA<br />
+        ${data.pihakPertama.jabatan}<br />
+        TAHUN ${data.tahun}
+      </div>
+
+      <table class="lampiran-table">
+        <thead>
+          <tr>
+            <th style="width:42px;">No</th>
+            <th style="width:28%;">Sasaran Kegiatan</th>
+            <th style="width:52%;">Indikator Kinerja</th>
+            <th style="width:12%;">Target</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${lampiranRowsHtml || `<tr><td colspan="4" style="text-align:center;">Belum ada rincian sasaran dan indikator</td></tr>`}
+        </tbody>
+      </table>
+
+      ${kegiatanAnggaranHtml}
+      ${ttdBlokHtml}
+    </div>
+  `;
+
+  showView("hasil");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
 
   const ttdBlokHtml = `
     <div class="ttd-row">
