@@ -1,73 +1,175 @@
-const ARSIP_STORAGE_KEY = "arsip_pk_roinfohan_v2";
-const MASTER_STORAGE_KEY = "master_unit_pk_roinfohan_v1";
+const ARSIP_STORAGE_KEY = "arsip_pk_kemhan_v3";
+const DB_PEJABAT_STORAGE_KEY = "db_pejabat_pk_kemhan_v2";
+const USERS_STORAGE_KEY = "users_pk_kemhan_v1";
+const SESSION_STORAGE_KEY = "session_pk_kemhan_v1";
 const GAS_URL_STORAGE_KEY = "arsip_pk_gas_url_v1";
 const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbzQHleAqUvDxGfXc0Fm39z1-fp6zts4clCpy85wEGgEiKOfmrxD0Bl-4B_oQsOipK06/exec";
 
-const DEFAULT_MASTER_UNITS = [
+// ==========================================
+// DATA AWAL ESELON I -> II -> III -> IV
+// ==========================================
+const DEFAULT_DB_PEJABAT = {
+  eselon1List: [
+    {
+      id: "E1-SETJEN",
+      namaUnit: "Sekretariat Jenderal Kemhan",
+      jabatanPimpinan: "Sekretaris Jenderal Kemhan",
+      namaPejabat: "",
+      pangkatNrpNip: "",
+      atasanJabatan: "Menteri Pertahanan Republik Indonesia",
+      atasanNama: "",
+      atasanPangkat: "",
+      eselon2List: [
+        {
+          id: "E2-INFOHAN",
+          namaUnit: "Biro Informasi Pertahanan",
+          jabatanPimpinan: "Kepala Biro Informasi Pertahanan Setjen Kemhan",
+          namaPejabat: "",
+          pangkatNrpNip: "",
+          bagianList: [
+            {
+              id: "BAG-HUBMITRA",
+              namaBagian: "Bagian Hubungan Kemitraan Biro Infohan Setjen Kemhan",
+              jabatanKabag: "Kepala Bagian Hubungan Kemitraan Biro Infohan Setjen Kemhan",
+              namaKabag: "",
+              pangkatKabag: "",
+              subbagList: [
+                {
+                  id: "SUB-HUBMITRA-1",
+                  namaSubbag: "Subbagian Hubungan Lembaga Pemerintah",
+                  jabatanKasubbag: "Kasubbag Hubungan Lembaga Pemerintah Bag. Hubmitra Biro Infohan Setjen Kemhan",
+                  namaPejabat: "",
+                  pangkatNrpNip: ""
+                },
+                {
+                  id: "SUB-HUBMITRA-2",
+                  namaSubbag: "Subbagian Hubungan Lembaga Non Pemerintah",
+                  jabatanKasubbag: "Kasubbag Hubungan Lembaga Non Pemerintah Bag. Hubmitra Biro Infohan Setjen Kemhan",
+                  namaPejabat: "",
+                  pangkatNrpNip: ""
+                },
+                {
+                  id: "SUB-HUBMITRA-3",
+                  namaSubbag: "Subbagian Tata Usaha Biro",
+                  jabatanKasubbag: "Kasubbag Tata Usaha Biro Bag. Hubmitra Biro Infohan Setjen Kemhan",
+                  namaPejabat: "",
+                  pangkatNrpNip: ""
+                }
+              ]
+            },
+            {
+              id: "BAG-PEMBERITAAN",
+              namaBagian: "Bagian Hubungan Pemberitaan Biro Infohan Setjen Kemhan",
+              jabatanKabag: "Kepala Bagian Pemberitaan Biro Infohan Setjen Kemhan",
+              namaKabag: "",
+              pangkatKabag: "",
+              subbagList: [
+                {
+                  id: "SUB-PEMBERITAAN-1",
+                  namaSubbag: "Subbagian Produksi dan Dokumentasi",
+                  jabatanKasubbag: "Kasubbag Produksi dan Dokumentasi Bag. Pemberitaan Biro Infohan Setjen Kemhan",
+                  namaPejabat: "",
+                  pangkatNrpNip: ""
+                },
+                {
+                  id: "SUB-PEMBERITAAN-2",
+                  namaSubbag: "Subbagian Peliputan dan Publikasi",
+                  jabatanKasubbag: "Kasubbag Peliputan dan Publikasi Bag. Pemberitaan Biro Infohan Setjen Kemhan",
+                  namaPejabat: "",
+                  pangkatNrpNip: ""
+                },
+                {
+                  id: "SUB-PEMBERITAAN-3",
+                  namaSubbag: "Subbagian Hubungan Media Massa",
+                  jabatanKasubbag: "Kasubbag Hubungan Media Massa Bag. Pemberitaan Biro Infohan Setjen Kemhan",
+                  namaPejabat: "",
+                  pangkatNrpNip: ""
+                }
+              ]
+            },
+            {
+              id: "BAG-OPINI",
+              namaBagian: "Bagian Hubungan Opini Biro Infohan Setjen Kemhan",
+              jabatanKabag: "Kepala Bagian Opini Biro Infohan Setjen Kemhan",
+              namaKabag: "",
+              pangkatKabag: "",
+              subbagList: [
+                {
+                  id: "SUB-OPINI-1",
+                  namaSubbag: "Subbagian Penyiapan Opini",
+                  jabatanKasubbag: "Kasubbag Penyiapan Opini Bag. Opini Biro Infohan Setjen Kemhan",
+                  namaPejabat: "",
+                  pangkatNrpNip: ""
+                },
+                {
+                  id: "SUB-OPINI-2",
+                  namaSubbag: "Subbagian Pembentukan Opini",
+                  jabatanKasubbag: "Kasubbag Pembentukan Opini Bag. Opini Biro Infohan Setjen Kemhan",
+                  namaPejabat: "",
+                  pangkatNrpNip: ""
+                },
+                {
+                  id: "SUB-OPINI-3",
+                  namaSubbag: "Subbagian Opini Media Internet",
+                  jabatanKasubbag: "Kasubbag Opini Media Internet Bag. Opini Biro Infohan Setjen Kemhan",
+                  namaPejabat: "",
+                  pangkatNrpNip: ""
+                }
+              ]
+            },
+            {
+              id: "BAG-INFOPUBLIKTAKA",
+              namaBagian: "Bagian Informasi Publik dan Perpustakaan Biro Infohan Setjen Kemhan",
+              jabatanKabag: "Kepala Bagian Informasi Publik dan Perpustakaan Biro Infohan Setjen Kemhan",
+              namaKabag: "",
+              pangkatKabag: "",
+              subbagList: [
+                {
+                  id: "SUB-INFOPUBLIKTAKA-1",
+                  namaSubbag: "Subbagian Pelayanan Informasi Publik",
+                  jabatanKasubbag: "Kasubbag Pelayanan Informasi Publik Bag. Infopubliktaka Biro Infohan Setjen Kemhan",
+                  namaPejabat: "",
+                  pangkatNrpNip: ""
+                },
+                {
+                  id: "SUB-INFOPUBLIKTAKA-2",
+                  namaSubbag: "Subbagian Penerbitan dan Promosi",
+                  jabatanKasubbag: "Kasubbag Penerbitan dan Promosi Bag. Infopubliktaka Biro Infohan Setjen Kemhan",
+                  namaPejabat: "",
+                  pangkatNrpNip: ""
+                },
+                {
+                  id: "SUB-INFOPUBLIKTAKA-3",
+                  namaSubbag: "Subbagian Perpustakaan",
+                  jabatanKasubbag: "Kasubbag Perpustakaan Bag. Infopubliktaka Biro Infohan Setjen Kemhan",
+                  namaPejabat: "",
+                  pangkatNrpNip: ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+const DEFAULT_USERS = [
   {
-    id: "U-KARO",
-    bagian: "Biro Informasi Pertahanan",
-    subbag: "Kepala Biro Informasi Pertahanan",
-    p1Nama: "Brigjen TNI Rico Ricardo Sirait, B.S., M.MDS.",
-    p1Jabatan: "Kepala Biro Informasi Pertahanan Setjen Kemhan",
-    p1JabatanSingkat: "Kepala Biro Informasi Pertahanan",
-    p1Pangkat: "Brigadir Jenderal TNI",
-    p2Nama: "Letjen TNI Tri Budi Utomo",
-    p2Jabatan: "Sekretaris Jenderal Kementerian Pertahanan",
-    p2JabatanSingkat: "Sekretaris Jenderal",
-    p2Pangkat: "Letnan Jenderal TNI"
+    id: "USR-ADMIN",
+    username: "admin",
+    password: "adminkemhan",
+    namaTampilan: "Administrator Kemhan",
+    role: "admin",
+    eselon2Id: ""
   },
   {
-    id: "U-TU",
-    bagian: "Bagian Hubungan Kemitraan",
-    subbag: "Subbag Tata Usaha Biro",
-    p1Nama: "Letkol Cke I Putu Astika, S.T.",
-    p1Jabatan: "Kasubbag Tata Usaha Biro Bag. Hubmitra Biro Infohan Setjen Kemhan",
-    p1JabatanSingkat: "Kasubbag Tata Usaha Biro",
-    p1Pangkat: "Letkol Cke NRP. 11020009710575",
-    p2Nama: "Kolonel Inf A. Yoyok Pranowo, S.IP., M.Han.",
-    p2Jabatan: "Kabag Hubungan Kemitraan Biro Infohan Setjen Kemhan",
-    p2JabatanSingkat: "Kabag Hubungan Kemitraan",
-    p2Pangkat: "Kolonel Inf NRP. 11970036090675"
-  },
-  {
-    id: "U-HUBLEMPEM",
-    bagian: "Bagian Hubungan Kemitraan",
-    subbag: "Subbag Hubungan Lembaga Pemerintah",
-    p1Nama: "Sinta Tuhuningrum, S.E., M.M.",
-    p1Jabatan: "Kasubbag Hubungan Lembaga Pemerintah Bag. Hubmitra Biro Infohan Setjen Kemhan",
-    p1JabatanSingkat: "Kasubbag Hublempem",
-    p1Pangkat: "Penata Tk. I III/d NIP. 198706042009122001",
-    p2Nama: "Kolonel Inf A. Yoyok Pranowo, S.IP., M.Han.",
-    p2Jabatan: "Kabag Hubungan Kemitraan Biro Infohan Setjen Kemhan",
-    p2JabatanSingkat: "Kabag Hubungan Kemitraan",
-    p2Pangkat: "Kolonel Inf NRP. 11970036090675"
-  },
-  {
-    id: "U-PRODDOK",
-    bagian: "Bagian Pemberitaan",
-    subbag: "Subbag Produksi dan Dokumentasi",
-    p1Nama: "Citra Wulan Suci, S.Ikom., M.A.P.",
-    p1Jabatan: "Kasubbag Produksi dan Dokumentasi Bagian Pemberitaan Biro Infohan Setjen Kemhan",
-    p1JabatanSingkat: "Kasubbag Proddok",
-    p1Pangkat: "Penata Tk. I III/d NIP. 198705032010122007",
-    p2Nama: "Kolonel Inf Dikson Trisedyo, S.H., M.M.",
-    p2Jabatan: "Kabag Pemberitaan Biro Infohan Setjen Kemhan",
-    p2JabatanSingkat: "Kabag Pemberitaan",
-    p2Pangkat: "Kolonel Inf NRP. 11980040690974"
-  },
-  {
-    id: "U-SIAPOPINI",
-    bagian: "Bagian Opini",
-    subbag: "Subbag Penyiapan Opini",
-    p1Nama: "Mutiara Silaen, S.Ikom., M.AP.",
-    p1Jabatan: "Kasubbag Penyiapan Opini Bagian Opini Biro Infohan Setjen Kemhan",
-    p1JabatanSingkat: "Kasubbag Siap Opini",
-    p1Pangkat: "Penata Tk. I III/d NIP. 198511192010122003",
-    p2Nama: "Kolonel Laut (P) Slamet Nurdiharto, S.H.",
-    p2Jabatan: "Kepala Bagian Opini Biro Infohan Setjen Kemhan",
-    p2JabatanSingkat: "Kepala Bagian Opini",
-    p2Pangkat: "Kolonel Laut (P) NRP. 13268/P"
+    id: "USR-INFOHAN",
+    username: "infohan",
+    password: "infohan123",
+    namaTampilan: "Admin Satker Biro Infohan",
+    role: "satker",
+    eselon2Id: "E2-INFOHAN"
   }
 ];
 
@@ -75,77 +177,278 @@ function getGasUrl() {
   return localStorage.getItem(GAS_URL_STORAGE_KEY) || DEFAULT_GAS_URL;
 }
 
+let dbPejabat = JSON.parse(localStorage.getItem(DB_PEJABAT_STORAGE_KEY) || "null") || structuredClone(DEFAULT_DB_PEJABAT);
+let usersList = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || "null") || structuredClone(DEFAULT_USERS);
+let arsipList = JSON.parse(localStorage.getItem(ARSIP_STORAGE_KEY) || "[]");
+let currentUser = JSON.parse(sessionStorage.getItem(SESSION_STORAGE_KEY) || "null");
+let currentActiveDoc = null;
+
+// Elemen DOM
+const loginSection = document.getElementById("loginSection");
+const appShell = document.getElementById("appShell");
 const formSection = document.getElementById("formSection");
 const hasilSection = document.getElementById("hasilSection");
 const masterSection = document.getElementById("masterSection");
 const arsipSection = document.getElementById("arsipSection");
+const usersSection = document.getElementById("usersSection");
 const sasaranContainer = document.getElementById("sasaranContainer");
 const dokumenPK = document.getElementById("dokumenPK");
 
-let masterUnits = JSON.parse(localStorage.getItem(MASTER_STORAGE_KEY) || "null") || structuredClone(DEFAULT_MASTER_UNITS);
-let arsipList = JSON.parse(localStorage.getItem(ARSIP_STORAGE_KEY) || "[]");
-let currentActiveDoc = null;
-
-function showView(view) {
-  [formSection, hasilSection, masterSection, arsipSection].forEach(el => el.classList.add("hidden"));
-  if (view === "form") formSection.classList.remove("hidden");
-  if (view === "hasil") hasilSection.classList.remove("hidden");
-  if (view === "master") {
-    renderMasterTable();
-    masterSection.classList.remove("hidden");
-  }
-  if (view === "arsip") {
-    renderArsipTable();
-    arsipSection.classList.remove("hidden");
-  }
-}
-
-function updateArsipCounter() {
-  document.getElementById("arsipCount").textContent = arsipList.length;
+function escAttr(str) {
+  return String(str || "").replace(/"/g, "&quot;");
 }
 
 function formatRp(angka) {
   return "Rp " + Number(angka || 0).toLocaleString("id-ID");
 }
 
+function findEselon2Location(e2Id) {
+  for (const e1 of dbPejabat.eselon1List || []) {
+    const e2 = (e1.eselon2List || []).find(x => x.id === e2Id);
+    if (e2) return { e1, e2 };
+  }
+  return null;
+}
+
+// ==========================================
+// OTENTIKASI & HAK AKSES (ADMIN VS ADMIN SATKER)
+// ==========================================
+document.getElementById("loginForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const uname = document.getElementById("loginUsername").value.trim().toLowerCase();
+  const pass = document.getElementById("loginPassword").value;
+  const errEl = document.getElementById("loginError");
+
+  const found = usersList.find(u => u.username.toLowerCase() === uname && u.password === pass);
+  if (!found) {
+    errEl.textContent = "Username atau password tidak sesuai.";
+    errEl.classList.remove("hidden");
+    return;
+  }
+
+  errEl.classList.add("hidden");
+  currentUser = found;
+  sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(currentUser));
+  initAppAfterLogin();
+});
+
+document.getElementById("btnLogout").addEventListener("click", () => {
+  currentUser = null;
+  sessionStorage.removeItem(SESSION_STORAGE_KEY);
+  appShell.classList.add("hidden");
+  loginSection.classList.remove("hidden");
+  document.getElementById("loginPassword").value = "";
+});
+
+function initAppAfterLogin() {
+  if (!currentUser) return;
+  loginSection.classList.add("hidden");
+  appShell.classList.remove("hidden");
+
+  const isAdmin = currentUser.role === "admin";
+  const loc = !isAdmin ? findEselon2Location(currentUser.eselon2Id) : null;
+  const unitLabel = isAdmin ? "Semua Unit Kerja Kemhan" : (loc?.e2?.namaUnit || "Unit Kerja Terdaftar");
+
+  document.getElementById("userBadgeInfo").textContent =
+    `${currentUser.namaTampilan} (${isAdmin ? "Administrator" : "Admin Satker"}) • ${unitLabel}`;
+
+  // Kontrol visibilitas berdasarkan hak akses
+  document.getElementById("btnKeUsers").classList.toggle("hidden", !isAdmin);
+  document.getElementById("btnTambahEselon1").classList.toggle("hidden", !isAdmin);
+  document.getElementById("btnResetMaster").classList.toggle("hidden", !isAdmin);
+  document.getElementById("gasConfigBar").classList.toggle("hidden", !isAdmin);
+
+  document.getElementById("masterRoleNote").textContent = isAdmin
+    ? "Hak Akses Administrator: Dapat menambah dan mengedit seluruh Eselon I, Eselon II, Eselon III, dan Eselon IV."
+    : `Hak Akses Admin Satker: Mengelola struktur Eselon III dan Eselon IV pada ${unitLabel}.`;
+
+  document.getElementById("arsipRoleNote").textContent = isAdmin
+    ? "Menampilkan seluruh arsip Perjanjian Kinerja Kementerian Pertahanan."
+    : `Menampilkan arsip Perjanjian Kinerja khusus ${unitLabel}.`;
+
+  // Batasi pilihan level PK untuk Admin Satker (maksimal Eselon II unitnya)
+  const optE1 = selectLevel.querySelector('option[value="eselon1"]');
+  if (optE1) optE1.disabled = !isAdmin;
+  if (!isAdmin && selectLevel.value === "eselon1") {
+    selectLevel.value = "subbag";
+  }
+
+  refreshUnitDropdowns();
+  updateArsipCounter();
+  showView("form");
+}
+
+function showView(view) {
+  [formSection, hasilSection, masterSection, arsipSection, usersSection].forEach(el => el.classList.add("hidden"));
+  if (view === "form") formSection.classList.remove("hidden");
+  if (view === "hasil") hasilSection.classList.remove("hidden");
+  if (view === "master") {
+    renderMasterTree();
+    masterSection.classList.remove("hidden");
+  }
+  if (view === "arsip") {
+    renderArsipTable();
+    arsipSection.classList.remove("hidden");
+  }
+  if (view === "users" && currentUser?.role === "admin") {
+    renderUsersTable();
+    usersSection.classList.remove("hidden");
+  }
+}
+
+function getVisibleArsip() {
+  if (!currentUser) return [];
+  if (currentUser.role === "admin") return arsipList;
+  return arsipList.filter(doc => doc.eselon2Id === currentUser.eselon2Id);
+}
+
+function updateArsipCounter() {
+  document.getElementById("arsipCount").textContent = getVisibleArsip().length;
+}
+
+// ==========================================
+// DROPDOWN & OTOMASI PEJABAT DI FORM INPUT
+// ==========================================
+const selectLevel = document.getElementById("selectLevel");
+const selectEselon1 = document.getElementById("selectEselon1");
+const selectEselon2 = document.getElementById("selectEselon2");
 const selectBagian = document.getElementById("selectBagian");
 const selectSubbag = document.getElementById("selectSubbag");
+const wrapSelectEselon2 = document.getElementById("wrapSelectEselon2");
+const wrapSelectBagian = document.getElementById("wrapSelectBagian");
+const wrapSelectSubbag = document.getElementById("wrapSelectSubbag");
 
-function refreshBagianSubbagDropdown(keepBagian = "", keepSubbagId = "") {
-  const bagians = [...new Set(masterUnits.map(u => u.bagian))];
-  selectBagian.innerHTML = bagians.map(b => `<option value="${b}">${b}</option>`).join("");
-  if (keepBagian && bagians.includes(keepBagian)) {
-    selectBagian.value = keepBagian;
+function refreshUnitDropdowns() {
+  const isAdmin = currentUser?.role === "admin";
+  const level = selectLevel.value;
+
+  wrapSelectEselon2.classList.toggle("hidden", level === "eselon1");
+  wrapSelectBagian.classList.toggle("hidden", level === "eselon1" || level === "eselon2");
+  wrapSelectSubbag.classList.toggle("hidden", level !== "subbag");
+
+  let e1Options = dbPejabat.eselon1List || [];
+  if (!isAdmin && currentUser?.eselon2Id) {
+    const loc = findEselon2Location(currentUser.eselon2Id);
+    if (loc) e1Options = [loc.e1];
   }
-  refreshSubbagDropdown(keepSubbagId);
-}
 
-function refreshSubbagDropdown(keepSubbagId = "") {
-  const chosenBagian = selectBagian.value;
-  const unitsInBagian = masterUnits.filter(u => u.bagian === chosenBagian);
-  selectSubbag.innerHTML = unitsInBagian.map(u => `<option value="${u.id}">${u.subbag}</option>`).join("");
-  if (keepSubbagId && unitsInBagian.some(u => u.id === keepSubbagId)) {
-    selectSubbag.value = keepSubbagId;
+  const prevE1 = selectEselon1.value;
+  selectEselon1.innerHTML = e1Options.map(e1 => `<option value="${e1.id}">${e1.namaUnit}</option>`).join("");
+  if (prevE1 && e1Options.some(x => x.id === prevE1)) {
+    selectEselon1.value = prevE1;
   }
-  applySelectedUnitToForm();
+  selectEselon1.disabled = !isAdmin;
+
+  refreshEselon2Dropdown();
 }
 
-function applySelectedUnitToForm() {
-  const unit = masterUnits.find(u => u.id === selectSubbag.value);
-  if (!unit) return;
-  document.getElementById("p1Nama").value = unit.p1Nama || "";
-  document.getElementById("p1Jabatan").value = unit.p1Jabatan || "";
-  document.getElementById("p1JabatanSingkat").value = unit.p1JabatanSingkat || "";
-  document.getElementById("p1Pangkat").value = unit.p1Pangkat || "";
-  document.getElementById("p2Nama").value = unit.p2Nama || "";
-  document.getElementById("p2Jabatan").value = unit.p2Jabatan || "";
-  document.getElementById("p2JabatanSingkat").value = unit.p2JabatanSingkat || "";
-  document.getElementById("p2Pangkat").value = unit.p2Pangkat || "";
+function refreshEselon2Dropdown() {
+  const isAdmin = currentUser?.role === "admin";
+  const e1 = (dbPejabat.eselon1List || []).find(x => x.id === selectEselon1.value) || (dbPejabat.eselon1List || [])[0];
+  let e2Options = e1?.eselon2List || [];
+
+  if (!isAdmin && currentUser?.eselon2Id) {
+    e2Options = e2Options.filter(x => x.id === currentUser.eselon2Id);
+  }
+
+  const prevE2 = selectEselon2.value;
+  selectEselon2.innerHTML = e2Options.map(e2 => `<option value="${e2.id}">${e2.namaUnit}</option>`).join("");
+  if (prevE2 && e2Options.some(x => x.id === prevE2)) {
+    selectEselon2.value = prevE2;
+  }
+  selectEselon2.disabled = !isAdmin;
+
+  refreshBagianDropdown();
 }
 
-selectBagian.addEventListener("change", () => refreshSubbagDropdown());
-selectSubbag.addEventListener("change", applySelectedUnitToForm);
+function refreshBagianDropdown() {
+  const e1 = (dbPejabat.eselon1List || []).find(x => x.id === selectEselon1.value) || (dbPejabat.eselon1List || [])[0];
+  const e2 = (e1?.eselon2List || []).find(x => x.id === selectEselon2.value) || (e1?.eselon2List || [])[0];
+  const bagList = e2?.bagianList || [];
 
+  const prevBag = selectBagian.value;
+  selectBagian.innerHTML = bagList.map(b => `<option value="${b.id}">${b.namaBagian}</option>`).join("");
+  if (prevBag && bagList.some(b => b.id === prevBag)) {
+    selectBagian.value = prevBag;
+  }
+
+  refreshSubbagDropdown();
+}
+
+function refreshSubbagDropdown() {
+  const e1 = (dbPejabat.eselon1List || []).find(x => x.id === selectEselon1.value) || (dbPejabat.eselon1List || [])[0];
+  const e2 = (e1?.eselon2List || []).find(x => x.id === selectEselon2.value) || (e1?.eselon2List || [])[0];
+  const bag = (e2?.bagianList || []).find(b => b.id === selectBagian.value) || (e2?.bagianList || [])[0];
+  const subList = bag?.subbagList || [];
+
+  const prevSub = selectSubbag.value;
+  selectSubbag.innerHTML = subList.map(s => `<option value="${s.id}">${s.namaSubbag}</option>`).join("");
+  if (prevSub && subList.some(s => s.id === prevSub)) {
+    selectSubbag.value = prevSub;
+  }
+
+  applyHierarchyToPejabatFields();
+}
+
+function applyHierarchyToPejabatFields() {
+  const level = selectLevel.value;
+  const e1 = (dbPejabat.eselon1List || []).find(x => x.id === selectEselon1.value) || (dbPejabat.eselon1List || [])[0];
+  const e2 = (e1?.eselon2List || []).find(x => x.id === selectEselon2.value) || (e1?.eselon2List || [])[0];
+  const bag = (e2?.bagianList || []).find(b => b.id === selectBagian.value) || (e2?.bagianList || [])[0];
+  const sub = (bag?.subbagList || []).find(s => s.id === selectSubbag.value) || (bag?.subbagList || [])[0];
+
+  if (level === "eselon1" && e1) {
+    document.getElementById("p1Nama").value = e1.namaPejabat || "";
+    document.getElementById("p1Jabatan").value = e1.jabatanPimpinan || "";
+    document.getElementById("p1JabatanSingkat").value = "";
+    document.getElementById("p1Pangkat").value = e1.pangkatNrpNip || "";
+
+    document.getElementById("p2Nama").value = e1.atasanNama || "";
+    document.getElementById("p2Jabatan").value = e1.atasanJabatan || "Menteri Pertahanan Republik Indonesia";
+    document.getElementById("p2JabatanSingkat").value = "";
+    document.getElementById("p2Pangkat").value = e1.atasanPangkat || "";
+  } else if (level === "eselon2" && e2 && e1) {
+    document.getElementById("p1Nama").value = e2.namaPejabat || "";
+    document.getElementById("p1Jabatan").value = e2.jabatanPimpinan || "";
+    document.getElementById("p1JabatanSingkat").value = "";
+    document.getElementById("p1Pangkat").value = e2.pangkatNrpNip || "";
+
+    document.getElementById("p2Nama").value = e1.namaPejabat || "";
+    document.getElementById("p2Jabatan").value = e1.jabatanPimpinan || "";
+    document.getElementById("p2JabatanSingkat").value = "";
+    document.getElementById("p2Pangkat").value = e1.pangkatNrpNip || "";
+  } else if (level === "bagian" && bag && e2) {
+    document.getElementById("p1Nama").value = bag.namaKabag || "";
+    document.getElementById("p1Jabatan").value = bag.jabatanKabag || "";
+    document.getElementById("p1JabatanSingkat").value = "";
+    document.getElementById("p1Pangkat").value = bag.pangkatKabag || "";
+
+    document.getElementById("p2Nama").value = e2.namaPejabat || "";
+    document.getElementById("p2Jabatan").value = e2.jabatanPimpinan || "";
+    document.getElementById("p2JabatanSingkat").value = "";
+    document.getElementById("p2Pangkat").value = e2.pangkatNrpNip || "";
+  } else if (sub && bag) {
+    document.getElementById("p1Nama").value = sub.namaPejabat || "";
+    document.getElementById("p1Jabatan").value = sub.jabatanKasubbag || `Kepala ${sub.namaSubbag}`;
+    document.getElementById("p1JabatanSingkat").value = "";
+    document.getElementById("p1Pangkat").value = sub.pangkatNrpNip || "";
+
+    document.getElementById("p2Nama").value = bag.namaKabag || "";
+    document.getElementById("p2Jabatan").value = bag.jabatanKabag || "";
+    document.getElementById("p2JabatanSingkat").value = "";
+    document.getElementById("p2Pangkat").value = bag.pangkatKabag || "";
+  }
+}
+
+selectLevel.addEventListener("change", refreshUnitDropdowns);
+selectEselon1.addEventListener("change", refreshEselon2Dropdown);
+selectEselon2.addEventListener("change", refreshBagianDropdown);
+selectBagian.addEventListener("change", refreshSubbagDropdown);
+selectSubbag.addEventListener("change", applyHierarchyToPejabatFields);
+
+// ==========================================
+// SASARAN KEGIATAN & INDIKATOR DINAMIS
+// ==========================================
 function createIndicatorRow(ind = { indikator: "", target: "", satuan: "", anggaran: "" }) {
   const tr = document.createElement("tr");
   tr.innerHTML = `
@@ -240,13 +543,27 @@ function collectFormData() {
     }
   });
 
+  const level = selectLevel.value;
+  const eselon1Id = selectEselon1.value;
+  const eselon1Nama = selectEselon1.options[selectEselon1.selectedIndex]?.text || "KEMENTERIAN PERTAHANAN RI";
+  const eselon2Id = level !== "eselon1" ? selectEselon2.value : "";
+  const eselon2Nama = level !== "eselon1" ? (selectEselon2.options[selectEselon2.selectedIndex]?.text || "") : "";
+  const bagianNama = (level === "bagian" || level === "subbag") ? (selectBagian.options[selectBagian.selectedIndex]?.text || "") : "";
+  const subbagNama = level === "subbag" ? (selectSubbag.options[selectSubbag.selectedIndex]?.text || "") : "";
+
   return {
     id: "PK-" + Date.now(),
     createdAt: new Date().toLocaleString("id-ID"),
+    createdBy: currentUser?.username || "",
     tahun: document.getElementById("tahunAnggaran").value.trim(),
     tempatTanggal: document.getElementById("tempatTanggal").value.trim(),
-    bagian: selectBagian.value,
-    subbag: selectSubbag.options[selectSubbag.selectedIndex]?.text || "",
+    level,
+    eselon1Id,
+    eselon1: eselon1Nama,
+    eselon2Id,
+    eselon2: eselon2Nama,
+    bagian: bagianNama,
+    subbag: subbagNama || bagianNama || eselon2Nama || eselon1Nama,
     pihakPertama: {
       nama: document.getElementById("p1Nama").value.trim(),
       jabatan: document.getElementById("p1Jabatan").value.trim(),
@@ -267,10 +584,9 @@ function collectFormData() {
 function populateFormFromData(data) {
   document.getElementById("tahunAnggaran").value = data.tahun || "2027";
   document.getElementById("tempatTanggal").value = data.tempatTanggal || "";
-  if (data.bagian) {
-    const found = masterUnits.find(u => u.bagian === data.bagian && u.subbag === data.subbag);
-    refreshBagianSubbagDropdown(data.bagian, found ? found.id : "");
-  }
+  if (data.level) selectLevel.value = data.level;
+  refreshUnitDropdowns();
+
   document.getElementById("p1Nama").value = data.pihakPertama?.nama || "";
   document.getElementById("p1Jabatan").value = data.pihakPertama?.jabatan || "";
   document.getElementById("p1JabatanSingkat").value = data.pihakPertama?.jabatanSingkat || "";
@@ -284,6 +600,9 @@ function populateFormFromData(data) {
   (data.sasaranList && data.sasaranList.length ? data.sasaranList : [{}]).forEach(addSasaranBlock);
 }
 
+// ==========================================
+// RENDER DOKUMEN PK 2 HALAMAN TERPISAH
+// ==========================================
 function renderPerjanjianKinerja(data) {
   currentActiveDoc = data;
 
@@ -310,12 +629,19 @@ function renderPerjanjianKinerja(data) {
     });
   });
 
+  const kopBaris1 = data.level === "eselon1"
+    ? "KEMENTERIAN PERTAHANAN REPUBLIK INDONESIA"
+    : (data.eselon1 || "SEKRETARIAT JENDERAL KEMHAN RI");
+  const kopBaris2 = data.level === "eselon1"
+    ? (data.eselon1 || "SEKRETARIAT JENDERAL")
+    : (data.eselon2 || "BIRO INFORMASI PERTAHANAN");
+
   const kopHtml = `
     <div class="kop-resmi">
       <img src="logo.png" class="kop-logo" alt="Lambang Kemhan" crossorigin="anonymous" />
       <div class="kop-teks">
-        <p>SEKRETARIAT JENDERAL KEMHAN RI</p>
-        <p>BIRO INFORMASI PERTAHANAN</p>
+        <p>${kopBaris1}</p>
+        <p>${kopBaris2}</p>
       </div>
     </div>
   `;
@@ -340,7 +666,6 @@ function renderPerjanjianKinerja(data) {
   `;
 
   dokumenPK.innerHTML = `
-    <!-- HALAMAN 1: PERNYATAAN PERJANJIAN KINERJA -->
     <div id="lembaran1" class="lembaran">
       ${kopHtml}
 
@@ -387,7 +712,6 @@ function renderPerjanjianKinerja(data) {
       ${ttdBlokHtml}
     </div>
 
-    <!-- HALAMAN 2: LAMPIRAN PERJANJIAN KINERJA -->
     <div id="lembaran2" class="lembaran">
       ${kopHtml}
 
@@ -430,7 +754,7 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
   const l2 = document.getElementById("lembaran2");
   if (!l1 || !l2 || !currentActiveDoc) return;
 
-  const safeSub = (currentActiveDoc.subbag || "PK_Roinfohan").replace(/[^a-zA-Z0-9_-]/g, "_");
+  const safeSub = (currentActiveDoc.subbag || "PK_Kemhan").replace(/[^a-zA-Z0-9_-]/g, "_");
   const filename = `PK_${safeSub}_${currentActiveDoc.tahun}.pdf`;
 
   const workerCfg = {
@@ -451,77 +775,458 @@ document.getElementById("btnDownloadPdf").addEventListener("click", async () => 
   pdf.save(filename);
 });
 
-function renderMasterTable() {
-  const tbody = document.getElementById("masterTableBody");
-  tbody.innerHTML = masterUnits.map((u, idx) => `
-    <tr data-idx="${idx}">
-      <td><input type="text" class="m-bagian" value="${u.bagian || ""}" /></td>
-      <td><input type="text" class="m-subbag" value="${u.subbag || ""}" /></td>
-      <td><input type="text" class="m-p1Nama" value="${u.p1Nama || ""}" /></td>
-      <td><input type="text" class="m-p1Jabatan" value="${u.p1Jabatan || ""}" /></td>
-      <td><input type="text" class="m-p1Pangkat" value="${u.p1Pangkat || ""}" /></td>
-      <td><input type="text" class="m-p2Nama" value="${u.p2Nama || ""}" /></td>
-      <td><input type="text" class="m-p2Jabatan" value="${u.p2Jabatan || ""}" /></td>
-      <td><input type="text" class="m-p2Pangkat" value="${u.p2Pangkat || ""}" /></td>
-      <td style="text-align:center;"><button type="button" class="btn btn-danger btn-sm btn-del-master">×</button></td>
-    </tr>
-  `).join("");
+// ==========================================
+// MASTER PEJABAT BERJENJANG (SESUAI ROLE)
+// ==========================================
+function renderMasterTree() {
+  const container = document.getElementById("masterTreeContainer");
+  const isAdmin = currentUser?.role === "admin";
+  let html = "";
 
-  tbody.querySelectorAll(".btn-del-master").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const idx = Number(btn.closest("tr").dataset.idx);
-      masterUnits.splice(idx, 1);
-      renderMasterTable();
+  (dbPejabat.eselon1List || []).forEach((e1, e1Idx) => {
+    const visibleE2s = (e1.eselon2List || [])
+      .map((e2, e2Idx) => ({ e2, e2Idx }))
+      .filter(item => isAdmin || item.e2.id === currentUser?.eselon2Id);
+
+    if (!isAdmin && visibleE2s.length === 0) return;
+
+    html += `<div class="tree-eselon1" data-e1-idx="${e1Idx}">`;
+
+    if (isAdmin) {
+      html += `
+        <div class="section-head">
+          <span class="tree-badge">Unit Kerja Eselon I #${e1Idx + 1}</span>
+          <div class="toolbar-right">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="tambahEselon2(${e1Idx})">+ Tambah Unit Eselon II</button>
+            ${dbPejabat.eselon1List.length > 1 ? `<button type="button" class="btn btn-danger btn-sm" onclick="hapusEselon1(${e1Idx})">Hapus Eselon I</button>` : ""}
+          </div>
+        </div>
+        <div class="grid-4">
+          <div>
+            <label>Nama Unit Eselon I</label>
+            <input type="text" class="m-e1-unit" value="${escAttr(e1.namaUnit)}" />
+          </div>
+          <div>
+            <label>Jabatan Pimpinan Eselon I</label>
+            <input type="text" class="m-e1-jabatan" value="${escAttr(e1.jabatanPimpinan)}" />
+          </div>
+          <div>
+            <label>Nama Pejabat Eselon I</label>
+            <input type="text" class="m-e1-nama" placeholder="Input nama pejabat..." value="${escAttr(e1.namaPejabat)}" />
+          </div>
+          <div>
+            <label>Pangkat / NRP / NIP Eselon I</label>
+            <input type="text" class="m-e1-pangkat" placeholder="Pangkat & NRP/NIP..." value="${escAttr(e1.pangkatNrpNip)}" />
+          </div>
+        </div>
+      `;
+    } else {
+      html += `<strong>Unit Kerja Induk: ${e1.namaUnit}</strong>`;
+    }
+
+    visibleE2s.forEach(({ e2, e2Idx }) => {
+      html += `
+        <div class="tree-eselon2" data-e2-idx="${e2Idx}">
+          <div class="section-head">
+            <span class="tree-badge e2">Unit Kerja Eselon II • ${e2.namaUnit}</span>
+            ${isAdmin && e1.eselon2List.length > 1 ? `<button type="button" class="btn btn-danger btn-sm" onclick="hapusEselon2(${e1Idx}, ${e2Idx})">Hapus Eselon II</button>` : ""}
+          </div>
+          <div class="grid-4">
+            <div>
+              <label>Nama Unit Eselon II</label>
+              <input type="text" class="m-e2-unit" value="${escAttr(e2.namaUnit)}" />
+            </div>
+            <div>
+              <label>Jabatan Pimpinan Eselon II</label>
+              <input type="text" class="m-e2-jabatan" value="${escAttr(e2.jabatanPimpinan)}" />
+            </div>
+            <div>
+              <label>Nama Pimpinan Eselon II</label>
+              <input type="text" class="m-e2-nama" placeholder="Input nama pimpinan..." value="${escAttr(e2.namaPejabat)}" />
+            </div>
+            <div>
+              <label>Pangkat / NRP / NIP</label>
+              <input type="text" class="m-e2-pangkat" placeholder="Pangkat & NRP/NIP..." value="${escAttr(e2.pangkatNrpNip)}" />
+            </div>
+          </div>
+
+          <div class="section-head mt-20">
+            <strong>Daftar Eselon III (Bagian/Bidang) & Eselon IV (Subbagian)</strong>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="tambahBagian(${e1Idx}, ${e2Idx})">+ Tambah Bagian / Bidang</button>
+          </div>
+      `;
+
+      (e2.bagianList || []).forEach((bag, bagIdx) => {
+        html += `
+          <div class="tree-bagian" data-bag-idx="${bagIdx}">
+            <div class="section-head">
+              <span class="tree-badge bag">Eselon III (Bagian/Bidang) #${bagIdx + 1}</span>
+              <div class="toolbar-right">
+                <button type="button" class="btn btn-primary btn-sm" onclick="tambahSubbag(${e1Idx}, ${e2Idx}, ${bagIdx})">+ Tambah Sub Bagian</button>
+                ${e2.bagianList.length > 1 ? `<button type="button" class="btn btn-danger btn-sm" onclick="hapusBagian(${e1Idx}, ${e2Idx}, ${bagIdx})">Hapus Bagian</button>` : ""}
+              </div>
+            </div>
+
+            <div class="grid-4">
+              <div>
+                <label>Nama Bagian / Bidang</label>
+                <input type="text" class="m-bag-nama" value="${escAttr(bag.namaBagian)}" />
+              </div>
+              <div>
+                <label>Jabatan Kepala Bagian</label>
+                <input type="text" class="m-bag-jabatan" value="${escAttr(bag.jabatanKabag)}" />
+              </div>
+              <div>
+                <label>Nama Kepala Bagian</label>
+                <input type="text" class="m-bag-nama-pejabat" placeholder="Input nama pejabat..." value="${escAttr(bag.namaKabag)}" />
+              </div>
+              <div>
+                <label>Pangkat / NRP / NIP Kabag</label>
+                <input type="text" class="m-bag-pangkat" placeholder="Pangkat & NRP/NIP..." value="${escAttr(bag.pangkatKabag)}" />
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:24%;">Nama Sub Bagian (Eselon IV)</th>
+                    <th style="width:28%;">Jabatan Lengkap (Untuk Judul & TTD)</th>
+                    <th style="width:22%;">Nama Pejabat Kasubbag</th>
+                    <th style="width:20%;">Pangkat / Gol & NRP / NIP</th>
+                    <th style="width:6%;">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${(bag.subbagList || []).map((sub, subIdx) => `
+                    <tr data-sub-idx="${subIdx}">
+                      <td><input type="text" class="m-sub-nama" value="${escAttr(sub.namaSubbag)}" /></td>
+                      <td><input type="text" class="m-sub-jabatan" value="${escAttr(sub.jabatanKasubbag)}" /></td>
+                      <td><input type="text" class="m-sub-pejabat" placeholder="Input nama pejabat..." value="${escAttr(sub.namaPejabat)}" /></td>
+                      <td><input type="text" class="m-sub-pangkat" placeholder="Pangkat & NRP/NIP..." value="${escAttr(sub.pangkatNrpNip)}" /></td>
+                      <td style="text-align:center;">
+                        <button type="button" class="btn btn-danger btn-sm" onclick="hapusSubbag(${e1Idx}, ${e2Idx}, ${bagIdx}, ${subIdx})">×</button>
+                      </td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+    });
+
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function syncDomToDbPejabat() {
+  const isAdmin = currentUser?.role === "admin";
+  const e1Cards = [...document.querySelectorAll(".tree-eselon1")];
+
+  e1Cards.forEach(e1Card => {
+    const e1Idx = Number(e1Card.dataset.e1Idx);
+    const e1 = dbPejabat.eselon1List[e1Idx];
+    if (!e1) return;
+
+    if (isAdmin && e1Card.querySelector(".m-e1-unit")) {
+      e1.namaUnit = e1Card.querySelector(".m-e1-unit").value.trim();
+      e1.jabatanPimpinan = e1Card.querySelector(".m-e1-jabatan").value.trim();
+      e1.namaPejabat = e1Card.querySelector(".m-e1-nama").value.trim();
+      e1.pangkatNrpNip = e1Card.querySelector(".m-e1-pangkat").value.trim();
+    }
+
+    const e2Cards = [...e1Card.querySelectorAll(".tree-eselon2")];
+    e2Cards.forEach(e2Card => {
+      const e2Idx = Number(e2Card.dataset.e2Idx);
+      const e2 = e1.eselon2List[e2Idx];
+      if (!e2) return;
+
+      e2.namaUnit = e2Card.querySelector(".m-e2-unit").value.trim();
+      e2.jabatanPimpinan = e2Card.querySelector(".m-e2-jabatan").value.trim();
+      e2.namaPejabat = e2Card.querySelector(".m-e2-nama").value.trim();
+      e2.pangkatNrpNip = e2Card.querySelector(".m-e2-pangkat").value.trim();
+
+      const bagCards = [...e2Card.querySelectorAll(".tree-bagian")];
+      e2.bagianList = bagCards.map((bagCard, bagIdx) => {
+        const oldBag = (e2.bagianList || [])[bagIdx] || {};
+        const subRows = [...bagCard.querySelectorAll("tbody tr")];
+
+        return {
+          id: oldBag.id || ("BAG-" + Date.now() + "-" + bagIdx),
+          namaBagian: bagCard.querySelector(".m-bag-nama").value.trim(),
+          jabatanKabag: bagCard.querySelector(".m-bag-jabatan").value.trim(),
+          namaKabag: bagCard.querySelector(".m-bag-nama-pejabat").value.trim(),
+          pangkatKabag: bagCard.querySelector(".m-bag-pangkat").value.trim(),
+          subbagList: subRows.map((tr, subIdx) => {
+            const oldSub = (oldBag.subbagList || [])[subIdx] || {};
+            return {
+              id: oldSub.id || ("SUB-" + Date.now() + "-" + subIdx),
+              namaSubbag: tr.querySelector(".m-sub-nama").value.trim(),
+              jabatanKasubbag: tr.querySelector(".m-sub-jabatan").value.trim(),
+              namaPejabat: tr.querySelector(".m-sub-pejabat").value.trim(),
+              pangkatNrpNip: tr.querySelector(".m-sub-pangkat").value.trim()
+            };
+          })
+        };
+      });
     });
   });
 }
 
-document.getElementById("btnTambahMasterUnit").addEventListener("click", () => {
-  masterUnits.push({
-    id: "U-" + Date.now(),
-    bagian: "Bagian Hubungan Kemitraan",
-    subbag: "Subbagian Baru",
-    p1Nama: "",
-    p1Jabatan: "",
-    p1JabatanSingkat: "",
-    p1Pangkat: "",
-    p2Nama: "",
-    p2Jabatan: "",
-    p2JabatanSingkat: "",
-    p2Pangkat: ""
+document.getElementById("btnTambahEselon1").addEventListener("click", () => {
+  if (currentUser?.role !== "admin") return;
+  syncDomToDbPejabat();
+  dbPejabat.eselon1List.push({
+    id: "E1-" + Date.now(),
+    namaUnit: "Unit Eselon I Baru (Contoh: Ditjen Strahan Kemhan)",
+    jabatanPimpinan: "Direktur Jenderal",
+    namaPejabat: "",
+    pangkatNrpNip: "",
+    atasanJabatan: "Menteri Pertahanan Republik Indonesia",
+    atasanNama: "",
+    atasanPangkat: "",
+    eselon2List: [
+      {
+        id: "E2-" + Date.now(),
+        namaUnit: "Direktorat / Biro Baru",
+        jabatanPimpinan: "Direktur / Kepala Biro",
+        namaPejabat: "",
+        pangkatNrpNip: "",
+        bagianList: [
+          {
+            id: "BAG-" + Date.now(),
+            namaBagian: "Subdirektorat / Bagian 1",
+            jabatanKabag: "Kasubdit / Kabag 1",
+            namaKabag: "",
+            pangkatKabag: "",
+            subbagList: [
+              {
+                id: "SUB-" + Date.now(),
+                namaSubbag: "Seksi / Subbagian 1",
+                jabatanKasubbag: "Kasi / Kasubbag 1",
+                namaPejabat: "",
+                pangkatNrpNip: ""
+              }
+            ]
+          }
+        ]
+      }
+    ]
   });
-  renderMasterTable();
+  renderMasterTree();
 });
 
-document.getElementById("btnSimpanMaster").addEventListener("click", () => {
-  const rows = [...document.querySelectorAll("#masterTableBody tr")];
-  masterUnits = rows.map((tr, i) => ({
-    id: masterUnits[i]?.id || ("U-" + Date.now() + "-" + i),
-    bagian: tr.querySelector(".m-bagian").value.trim(),
-    subbag: tr.querySelector(".m-subbag").value.trim(),
-    p1Nama: tr.querySelector(".m-p1Nama").value.trim(),
-    p1Jabatan: tr.querySelector(".m-p1Jabatan").value.trim(),
-    p1JabatanSingkat: masterUnits[i]?.p1JabatanSingkat || "",
-    p1Pangkat: tr.querySelector(".m-p1Pangkat").value.trim(),
-    p2Nama: tr.querySelector(".m-p2Nama").value.trim(),
-    p2Jabatan: tr.querySelector(".m-p2Jabatan").value.trim(),
-    p2JabatanSingkat: masterUnits[i]?.p2JabatanSingkat || "",
-    p2Pangkat: tr.querySelector(".m-p2Pangkat").value.trim()
-  })).filter(u => u.bagian && u.subbag);
+window.hapusEselon1 = e1Idx => {
+  if (!confirm("Hapus unit Eselon I ini beserta seluruh Eselon II, III, dan IV di dalamnya?")) return;
+  syncDomToDbPejabat();
+  dbPejabat.eselon1List.splice(e1Idx, 1);
+  renderMasterTree();
+};
 
-  localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify(masterUnits));
-  refreshBagianSubbagDropdown(selectBagian.value, selectSubbag.value);
-  alert("Data Master Bagian & Subbagian berhasil diperbarui.");
-});
+window.tambahEselon2 = e1Idx => {
+  syncDomToDbPejabat();
+  dbPejabat.eselon1List[e1Idx].eselon2List.push({
+    id: "E2-" + Date.now(),
+    namaUnit: "Biro / Pusat / Direktorat Baru",
+    jabatanPimpinan: "Kepala Biro / Pusat / Direktur",
+    namaPejabat: "",
+    pangkatNrpNip: "",
+    bagianList: [
+      {
+        id: "BAG-" + Date.now(),
+        namaBagian: "Bagian / Bidang 1",
+        jabatanKabag: "Kepala Bagian / Bidang 1",
+        namaKabag: "",
+        pangkatKabag: "",
+        subbagList: [
+          {
+            id: "SUB-" + Date.now(),
+            namaSubbag: "Subbagian / Subbidang 1",
+            jabatanKasubbag: "Kasubbag / Kasubbid 1",
+            namaPejabat: "",
+            pangkatNrpNip: ""
+          }
+        ]
+      }
+    ]
+  });
+  renderMasterTree();
+};
+
+window.hapusEselon2 = (e1Idx, e2Idx) => {
+  if (!confirm("Hapus unit Eselon II ini?")) return;
+  syncDomToDbPejabat();
+  dbPejabat.eselon1List[e1Idx].eselon2List.splice(e2Idx, 1);
+  renderMasterTree();
+};
+
+window.tambahBagian = (e1Idx, e2Idx) => {
+  syncDomToDbPejabat();
+  dbPejabat.eselon1List[e1Idx].eselon2List[e2Idx].bagianList.push({
+    id: "BAG-" + Date.now(),
+    namaBagian: "Bagian / Bidang Baru",
+    jabatanKabag: "Kepala Bagian / Bidang Baru",
+    namaKabag: "",
+    pangkatKabag: "",
+    subbagList: [
+      {
+        id: "SUB-" + Date.now(),
+        namaSubbag: "Subbagian 1",
+        jabatanKasubbag: "Kepala Subbagian 1",
+        namaPejabat: "",
+        pangkatNrpNip: ""
+      }
+    ]
+  });
+  renderMasterTree();
+};
+
+window.hapusBagian = (e1Idx, e2Idx, bagIdx) => {
+  if (!confirm("Hapus Bagian / Bidang ini?")) return;
+  syncDomToDbPejabat();
+  dbPejabat.eselon1List[e1Idx].eselon2List[e2Idx].bagianList.splice(bagIdx, 1);
+  renderMasterTree();
+};
+
+window.tambahSubbag = (e1Idx, e2Idx, bagIdx) => {
+  syncDomToDbPejabat();
+  const bag = dbPejabat.eselon1List[e1Idx].eselon2List[e2Idx].bagianList[bagIdx];
+  bag.subbagList.push({
+    id: "SUB-" + Date.now(),
+    namaSubbag: "Subbagian Baru",
+    jabatanKasubbag: `Kasubbag Baru ${bag.namaBagian}`,
+    namaPejabat: "",
+    pangkatNrpNip: ""
+  });
+  renderMasterTree();
+};
+
+window.hapusSubbag = (e1Idx, e2Idx, bagIdx, subIdx) => {
+  syncDomToDbPejabat();
+  const list = dbPejabat.eselon1List[e1Idx].eselon2List[e2Idx].bagianList[bagIdx].subbagList;
+  if (list.length <= 1) {
+    alert("Setiap Bagian minimal memiliki 1 Sub Bagian.");
+    return;
+  }
+  list.splice(subIdx, 1);
+  renderMasterTree();
+};
+
+async function handleSimpanMaster() {
+  syncDomToDbPejabat();
+  localStorage.setItem(DB_PEJABAT_STORAGE_KEY, JSON.stringify(dbPejabat));
+  refreshUnitDropdowns();
+
+  const gasUrl = getGasUrl();
+  if (gasUrl) {
+    try {
+      await fetch(gasUrl, {
+        method: "POST",
+        body: JSON.stringify({ action: "saveMasterPejabat", payload: dbPejabat })
+      });
+    } catch (err) {
+      console.warn("Gagal sinkron Master Pejabat ke Google Sheets:", err);
+    }
+  }
+  alert("Database Pejabat & Struktur Unit Kerja berhasil disimpan!");
+}
+
+document.getElementById("btnSimpanMaster").addEventListener("click", handleSimpanMaster);
+document.getElementById("btnSimpanMasterBottom").addEventListener("click", handleSimpanMaster);
 
 document.getElementById("btnResetMaster").addEventListener("click", () => {
-  if (!confirm("Kembalikan daftar Bagian & Subbagian ke data awal?")) return;
-  masterUnits = structuredClone(DEFAULT_MASTER_UNITS);
-  localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify(masterUnits));
-  renderMasterTable();
-  refreshBagianSubbagDropdown();
+  if (currentUser?.role !== "admin") return;
+  if (!confirm("Kembalikan struktur Eselon I, II, III, dan IV ke bawaan awal?")) return;
+  dbPejabat = structuredClone(DEFAULT_DB_PEJABAT);
+  localStorage.setItem(DB_PEJABAT_STORAGE_KEY, JSON.stringify(dbPejabat));
+  renderMasterTree();
+  refreshUnitDropdowns();
 });
 
+// ==========================================
+// MANAJEMEN AKUN PENGGUNA (KHUSUS ADMINISTRATOR)
+// ==========================================
+function getAllEselon2Options() {
+  const opts = [];
+  (dbPejabat.eselon1List || []).forEach(e1 => {
+    (e1.eselon2List || []).forEach(e2 => {
+      opts.push({ id: e2.id, label: `${e2.namaUnit} (${e1.namaUnit})` });
+    });
+  });
+  return opts;
+}
+
+function renderUsersTable() {
+  const tbody = document.getElementById("usersTableBody");
+  const e2Opts = getAllEselon2Options();
+
+  tbody.innerHTML = usersList.map((u, idx) => `
+    <tr data-idx="${idx}">
+      <td><input type="text" class="u-username" value="${escAttr(u.username)}" ${u.id === "USR-ADMIN" ? "readonly" : ""} /></td>
+      <td><input type="text" class="u-password" value="${escAttr(u.password)}" /></td>
+      <td><input type="text" class="u-nama" value="${escAttr(u.namaTampilan)}" /></td>
+      <td>
+        <select class="u-role" ${u.id === "USR-ADMIN" ? "disabled" : ""}>
+          <option value="admin" ${u.role === "admin" ? "selected" : ""}>Administrator (Semua)</option>
+          <option value="satker" ${u.role === "satker" ? "selected" : ""}>Admin Satker (Per Unit)</option>
+        </select>
+      </td>
+      <td>
+        <select class="u-e2">
+          <option value="">-- Semua Unit (Khusus Administrator) --</option>
+          ${e2Opts.map(o => `<option value="${o.id}" ${u.eselon2Id === o.id ? "selected" : ""}>${o.label}</option>`).join("")}
+        </select>
+      </td>
+      <td style="text-align:center;">
+        ${u.id !== "USR-ADMIN" ? `<button type="button" class="btn btn-danger btn-sm" onclick="hapusUser(${idx})">×</button>` : "-"}
+      </td>
+    </tr>
+  `).join("");
+}
+
+document.getElementById("btnTambahUser").addEventListener("click", () => {
+  const e2Opts = getAllEselon2Options();
+  usersList.push({
+    id: "USR-" + Date.now(),
+    username: "satker" + (usersList.length + 1),
+    password: "kemhan2027",
+    namaTampilan: "Admin Satker Baru",
+    role: "satker",
+    eselon2Id: e2Opts[0]?.id || ""
+  });
+  renderUsersTable();
+});
+
+window.hapusUser = idx => {
+  if (!confirm("Hapus akun pengguna ini?")) return;
+  usersList.splice(idx, 1);
+  renderUsersTable();
+};
+
+document.getElementById("btnSimpanUsers").addEventListener("click", () => {
+  const rows = [...document.querySelectorAll("#usersTableBody tr")];
+  usersList = rows.map((tr, i) => ({
+    id: usersList[i]?.id || ("USR-" + Date.now() + "-" + i),
+    username: tr.querySelector(".u-username").value.trim(),
+    password: tr.querySelector(".u-password").value.trim(),
+    namaTampilan: tr.querySelector(".u-nama").value.trim(),
+    role: tr.querySelector(".u-role").value,
+    eselon2Id: tr.querySelector(".u-e2").value
+  })).filter(u => u.username && u.password);
+
+  localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(usersList));
+  alert("Daftar akun pengguna & hak akses berhasil disimpan.");
+});
+
+// ==========================================
+// ARSIP & GOOGLE SHEETS
+// ==========================================
 async function saveToArsip(doc) {
   arsipList.unshift(doc);
   localStorage.setItem(ARSIP_STORAGE_KEY, JSON.stringify(arsipList));
@@ -542,28 +1247,33 @@ async function saveToArsip(doc) {
 
 function renderArsipTable() {
   const tbody = document.getElementById("arsipTableBody");
-  if (!arsipList.length) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#64748b;">Belum ada arsip Perjanjian Kinerja.</td></tr>`;
+  const visibleDocs = getVisibleArsip();
+
+  if (!visibleDocs.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#64748b;">Belum ada arsip Perjanjian Kinerja untuk unit kerja ini.</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = arsipList.map((doc, idx) => `
-    <tr>
-      <td>${doc.createdAt || "-"}</td>
-      <td>${doc.tahun}</td>
-      <td><strong>${doc.bagian || ""}</strong><br><small>${doc.subbag || ""}</small></td>
-      <td>${doc.pihakPertama?.nama || "-"}</td>
-      <td>${doc.pihakKedua?.nama || "-"}</td>
-      <td>${formatRp(doc.totalAnggaran)}</td>
-      <td>
-        <div class="toolbar-right">
-          <button type="button" class="btn btn-primary btn-sm" onclick="bukaArsip(${idx})">Buka / PDF</button>
-          <button type="button" class="btn btn-outline btn-sm" onclick="editArsip(${idx})">Edit</button>
-          <button type="button" class="btn btn-danger btn-sm" onclick="hapusArsip(${idx})">Hapus</button>
-        </div>
-      </td>
-    </tr>
-  `).join("");
+  tbody.innerHTML = visibleDocs.map(doc => {
+    const realIdx = arsipList.findIndex(x => x.id === doc.id);
+    return `
+      <tr>
+        <td>${doc.createdAt || "-"}</td>
+        <td>${doc.tahun}</td>
+        <td><strong>${doc.eselon2 || doc.eselon1 || ""}</strong><br><small>${doc.subbag || ""}</small></td>
+        <td>${doc.pihakPertama?.nama || "-"}</td>
+        <td>${doc.pihakKedua?.nama || "-"}</td>
+        <td>${formatRp(doc.totalAnggaran)}</td>
+        <td>
+          <div class="toolbar-right">
+            <button type="button" class="btn btn-primary btn-sm" onclick="bukaArsip(${realIdx})">Buka / PDF</button>
+            <button type="button" class="btn btn-outline btn-sm" onclick="editArsip(${realIdx})">Edit</button>
+            <button type="button" class="btn btn-danger btn-sm" onclick="hapusArsip(${realIdx})">Hapus</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
 }
 
 window.bukaArsip = idx => renderPerjanjianKinerja(arsipList[idx]);
@@ -591,6 +1301,7 @@ document.getElementById("btnEditKembali").addEventListener("click", () => showVi
 document.getElementById("btnKeForm").addEventListener("click", () => showView("form"));
 document.getElementById("btnKeMaster").addEventListener("click", () => showView("master"));
 document.getElementById("btnKeArsip").addEventListener("click", () => showView("arsip"));
+document.getElementById("btnKeUsers").addEventListener("click", () => showView("users"));
 document.getElementById("btnKeHasil").addEventListener("click", () => {
   if (currentActiveDoc) renderPerjanjianKinerja(currentActiveDoc);
   else renderPerjanjianKinerja(collectFormData());
@@ -602,16 +1313,15 @@ document.getElementById("btnKosongkan").addEventListener("click", () => {
 });
 
 document.getElementById("btnIsiContoh").addEventListener("click", () => {
-  document.getElementById("tahunAnggaran").value = "2025";
-  document.getElementById("tempatTanggal").value = "Jakarta, Maret 2025";
-  refreshBagianSubbagDropdown("Bagian Pemberitaan", "U-PRODDOK");
+  document.getElementById("tahunAnggaran").value = "2027";
+  document.getElementById("tempatTanggal").value = "Jakarta, Januari 2027";
 
   sasaranContainer.innerHTML = "";
   addSasaranBlock({
-    sasaran: "Terlaksananya produksi dan dokumentasi terkait pemberitaan informasi pertahanan yang berkualitas",
+    sasaran: "Terlaksananya pengelolaan administrasi dan layanan informasi pertahanan secara efektif dan akuntabel",
     indikatorList: [
-      { indikator: "Jumlah Bahan Hasil Pendokumentasian Kegiatan Kemhan Yang Berkualitas", target: "288", satuan: "Dokumen", anggaran: 643695000 },
-      { indikator: "Jumlah Penyiapan Konten Media Interaktif Terkait Informasi Tentang Pertahanan", target: "12", satuan: "Laporan", anggaran: 170461000 }
+      { indikator: "Jumlah Laporan Pelaksanaan Kegiatan Subbagian", target: "12", satuan: "Laporan", anggaran: 250000000 },
+      { indikator: "Persentase Penyelesaian Layanan Administrasi Tepat Waktu", target: "100%", satuan: "Persen", anggaran: 75000000 }
     ]
   });
 });
@@ -640,7 +1350,8 @@ document.getElementById("btnTarikArsipGas").addEventListener("click", async () =
   }
 });
 
-refreshBagianSubbagDropdown();
-updateArsipCounter();
+// Inisialisasi awal
 addSasaranBlock();
-
+if (currentUser) {
+  initAppAfterLogin();
+}
